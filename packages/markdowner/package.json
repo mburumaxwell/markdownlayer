@@ -45,6 +45,7 @@
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
+    "prepublish": "copyfiles package.json dist",
     "lint": "eslint \"src/**/*.{js,jsx,ts,tsx}\"",
     "clean": "rimraf .turbo dist"
   },
