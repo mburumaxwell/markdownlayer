@@ -30,6 +30,9 @@ jobs:
     - name: 📥 Download deps
       run: pnpm install
 
+    - name: 🛠️ Build markdowner
+      run: pnpm --filter=markdowner build
+
     - name: 🔬 Lint
       run: pnpm lint
 
