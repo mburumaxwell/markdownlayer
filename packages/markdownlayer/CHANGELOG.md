@@ -1,5 +1,11 @@
 # markdownlayer
 
+## 0.1.4
+
+### Patch Changes
+
+- 2d81fd2: Change publish settings to fix deployed files
+
 ## 0.1.3
 
 ### Patch Changes
