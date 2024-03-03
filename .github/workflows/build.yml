@@ -1,16 +1,25 @@
-name: Build and Release
+name: Build
 
 on:
   push:
     branches:
     - main
+    paths-ignore:
+    - README.md
+    - CHANGELOG.md
+  pull_request:
+    branches:
+    - main
+    paths-ignore:
+    - README.md
+    - CHANGELOG.md
   workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}
 
 jobs:
-  build:
+  Build:
     runs-on: ubuntu-latest
     name: 🛠️ Build
 
@@ -39,6 +48,7 @@ jobs:
       run: pnpm test
 
     - name: 📣 Create Release Pull Request or Publish to npm
+      if: ${{ github.ref == 'refs/heads/main' }}
       uses: changesets/action@v1
       with:
         title: "chore(release): version packages"
