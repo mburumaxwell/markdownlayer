@@ -1,5 +1,11 @@
 # markdownlayer
 
+## 0.1.1
+
+### Patch Changes
+
+- aabea2c: Rename from markdowner to markdownlayer because the former is taken
+
 ## 0.1.0
 
 ### Minor Changes
