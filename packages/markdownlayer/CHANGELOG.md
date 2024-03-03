@@ -1,5 +1,11 @@
 # markdownlayer
 
+## 0.1.3
+
+### Patch Changes
+
+- 41dfcbb: Restore access=public to publishConfig
+
 ## 0.1.2
 
 ### Patch Changes
