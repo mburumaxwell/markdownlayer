@@ -9,8 +9,9 @@ pnpm-lock.yaml
 .next
 apps/**/out
 
-# output
+# other
 packages/**/dist
+.changeset
 
 # turbo
 .turbo
