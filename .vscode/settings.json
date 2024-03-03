@@ -1,5 +1,7 @@
 {
     "cSpell.words": [
+        "copyfiles",
+        "estree",
         "frontmatter",
         "headlessui",
         "lucide",
@@ -11,6 +13,7 @@
         "Pluggable",
         "recma",
         "rehype",
-        "tailwindcss"
+        "tailwindcss",
+        "tsup"
     ]
 }
