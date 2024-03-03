@@ -11,11 +11,11 @@
     "packages:version": "changeset version",
     "packages:publish": "changeset publish",
 
-    "website:start": "turbo run start --filter=website...",
-    "website:dev": "turbo run dev --filter=website...",
-    "website:build": "turbo run build --filter=website...",
-    "website:lint": "turbo run lint --filter=website...",
-    "website:clean": "turbo run clean --filter=website...",
+    "starter:start": "turbo run start --filter=starter...",
+    "starter:dev": "turbo run dev --filter=starter...",
+    "starter:build": "turbo run build --filter=starter...",
+    "starter:lint": "turbo run lint --filter=starter...",
+    "starter:clean": "turbo run clean --filter=starter...",
 
     "build": "turbo run build",
     "lint": "turbo run lint",

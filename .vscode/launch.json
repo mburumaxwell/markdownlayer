@@ -5,10 +5,10 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Start Website",
+      "name": "Start starter",
       "request": "launch",
       "type": "node-terminal",
-      "command": "pnpm website:dev",
+      "command": "pnpm starter:dev",
       "cwd": "${workspaceFolder}"
     }
   ]
