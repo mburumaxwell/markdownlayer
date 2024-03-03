@@ -1,4 +1,4 @@
-import { allBlogPosts } from 'markdowner/generated';
+import { allBlogPosts } from 'markdownlayer/generated';
 import { Metadata, ResolvingMetadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -7,7 +7,7 @@ import { notFound } from 'next/navigation';
 import { authors } from '@/lib/authors';
 import { FORMATS_DATE_LONG, formatDate } from '@/lib/formatting';
 
-import { Markdowner } from '@/components/markdowner';
+import { Markdownlayer } from '@/components/markdownlayer';
 import { slugFromParams, staticParamsFromSlug, type StaticParams } from '@/lib/slug';
 
 const slugPrefix = 'blog/posts';
@@ -104,7 +104,7 @@ export default function BlogPostPage({ params }: BlogPostProps) {
             />
           </div>
         )}
-        <Markdowner type={post.format} code={post.body.code} />
+        <Markdownlayer type={post.format} code={post.body.code} />
         <hr className="mt-12" />
         <div className="flex justify-center py-6 lg:py-10">
           {/* <Link href="/blog" className={cn(buttonVariants({ variant: 'ghost' }))}>

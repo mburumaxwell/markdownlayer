@@ -1,10 +1,10 @@
-# markdowner
+# markdownlayer
 
 ## 0.1.0
 
 ### Minor Changes
 
-- 6f33f1b: markdowner should not be private to allow for publishing
+- 6f33f1b: markdownlayer should not be private to allow for publishing
 
 ### Patch Changes
 

@@ -1,5 +1,5 @@
 import siteConfig from '@/site-config';
-import { allLegalDocs } from 'markdowner/generated';
+import { allLegalDocs } from 'markdownlayer/generated';
 import { MetadataRoute } from 'next';
 
 export default function sitemap(): MetadataRoute.Sitemap {

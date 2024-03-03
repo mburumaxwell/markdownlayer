@@ -1,7 +1,7 @@
-import { allChangelogs } from 'markdowner/generated';
+import { allChangelogs } from 'markdownlayer/generated';
 import { Metadata } from 'next';
 
-// import { Markdowner } from "@/components/content/markdowner";
+// import { Markdownlayer } from "@/components/content/markdownlayer";
 
 import siteConfig from '@/site-config';
 

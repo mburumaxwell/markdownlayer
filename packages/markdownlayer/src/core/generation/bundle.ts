@@ -14,14 +14,14 @@ import remarkFrontmatter from 'remark-frontmatter';
 import remarkGfm from 'remark-gfm';
 
 import { remarkAdmonitions, remarkHeadings, type AdmonitionPluginOptions } from '@/remark';
-import type { DocumentFormat, GenerationMode, MarkdownerConfigPlugins } from '../types';
+import type { DocumentFormat, GenerationMode, MarkdownlayerConfigPlugins } from '../types';
 
 export type BundleProps = {
   entryPath: string;
   contents: string;
   format: DocumentFormat;
   mode: GenerationMode;
-  plugins: MarkdownerConfigPlugins;
+  plugins: MarkdownlayerConfigPlugins;
   frontmatter: Record<string, any>;
 };
 
@@ -129,7 +129,7 @@ async function bundleMdx({ entryPath, contents, format, mode, plugins }: BundleM
   };
 }
 
-type GetCompileOptionsProps = { format: 'md' | 'mdx'; mode: GenerationMode; plugins: MarkdownerConfigPlugins };
+type GetCompileOptionsProps = { format: 'md' | 'mdx'; mode: GenerationMode; plugins: MarkdownlayerConfigPlugins };
 type ProcessorCacheEntry = { format: DocumentFormat; options: CompileOptions };
 
 const ProcessorsCache = new Map<GetCompileOptionsProps['format'], ProcessorCacheEntry>();

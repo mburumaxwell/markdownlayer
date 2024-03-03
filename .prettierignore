@@ -19,8 +19,8 @@ packages/**/dist
 # vercel
 .vercel
 
-# markdowner
-.markdowner
+# markdownlayer
+.markdownlayer
 
 # static files
 apps/**/public

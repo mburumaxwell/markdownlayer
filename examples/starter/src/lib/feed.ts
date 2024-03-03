@@ -1,6 +1,6 @@
 import siteConfig from '@/site-config';
 import { Feed } from 'feed';
-import { allBlogPosts } from 'markdowner/generated';
+import { allBlogPosts } from 'markdownlayer/generated';
 import { authors } from './authors';
 
 const siteUrl = siteConfig.siteUrl;

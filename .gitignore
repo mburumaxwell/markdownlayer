@@ -38,8 +38,8 @@ yarn-error.log*
 # vercel
 .vercel
 
-# markdowner
-.markdowner
+# markdownlayer
+.markdownlayer
 
 # typescript
 *.tsbuildinfo

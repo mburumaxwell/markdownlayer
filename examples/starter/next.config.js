@@ -1,8 +1,8 @@
-import { withMarkdowner } from 'markdowner';
+import { withMarkdownlayer } from 'markdownlayer';
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
 };
 
-export default withMarkdowner(nextConfig);
+export default withMarkdownlayer(nextConfig);

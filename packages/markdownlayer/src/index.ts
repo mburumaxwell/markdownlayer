@@ -19,19 +19,19 @@ interface WebpackConfigContext {
 }
 
 /**
- * Next.js plugin for Markdowner.
+ * Next.js plugin for markdownlayer.
  *
  * @example
  * ```js
  * // next.config.mjs
- * import { withMarkdowner } from 'markdowner'
+ * import { withMarkdownlayer } from 'markdownlayer'
  *
- * export default withMarkdowner({
+ * export default withMarkdownlayer({
  *   // My Next.js config
  * })
  * ```
  */
-export function withMarkdowner(nextConfig?: Partial<NextConfig>): Partial<NextConfig> {
+export function withMarkdownlayer(nextConfig?: Partial<NextConfig>): Partial<NextConfig> {
   return {
     ...nextConfig,
     onDemandEntries: {
@@ -43,8 +43,8 @@ export function withMarkdowner(nextConfig?: Partial<NextConfig>): Partial<NextCo
 
       config.watchOptions = {
         ...config.watchOptions,
-        // ignored: /node_modules([\\]+|\/)+(?!\.markdowner)/,
-        ignored: ['**/node_modules/!(.markdowner)/**/*'],
+        // ignored: /node_modules([\\]+|\/)+(?!\.markdownlayer)/,
+        ignored: ['**/node_modules/!(.markdownlayer)/**/*'],
       };
 
       config.plugins!.push(new MarkdownWebpackPlugin());
@@ -60,7 +60,7 @@ export function withMarkdowner(nextConfig?: Partial<NextConfig>): Partial<NextCo
 
 class MarkdownWebpackPlugin {
   apply(compiler: webpack.Compiler) {
-    compiler.hooks.beforeCompile.tapPromise('MarkdownerWebpackPlugin', async () => {
+    compiler.hooks.beforeCompile.tapPromise('MarkdownlayerWebpackPlugin', async () => {
       await runBeforeWebpackCompile({
         devServerStartedRef,
         mode: compiler.options.mode,

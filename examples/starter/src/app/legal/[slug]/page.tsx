@@ -1,10 +1,10 @@
-import { allLegalDocs } from 'markdowner/generated';
+import { allLegalDocs } from 'markdownlayer/generated';
 import { Metadata, ResolvingMetadata } from 'next';
 import { notFound } from 'next/navigation';
 
 import { FORMATS_DATE_LONG, formatDate } from '@/lib/formatting';
 
-import { Markdowner } from '@/components/markdowner';
+import { Markdownlayer } from '@/components/markdownlayer';
 import { slugFromParams, staticParamsFromSlug, type StaticParams } from '@/lib/slug';
 import siteConfig from '@/site-config';
 
@@ -56,7 +56,7 @@ export default function LegalDocPage({ params }: LegalDocProps) {
           )}
         </div>
         <div className="mx-auto flex w-full max-w-screen-md flex-col items-center p-10 px-2.5 sm:pt-20 lg:px-20">
-          <Markdowner type={doc.format} code={doc.body.code} />
+          <Markdownlayer type={doc.format} code={doc.body.code} />
         </div>
       </article>
     </>

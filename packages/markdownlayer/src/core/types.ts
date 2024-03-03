@@ -139,9 +139,9 @@ export interface DocumentDefinition {
   validate?: (document: BaseDoc) => void;
 }
 
-export type MarkdownerConfigPlugins = {
+export type MarkdownlayerConfigPlugins = {
   /** Options for using markdoc. */
-  markdoc?: MarkdownerConfigMarkdoc;
+  markdoc?: MarkdownlayerConfigMarkdoc;
 
   /**
    * Options for configuring the inbuilt remark-admonitions plugin.
@@ -166,7 +166,7 @@ export type MarkdownerConfigPlugins = {
   remarkRehypeOptions?: RemarkRehypeOptions | null | undefined;
 };
 
-export type MarkdownerConfigMarkdoc = {
+export type MarkdownlayerConfigMarkdoc = {
   /**
    * Whether to allow comments.
    * @default true
@@ -190,13 +190,13 @@ export type MarkdownerConfigMarkdoc = {
   transformConfig?: MarkdocConfig;
 };
 
-export type MarkdownerConfig = {
+export type MarkdownlayerConfig = {
   /**
    * Whether to cache the generated documents.
    * This is useful for development mode to speed up HMR.
    * It has no effect in production mode.
    *
-   * You may want to disable caching when you are developing code in this markdowner
+   * You may want to disable caching when you are developing code in this markdownlayer
    * library and want to see fast changes.
    *
    * @default true
@@ -224,4 +224,4 @@ export type MarkdownerConfig = {
    * @default false
    */
   mdAsMarkdoc?: boolean;
-} & MarkdownerConfigPlugins;
+} & MarkdownlayerConfigPlugins;

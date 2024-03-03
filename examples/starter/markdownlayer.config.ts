@@ -1,8 +1,8 @@
-import type { MarkdownerConfig } from 'markdowner/core';
+import type { MarkdownlayerConfig } from 'markdownlayer/core';
 import rehypeSlug from 'rehype-slug';
-import { rehypeAutolinkHeadings, rehypePrettyCode } from './src/markdowner';
+import { rehypeAutolinkHeadings, rehypePrettyCode } from './src/markdownlayer';
 
-const markdownConfig: MarkdownerConfig = {
+const markdownConfig: MarkdownlayerConfig = {
   contentDirPath: './src/content',
   definitions: [
     { type: 'LegalDoc', patterns: 'legal/*.{md,mdoc,mdx}' },

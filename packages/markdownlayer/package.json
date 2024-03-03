@@ -1,5 +1,5 @@
 {
-  "name": "markdowner",
+  "name": "markdownlayer",
   "version": "0.1.0",
   "type": "module",
   "sideEffects": false,
@@ -91,14 +91,14 @@
     "webpack": "5.90"
   },
   "author": "mburumaxwell",
-  "homepage": "https://github.com/mburumaxwell/markdowner",
+  "homepage": "https://github.com/mburumaxwell/markdownlayer",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mburumaxwell/markdowner.git"
+    "url": "git+https://github.com/mburumaxwell/markdownlayer.git"
   },
   "bug": {
-    "url": "https://github.com/mburumaxwell/markdowner/issues"
+    "url": "https://github.com/mburumaxwell/markdownlayer/issues"
   },
   "engines": {
     "node": ">=18"

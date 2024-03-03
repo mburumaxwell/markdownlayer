@@ -1,5 +1,5 @@
-import { DocumentFormat } from 'markdowner/core';
-import { useMDXComponent, useMdocComponent } from 'markdowner/hooks';
+import { DocumentFormat } from 'markdownlayer/core';
+import { useMDXComponent, useMdocComponent } from 'markdownlayer/hooks';
 import { Route } from 'next';
 import Link from 'next/link';
 import type { TweetProps } from 'react-tweet';
@@ -36,9 +36,9 @@ const components = {
   },
 };
 
-type MarkdownerProps = { type: DocumentFormat; code: string; className?: string };
+type MarkdownlayerProps = { type: DocumentFormat; code: string; className?: string };
 
-export function Markdowner({ type, code, className }: MarkdownerProps) {
+export function Markdownlayer({ type, code, className }: MarkdownlayerProps) {
   return (
     <div className={`prose dark:prose-invert max-w-none ${className}`}>
       {(type == 'md' || type == 'mdx') && <MdOrMdx code={code} />}

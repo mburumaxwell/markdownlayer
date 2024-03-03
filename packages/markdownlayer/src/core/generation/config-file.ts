@@ -2,10 +2,10 @@ import * as esbuild from 'esbuild';
 import fs from 'fs';
 import path from 'path';
 
-import type { MarkdownerConfig } from '../types';
+import type { MarkdownlayerConfig } from '../types';
 import { ConfigNoDefaultExportError, ConfigReadError, NoConfigFoundError } from './errors';
 
-const possibleConfigFileNames = ['markdowner.config.ts', 'markdowner.config.js'];
+const possibleConfigFileNames = ['markdownlayer.config.ts', 'markdownlayer.config.js'];
 
 export type GetConfigOptions = {
   cwd: string;
@@ -14,7 +14,7 @@ export type GetConfigOptions = {
 
 export type GetConfigResult = {
   configHash: string;
-  config: MarkdownerConfig;
+  config: MarkdownlayerConfig;
 };
 
 export async function getConfig({ cwd, outputFolder }: GetConfigOptions): Promise<GetConfigResult> {
@@ -29,7 +29,7 @@ export async function getConfig({ cwd, outputFolder }: GetConfigOptions): Promis
   }
 
   const cacheDir = path.join(outputFolder, 'cache');
-  let outputPath = path.join(cacheDir, 'compiled-markdowner-config.mjs');
+  let outputPath = path.join(cacheDir, 'compiled-markdownlayer-config.mjs');
   fs.mkdirSync(path.dirname(outputPath), { recursive: true });
 
   const buildOptions: esbuild.BuildOptions = {
@@ -46,7 +46,7 @@ export async function getConfig({ cwd, outputFolder }: GetConfigOptions): Promis
     logLevel: 'silent',
     metafile: true,
     absWorkingDir: cwd,
-    plugins: [markdownerGenPlugin(), makeAllPackagesExternalPlugin(configPath)],
+    plugins: [markdownlayerGenPlugin(), makeAllPackagesExternalPlugin(configPath)],
   };
 
   const buildResult = await esbuild.build(buildOptions);
@@ -58,15 +58,15 @@ export async function getConfig({ cwd, outputFolder }: GetConfigOptions): Promis
   // const buildResult = await buildContext.build();
   // await buildContext.watch();
 
-  // Will look like `path.join(cacheDir, 'compiled-markdowner-config-[SOME_HASH].mjs')
+  // Will look like `path.join(cacheDir, 'compiled-markdownlayer-config-[SOME_HASH].mjs')
   const outputFileName = Object.keys(buildResult.metafile!.outputs).find(
-    (f) => f.match(/compiled-markdowner-config-.+.mjs$/) !== null,
+    (f) => f.match(/compiled-markdownlayer-config-.+.mjs$/) !== null,
   );
   if (!outputFileName) throw new Error('Could not find output file name');
   // Needs to be absolute path for ESM import to work
   outputPath = path.join(cwd, outputFileName);
 
-  const esbuildHash = outputPath.match(/compiled-markdowner-config-(.+).mjs$/)![1]!;
+  const esbuildHash = outputPath.match(/compiled-markdownlayer-config-(.+).mjs$/)![1]!;
 
   // Needed in order for source maps of dynamic file to work
   try {
@@ -91,13 +91,13 @@ export async function getConfig({ cwd, outputFolder }: GetConfigOptions): Promis
 
   return {
     configHash: esbuildHash,
-    config: exports.default as MarkdownerConfig,
+    config: exports.default as MarkdownlayerConfig,
   };
 }
 
 // function watchPlugin(configPath: string): esbuild.Plugin {
 //   return ({
-//     name: 'markdowner-watch-plugin',
+//     name: 'markdownlayer-watch-plugin',
 //     setup(build) {
 //       let isFirstBuild = false
 
@@ -121,19 +121,19 @@ export async function getConfig({ cwd, outputFolder }: GetConfigOptions): Promis
 // }
 
 /**
- * This esbuild plugin is needed in some cases where users import code that imports from '.markdowner/*'
+ * This esbuild plugin is needed in some cases where users import code that imports from '.markdownlayer/*'
  * (e.g. when co-locating document type definitions with React components).
  */
-function markdownerGenPlugin(): esbuild.Plugin {
+function markdownlayerGenPlugin(): esbuild.Plugin {
   return {
-    name: 'markdowner-gen',
+    name: 'markdownlayer-gen',
     setup(build) {
-      build.onResolve({ filter: /markdowner\/generated/ }, (args) => ({
+      build.onResolve({ filter: /markdownlayer\/generated/ }, (args) => ({
         path: args.path,
-        namespace: 'markdowner-gen',
+        namespace: 'markdownlayer-gen',
       }));
 
-      build.onLoad({ filter: /.*/, namespace: 'markdowner-gen' }, () => ({
+      build.onLoad({ filter: /.*/, namespace: 'markdownlayer-gen' }, () => ({
         contents: '// empty',
       }));
     },
