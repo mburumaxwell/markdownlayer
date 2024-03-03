@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "allowJs": true,
+    "noEmit": true,
+    "incremental": true,
+    "jsx": "preserve",
+    "resolveJsonModule": true,
+    "plugins": [{ "name": "next" }], // improved developer experience
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"],
+      "markdowner/generated": ["./.markdowner/generated"]
+    }
+  },
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", ".markdowner/generated"],
+  "exclude": ["node_modules"]
+}

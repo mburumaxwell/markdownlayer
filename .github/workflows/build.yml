@@ -1,0 +1,45 @@
+name: Build and Release
+
+on:
+  push:
+    branches:
+    - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: 🛠️ Build
+
+    steps:
+    - name: ⬇️ Checkout repo
+      uses: actions/checkout@v4
+
+    - name: ⎔ Set up pnpm
+      uses: pnpm/action-setup@v3
+      with:
+        version: 8
+
+    - name: ⎔ Setup node
+      uses: actions/setup-node@v4
+      with:
+        node-version: 18
+        cache: "pnpm"
+
+    - name: 📥 Download deps
+      run: pnpm install
+
+    - name: 🛠️ Build
+      run: pnpm build
+
+    - name: 🧪 Test
+      run: pnpm test
+
+    - name: 📣 Create Release Pull Request or Publish to npm
+      uses: changesets/action@v1
+      with:
+        title: "chore(release): version packages"
+        publish: pnpm packages:publish
+        version: pnpm packages:version
+        commit: "chore(release): version packages"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

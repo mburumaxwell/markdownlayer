@@ -1,0 +1,93 @@
+{
+  "name": "markdowner",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./core": {
+      "import": "./dist/core/index.js",
+      "types": "./dist/core/index.d.ts"
+    },
+    "./hooks": {
+      "import": "./dist/hooks/index.js",
+      "types": "./dist/hooks/index.d.ts"
+    },
+    "./remark": {
+      "import": "./dist/remark/index.js",
+      "types": "./dist/remark/index.d.ts"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      ".": [
+        "./dist"
+      ],
+      "core": [
+        "./dist/core"
+      ],
+      "hooks": [
+        "./dist/hooks"
+      ],
+      "remark": [
+        "./dist/remark"
+      ]
+    }
+  },
+  "files": [
+    "./dist/**/*.{js,cjs,mjs,ts,cts,mts,map}",
+    "./src",
+    "./package.json"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "lint": "eslint \"src/**/*.{js,jsx,ts,tsx}\"",
+    "clean": "rimraf .turbo dist"
+  },
+  "dependencies": {
+    "@fal-works/esbuild-plugin-global-externals": "2.1.2",
+    "@markdoc/markdoc": "0.4.0",
+    "@mdx-js/esbuild": "3.0.1",
+    "change-case": "5.4.3",
+    "chokidar": "3.6.0",
+    "github-slugger": "2.0.0",
+    "globby": "14.0.1",
+    "gray-matter": "4.0.3",
+    "inflection": "3.0.0",
+    "mdast-util-to-string": "4.0.0",
+    "reading-time": "1.5.0",
+    "rehype-raw": "7.0.0",
+    "remark-directive": "3.0.0",
+    "remark-emoji": "4.0.1",
+    "remark-frontmatter": "5.0.0",
+    "remark-gfm": "4.0.0",
+    "shelljs": "0.8.5",
+    "source-map-support": "0.5.21"
+  },
+  "devDependencies": {
+    "@types/estree": "1.0.5",
+    "@types/inflection": "1.13.2",
+    "@types/mdast": "4.0.3",
+    "@types/mdx": "2.0.11",
+    "@types/shelljs": "0.8.15",
+    "@types/source-map-support": "0.5.10",
+    "@types/unist": "3.0.2",
+    "mdast-util-directive": "3.0.0",
+    "remark-rehype": "11.1.0",
+    "unified": "11.0.4",
+    "unist-util-visit": "5.0.0"
+  },
+  "peerDependencies": {
+    "esbuild": "0",
+    "next": "13 || 14",
+    "react": "18",
+    "react-dom": "18",
+    "type-fest": "4",
+    "webpack": "5.90"
+  }
+}

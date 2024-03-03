@@ -1,0 +1,5 @@
+dependabot
+Vercel
+TailwindCSS
+NextJS
+markdoc

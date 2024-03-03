@@ -1,0 +1,32 @@
+# dependencies
+node_modules
+package.json
+package-lock.json
+pnpm-lock.yaml
+
+# next.js
+**/next-env.d.ts
+.next
+apps/**/out
+
+# output
+packages/**/dist
+
+# turbo
+.turbo
+
+# vercel
+.vercel
+
+# markdowner
+.markdowner
+
+# static files
+apps/**/public
+apps/**/static
+
+# special files
+.vscode/settings.json
+.github/**
+!.github/dependabot.yml
+README.md

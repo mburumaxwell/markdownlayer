@@ -1,0 +1,59 @@
+name: Code Check
+
+on:
+  push:
+    branches:
+    - "*"
+    paths-ignore:
+    - "README.md"
+
+jobs:
+  lint:
+    name: ⬣ ESLint
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: ⬇️ Checkout repo
+      uses: actions/checkout@v4
+
+    - name: ⎔ Set up pnpm
+      uses: pnpm/action-setup@v3
+      with:
+        version: 8
+
+    - name: ⎔ Setup node
+      uses: actions/setup-node@v4
+      with:
+        node-version: 18
+        cache: "pnpm"
+
+    - name: 📥 Download deps
+      run: pnpm install
+
+    - name: 🔬 Lint
+      run: pnpm lint
+
+  prettier:
+    name: 💅 Prettier
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: ⬇️ Checkout repo
+      uses: actions/checkout@v4
+
+    - name: ⎔ Set up pnpm
+      uses: pnpm/action-setup@v3
+      with:
+        version: 8
+
+    - name: ⎔ Setup node
+      uses: actions/setup-node@v4
+      with:
+        node-version: 18
+        cache: "pnpm"
+
+    - name: 📥 Download deps
+      run: pnpm install
+
+    - name: 💅 Prettier check
+      run: pnpm format:check

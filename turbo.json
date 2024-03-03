@@ -1,0 +1,20 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "globalDependencies": ["**/.env", "**/.env.*", "**/.eslintrc.yml"],
+  "globalEnv": ["NODE_ENV", "NEXT_PUBLIC_SHOW_DRAFTS", "CL_DEBUG"],
+  "pipeline": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**", ".next/**", "!.next/cache/**", ".markdowner/**", "out/**"]
+    },
+    "lint": {},
+    "test": {},
+    "clean": {
+      "cache": false
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true
+    }
+  }
+}
