@@ -101,5 +101,9 @@
   },
   "engines": {
     "node": ">=18"
+  },
+  "publishConfig": {
+    "directory": "dist",
+    "access": "public"
   }
 }

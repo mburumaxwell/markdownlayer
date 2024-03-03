@@ -76,7 +76,7 @@ importers:
         version: 4.17.21
       markdowner:
         specifier: workspace:*
-        version: link:../../packages/markdowner
+        version: link:../../packages/markdowner/dist
       next:
         specifier: 14.1.1
         version: 14.1.1(react-dom@18.2.0)(react@18.2.0)
@@ -226,6 +226,7 @@ importers:
       unist-util-visit:
         specifier: 5.0.0
         version: 5.0.0
+    publishDirectory: dist
 
 packages:
 
