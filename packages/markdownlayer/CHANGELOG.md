@@ -1,5 +1,11 @@
 # markdownlayer
 
+## 0.1.2
+
+### Patch Changes
+
+- 47156dc: Set types and remove explicit access setting
+
 ## 0.1.1
 
 ### Patch Changes
