@@ -11,7 +11,7 @@ apps/**/out
 
 # other
 packages/**/dist
-.changeset
+.changeset/*.md
 
 # turbo
 .turbo
