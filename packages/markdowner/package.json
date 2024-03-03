@@ -88,5 +88,15 @@
     "react-dom": "18",
     "type-fest": "4",
     "webpack": "5.90"
+  },
+  "author": "mburumaxwell",
+  "homepage": "https://github.com/mburumaxwell/markdowner",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mburumaxwell/markdowner.git"
+  },
+  "bug": {
+    "url": "https://github.com/mburumaxwell/markdowner/issues"
   }
 }
