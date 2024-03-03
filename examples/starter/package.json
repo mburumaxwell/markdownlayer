@@ -31,5 +31,8 @@
     "remark": "15.0.1",
     "unified": "11.0.4",
     "unist-util-filter": "5.0.1"
+  },
+  "engines": {
+    "node": ">=18"
   }
 }

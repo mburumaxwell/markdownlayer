@@ -98,5 +98,8 @@
   },
   "bug": {
     "url": "https://github.com/mburumaxwell/markdowner/issues"
+  },
+  "engines": {
+    "node": ">=18"
   }
 }
