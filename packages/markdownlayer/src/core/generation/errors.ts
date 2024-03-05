@@ -3,7 +3,7 @@ export class NoConfigFoundError extends Error {
     super(
       configPath
         ? `Couldn't find ${configPath}`
-        : `Could not find markdownlayer.config.ts or markdownlayer.config.js in ${cwd}`,
+        : `Could not find markdownlayer.config.ts or markdownlayer.config.js in ${cwd}. Create one or pass the config in the 'withMarkdownlayer' function.`,
     );
   }
 }

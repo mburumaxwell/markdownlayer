@@ -144,7 +144,7 @@ function getCompileOptions({ mode, format, plugins }: GetCompileOptionsProps): C
       format: format,
 
       // configure recma plugins
-      recmaPlugins: recmaPlugins,
+      recmaPlugins: recmaPlugins ?? [],
 
       // configure remark plugins
       remarkPlugins: [
@@ -162,7 +162,7 @@ function getCompileOptions({ mode, format, plugins }: GetCompileOptionsProps): C
       ],
 
       // configure rehype plugins
-      rehypePlugins: rehypePlugins,
+      rehypePlugins: rehypePlugins ?? [],
 
       remarkRehypeOptions: remarkRehypeOptions,
     };

@@ -1,5 +1,6 @@
 import * as esbuild from 'esbuild';
 import fs from 'fs';
+import hash from 'object-hash';
 import path from 'path';
 
 import type { MarkdownlayerConfig } from '../types';
@@ -7,17 +8,42 @@ import { ConfigNoDefaultExportError, ConfigReadError, NoConfigFoundError } from 
 
 const possibleConfigFileNames = ['markdownlayer.config.ts', 'markdownlayer.config.js'];
 
+/** Represents the options for getting the configuration. */
 export type GetConfigOptions = {
+  /** The current working directory. */
   cwd: string;
+
+  /**
+   * The output folder for the compiled file.
+   *
+   * @example /Users/mike/Documents/markdownlayer/examples/starter/.markdownlayer
+   */
   outputFolder: string;
+
+  /** The configuration, if any, that is passed via the NextJS plugin. */
+  pluginConfig: MarkdownlayerConfig | undefined | null;
 };
 
+/** Represents the result of getting the configuration. */
 export type GetConfigResult = {
+  /**
+   * The hash of the configuration.
+   * This is used to determine if the configuration has changed.
+   */
   configHash: string;
+
+  /** The configuration. */
   config: MarkdownlayerConfig;
 };
 
-export async function getConfig({ cwd, outputFolder }: GetConfigOptions): Promise<GetConfigResult> {
+export async function getConfig({ cwd, outputFolder, pluginConfig }: GetConfigOptions): Promise<GetConfigResult> {
+  if (pluginConfig !== null && pluginConfig !== undefined) {
+    return {
+      configHash: hash(pluginConfig, {}),
+      config: pluginConfig,
+    };
+  }
+
   let configPath: string | null = null;
   for (const name of possibleConfigFileNames) {
     configPath = path.join(cwd, name);
