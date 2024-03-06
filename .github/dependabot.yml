@@ -11,14 +11,6 @@ updates:
       interval: 'weekly'
     open-pull-requests-limit: 10
     groups:
-      lodash:
-        patterns:
-          - '@types/lodash'
-          - 'lodash'
-      radix-ui:
-        patterns:
-          - '@radix-ui*'
-          - 'radix-*'
       react:
         patterns:
           - '@types/react'
@@ -26,6 +18,7 @@ updates:
           - 'react'
           - 'react-dom'
           - 'react-router-dom'
+          - 'eslint-plugin-react'
       next:
         patterns:
           - 'eslint-config-next'
