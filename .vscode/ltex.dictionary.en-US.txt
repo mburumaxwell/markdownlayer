@@ -3,3 +3,9 @@ Vercel
 TailwindCSS
 NextJS
 markdoc
+Markdoc
+NextJs
+markdownlayer
+frontmatter
+rehype
+Markdownlayer
