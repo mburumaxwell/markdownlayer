@@ -1,5 +1,16 @@
 # markdownlayer
 
+## 0.2.0
+
+### Minor Changes
+
+- 5986862: Support passing config with registration of the plugin which ignores markdownlayer.config.ts
+
+### Patch Changes
+
+- f24fc2b: Inject shims if needed
+- 11a406f: Added README.md
+
 ## 0.1.4
 
 ### Patch Changes
