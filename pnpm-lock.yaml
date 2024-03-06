@@ -128,7 +128,7 @@ importers:
         version: 2.1.2
       '@markdoc/markdoc':
         specifier: 0.4.0
-        version: 0.4.0(@types/react@18.2.62)(react@18.2.0)
+        version: 0.4.0(@types/react@18.2.62)
       '@mdx-js/esbuild':
         specifier: 3.0.1
         version: 3.0.1(esbuild@0.20.1)
@@ -159,6 +159,9 @@ importers:
       next:
         specifier: 13 || 14
         version: 14.1.1(react-dom@18.2.0)(react@18.2.0)
+      object-hash:
+        specifier: 3.0.0
+        version: 3.0.0
       react:
         specifier: '18'
         version: 18.2.0
@@ -208,6 +211,9 @@ importers:
       '@types/mdx':
         specifier: 2.0.11
         version: 2.0.11
+      '@types/object-hash':
+        specifier: 3.0.6
+        version: 3.0.6
       '@types/shelljs':
         specifier: 0.8.15
         version: 0.8.15
@@ -1007,7 +1013,7 @@ packages:
       read-yaml-file: 1.1.0
     dev: true
 
-  /@markdoc/markdoc@0.4.0(@types/react@18.2.62)(react@18.2.0):
+  /@markdoc/markdoc@0.4.0(@types/react@18.2.62):
     resolution: {integrity: sha512-fSh4P3Y4E7oaKYc2oNzSIJVPDto7SMzAuQN1Iyx53UxzleA6QzRdNWRxmiPqtVDaDi5dELd2yICoG91csrGrAw==}
     engines: {node: '>=14.7.0'}
     peerDependencies:
@@ -1020,7 +1026,6 @@ packages:
         optional: true
     dependencies:
       '@types/react': 18.2.62
-      react: 18.2.0
     optionalDependencies:
       '@types/markdown-it': 12.2.3
     dev: false
@@ -1447,6 +1452,10 @@ packages:
 
   /@types/normalize-package-data@2.4.4:
     resolution: {integrity: sha512-37i+OaWTh9qeK4LSHPsyRC7NahnGotNuZvjLSgcPzblpHB3rrCJxAOgI5gCdKm7coonsaX1Of0ILiTcnZjbfxA==}
+    dev: true
+
+  /@types/object-hash@3.0.6:
+    resolution: {integrity: sha512-fOBV8C1FIu2ELinoILQ+ApxcUKz4ngq+IWUYrxSGjXzzjUALijilampwkMgEtJ+h2njAW3pi853QpzNVCHB73w==}
     dev: true
 
   /@types/prop-types@15.7.11:
@@ -5071,6 +5080,11 @@ packages:
   /object-assign@4.1.1:
     resolution: {integrity: sha512-rJgTQnkUnH1sFw8yT6VSU3zD3sWmu6sZhIseY8VX+GRu3P6F7Fu+JNDoXfklElbLJSnc3FUQHVe4cU5hj+BcUg==}
     engines: {node: '>=0.10.0'}
+
+  /object-hash@3.0.0:
+    resolution: {integrity: sha512-RSn9F68PjH9HqtltsSnqYC1XXoWe9Bju5+213R98cNGttag9q9yAOTzdbsqvIa7aNm5WffBZFpWYr2aWrklWAw==}
+    engines: {node: '>= 6'}
+    dev: false
 
   /object-inspect@1.13.1:
     resolution: {integrity: sha512-5qoj1RUiKOMsCCNLV1CBiPYE10sziTsnmNxkAI/rZhiD63CF7IqdFGC/XzjWjpSgLf0LxXX3bDFIh0E18f6UhQ==}

@@ -39,10 +39,13 @@ export type GenerateOptions = {
 
   /** Current working directory. */
   cwd?: string;
+
+  /** Plugin configuration. */
+  pluginConfig: MarkdownlayerConfig | undefined | null;
 };
 
 export async function generate(options: GenerateOptions) {
-  const { mode, cwd = process.cwd() } = options;
+  const { mode, cwd = process.cwd(), pluginConfig } = options;
 
   // close the watcher if it exists
   if (contentWatcher) {
@@ -50,9 +53,9 @@ export async function generate(options: GenerateOptions) {
     contentWatcher = null;
   }
 
-  // get the config (compiled from the config file)
+  // get the config (provided in the plugin or compiled from the config file)
   let outputFolder = path.join(cwd, '.markdownlayer');
-  const { config, configHash } = await getConfig({ cwd, outputFolder });
+  const { config, configHash } = await getConfig({ cwd, outputFolder, pluginConfig });
 
   // generate the documents (initial)
   await generateInner({ mode, cwd, outputFolder, config, configHash });

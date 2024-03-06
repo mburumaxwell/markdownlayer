@@ -1,6 +1,7 @@
 import type { NextConfig } from 'next';
 import webpack from 'webpack';
 
+import { type MarkdownlayerConfig } from './core';
 import { runBeforeWebpackCompile } from './plugin';
 
 const devServerStartedRef = { current: false };
@@ -20,6 +21,12 @@ interface WebpackConfigContext {
 
 /**
  * Next.js plugin for markdownlayer.
+ * @argument nextConfig - The Next.js configuration, if any.
+ * @argument pluginConfig
+ * The markdownlayer configuration, if any.
+ * When provided, markdownlayer.config.ts will be ignored.
+ * This will become the only supported configuration method
+ * once next.config.ts is supported in https://github.com/vercel/next.js/pull/57656.
  *
  * @example
  * ```js
@@ -30,8 +37,23 @@ interface WebpackConfigContext {
  *   // My Next.js config
  * })
  * ```
+ *
+ * @example
+ * ```js
+ * // next.config.mjs
+ * import { withMarkdownlayer } from 'markdownlayer'
+ *
+ * export default withMarkdownlayer({
+ *   // My Next.js config
+ * }, {
+ *  // My markdownlayer config (will ignore markdownlayer.config.js)
+ * })
+ * ```
  */
-export function withMarkdownlayer(nextConfig?: Partial<NextConfig>): Partial<NextConfig> {
+export function withMarkdownlayer(
+  nextConfig?: Partial<NextConfig>,
+  pluginConfig?: MarkdownlayerConfig,
+): Partial<NextConfig> {
   return {
     ...nextConfig,
     onDemandEntries: {
@@ -47,7 +69,7 @@ export function withMarkdownlayer(nextConfig?: Partial<NextConfig>): Partial<Nex
         ignored: ['**/node_modules/!(.markdownlayer)/**/*'],
       };
 
-      config.plugins!.push(new MarkdownWebpackPlugin());
+      config.plugins!.push(new MarkdownWebpackPlugin(pluginConfig));
 
       if (typeof nextConfig?.webpack === 'function') {
         return nextConfig.webpack(config, options);
@@ -59,11 +81,14 @@ export function withMarkdownlayer(nextConfig?: Partial<NextConfig>): Partial<Nex
 }
 
 class MarkdownWebpackPlugin {
+  constructor(private readonly pluginConfig: MarkdownlayerConfig | undefined | null) {}
+
   apply(compiler: webpack.Compiler) {
     compiler.hooks.beforeCompile.tapPromise('MarkdownlayerWebpackPlugin', async () => {
       await runBeforeWebpackCompile({
         devServerStartedRef,
         mode: compiler.options.mode,
+        pluginConfig: this.pluginConfig,
       });
     });
   }
