@@ -26,7 +26,7 @@ interface WebpackConfigContext {
  * The markdownlayer configuration, if any.
  * When provided, markdownlayer.config.ts will be ignored.
  * This will become the only supported configuration method
- * once next.config.ts is supported in https://github.com/vercel/next.js/pull/57656.
+ * once next.config.ts is supported in https://github.com/vercel/next.js/pull/63051.
  *
  * @example
  * ```js

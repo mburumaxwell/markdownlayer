@@ -27,7 +27,7 @@ Explore the [example projects](/examples), which you can clone to try out locall
 ## Known issues
 
 - Requires ESM because the whole unified/remark/rehype ecosystem moved to ESM-only.
-- Due to the ESM-only requirement, there is a webpack warning on build/dev. This will be resolved once `next.config.ts` is supported in <https://github.com/vercel/next.js/pull/57656>, of if there is a new idea before then.
+- Due to the ESM-only requirement, there is a webpack warning on build/dev. This will be resolved once `next.config.ts` is supported in <https://github.com/vercel/next.js/pull/63051>, of if there is a new idea before then.
 
 ### Who is using Markdownlayer?
 
