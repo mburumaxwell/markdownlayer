@@ -41,8 +41,14 @@ jobs:
     - name: 📥 Download deps
       run: pnpm install
 
+    - name: 💅 Prettier check
+      run: pnpm format:check
+
     - name: 🛠️ Build
       run: pnpm build
+
+    - name: 🔬 Lint
+      run: pnpm lint
 
     - name: 🧪 Test
       run: pnpm test
