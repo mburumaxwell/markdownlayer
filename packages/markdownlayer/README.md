@@ -5,6 +5,7 @@ Markdownlayer is a content SDK that validates and transforms your content into t
 ## Getting Started
 
 Explore the [example projects](/examples), which you can clone to try out locally.
+Read the [blog](https://maxwellweru.com/blog/2024/03/replacing-contentlayer-with-markdownlayer).
 
 ## Features
 
