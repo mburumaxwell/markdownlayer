@@ -29,7 +29,7 @@ export async function generateMetadata(
     title: doc.title,
     openGraph: {
       title: doc.title,
-      url: `/legal/${doc.slug}`,
+      url: `/${doc.slug}`,
       images: [siteConfig.socialImage],
     },
   };
