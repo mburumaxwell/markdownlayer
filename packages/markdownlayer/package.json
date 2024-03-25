@@ -72,7 +72,7 @@
     "@types/estree": "1.0.5",
     "@types/inflection": "1.13.2",
     "@types/mdast": "4.0.3",
-    "@types/mdx": "2.0.11",
+    "@types/mdx": "2.0.12",
     "@types/object-hash": "3.0.6",
     "@types/shelljs": "0.8.15",
     "@types/source-map-support": "0.5.10",
