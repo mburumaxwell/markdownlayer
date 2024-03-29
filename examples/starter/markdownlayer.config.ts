@@ -15,7 +15,7 @@ const markdownConfig: MarkdownlayerConfig = {
         }
       },
     },
-    { type: 'Changelog', patterns: 'blog/changelog/*.{md,mdoc,mdx}' },
+    { type: 'Changelog', patterns: 'blog/changelog/*.{md,mdoc,mdx}', lastUpdatedFromGit: false },
   ],
   remarkPlugins: [],
   rehypePlugins: [rehypeSlug, rehypeAutolinkHeadings, rehypePrettyCode],

@@ -125,10 +125,25 @@ export interface DocumentDefinition {
    */
   patterns: string | readonly string[];
 
-  /** Whether to use author from git commit history when author is not specified in frontmatter. */
+  /**
+   * Whether to use last update information from git commit history in production mode.
+   *
+   * @default true
+   */
+  lastUpdatedFromGit?: boolean;
+
+  /**
+   * Whether to use author from git commit history when author is not specified in frontmatter.
+   *
+   * @default false
+   */
   authorFromGit?: boolean;
 
-  /** Whether to generate a table of contents for the documents. */
+  /**
+   * Whether to generate a table of contents for the documents.
+   *
+   * @default false
+   */
   toc?: boolean;
 
   /**
