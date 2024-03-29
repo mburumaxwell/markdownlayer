@@ -1,5 +1,12 @@
 # markdownlayer
 
+## 0.3.0
+
+### Minor Changes
+
+- 5189667: Change validation to be asynchronous
+- 6c97b7a: Allow opt out of using git for last update time and author
+
 ## 0.2.0
 
 ### Minor Changes
