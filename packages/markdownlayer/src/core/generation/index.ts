@@ -160,6 +160,9 @@ async function generateDocuments(options: GenerateDocsOptions): Promise<Generate
     format = 'detect',
     contentDir,
     patterns,
+    lastUpdatedFromGit = true,
+    authorFromGit = false,
+    toc: genToc = false,
     validate,
     ignoreFiles,
     outputFolder,
@@ -238,17 +241,16 @@ async function generateDocuments(options: GenerateDocsOptions): Promise<Generate
 
     //  only pull git info if in production mode
     let lastUpdate: LastUpdateData | null = null;
-    if (mode === 'production') {
+    if (mode === 'production' && lastUpdatedFromGit) {
       lastUpdate = await getFileLastUpdate(path.join(contentDir, file));
     }
 
     const updated = frontmatter.updated ?? (lastUpdate?.date ?? new Date()).toISOString();
     const published = frontmatter.published ?? updated;
-    const authors: string[] =
-      frontmatter.authors ?? (options.authorFromGit && lastUpdate?.author ? [lastUpdate.author] : []);
+    const authors: string[] = frontmatter.authors ?? (authorFromGit && lastUpdate?.author ? [lastUpdate.author] : []);
 
     // generate table of contents if requested
-    const toc = frontmatter.toc ?? options.toc ?? false ? generateToc(contents) : [];
+    const toc = frontmatter.toc ?? genToc ? generateToc(contents) : [];
 
     const document: BaseDoc = {
       ...meta,
