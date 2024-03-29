@@ -134,9 +134,10 @@ export interface DocumentDefinition {
   /**
    * Validate the document. (optional)
    * You can use `zod` here to ensure each document has the required shape.
+   * Or you can use `sharp` here to ensure the image in metadata has correct dimensions.
    * @param document The document to validate
    */
-  validate?: (document: BaseDoc) => void;
+  validate?: (document: BaseDoc) => Promise<void>;
 }
 
 export type MarkdownlayerConfigPlugins = {

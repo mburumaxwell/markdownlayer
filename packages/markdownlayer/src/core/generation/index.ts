@@ -273,8 +273,8 @@ async function generateDocuments(options: GenerateDocsOptions): Promise<Generate
       category: frontmatter.category,
     };
 
-    // add the document to the list
-    if (validate) validate(document);
+    // validate the document then add it to the list
+    if (validate) await validate(document);
     docs.push(document);
 
     // write json file
