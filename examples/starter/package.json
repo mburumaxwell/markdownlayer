@@ -21,7 +21,7 @@
     "react-dom": "18.2.0",
     "react-highlight-words": "0.20.0",
     "react-tweet": "3.2.0",
-    "rehype-pretty-code": "0.13.0",
+    "rehype-pretty-code": "0.13.1",
     "shikiji": "0.10.2"
   },
   "devDependencies": {
