@@ -87,8 +87,8 @@
     "next": "13 || 14",
     "react": "18",
     "react-dom": "18",
-    "type-fest": "4",
-    "webpack": "5.90"
+    "type-fest": "^4.16.0",
+    "webpack": "^5.90.3"
   },
   "author": "mburumaxwell",
   "homepage": "https://github.com/mburumaxwell/markdownlayer",
