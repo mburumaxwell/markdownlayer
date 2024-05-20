@@ -1,5 +1,11 @@
 # markdownlayer
 
+## 0.3.1
+
+### Patch Changes
+
+- 0a5f4b1: Full versions for type-fest and webpack peer dependencies
+
 ## 0.3.0
 
 ### Minor Changes
