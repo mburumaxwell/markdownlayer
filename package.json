@@ -23,7 +23,7 @@
     "clean": "turbo run clean && rimraf .turbo"
   },
   "devDependencies": {
-    "@changesets/cli": "2.27.2",
+    "@changesets/cli": "2.27.3",
     "@types/node": "20.12.12",
     "@types/react": "18.3.2",
     "@types/react-dom": "18.3.0",
