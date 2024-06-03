@@ -103,8 +103,8 @@ importers:
         version: 0.10.2
     devDependencies:
       '@types/react-highlight-words':
-        specifier: 0.16.7
-        version: 0.16.7
+        specifier: 0.20.0
+        version: 0.20.0
       rehype-autolink-headings:
         specifier: 7.1.0
         version: 7.1.0
@@ -1680,8 +1680,8 @@ packages:
       '@types/react': 18.3.3
     dev: true
 
-  /@types/react-highlight-words@0.16.7:
-    resolution: {integrity: sha512-+upXTIaRd3rGvh1aDQSs9z5X+sV3UM6Jrmjk03GN2GXl4v/+iOJKQj2LZHo6Vp2IoTvMdtxgME26feqo12xXLg==}
+  /@types/react-highlight-words@0.20.0:
+    resolution: {integrity: sha512-Qm512TiOakvtNzHJ2+TNVHnLn5cJ2wLQV0+LrhuispVth6dRf5b8ydjq3Kc0thpZ7bz4s6RnG6meboAXHWRK+Q==}
     dependencies:
       '@types/react': 18.3.3
     dev: true
