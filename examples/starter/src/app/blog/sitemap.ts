@@ -5,7 +5,7 @@ import { type MetadataRoute } from 'next';
 export default function sitemap(): MetadataRoute.Sitemap {
   type Route = MetadataRoute.Sitemap[number];
 
-  let routes: Route[] = [{ url: `${siteConfig.siteUrl}/blog`, lastModified: '', priority: 0.5 }];
+  const routes: Route[] = [{ url: `${siteConfig.siteUrl}/blog`, lastModified: '', priority: 0.5 }];
   routes.push(
     ...allBlogPosts
       .filter((post) => !post.draft)

@@ -97,17 +97,17 @@ export async function getConfig({ cwd, outputFolder, pluginConfig }: GetConfigOp
   // Needed in order for source maps of dynamic file to work
   try {
     (await import('source-map-support')).install();
-  } catch (error: any) {
+  } catch (error) {
     throw new ConfigReadError({ error, configPath });
   }
 
-  let exports: any;
+  let exports: any; // eslint-disable-line @typescript-eslint/no-explicit-any
   try {
     // NOTES:
     // 1) `?x=` suffix needed in case of re-loading when watching the config file for changes
     // 2) `file://` prefix is needed for Windows to work properly
     exports = await import(`file://${outputPath}?x=${Date.now()}`);
-  } catch (error: any) {
+  } catch (error) {
     throw new ConfigReadError({ error, configPath });
   }
 
@@ -171,7 +171,7 @@ function makeAllPackagesExternalPlugin(configPath: string): esbuild.Plugin {
   return {
     name: 'make-all-packages-external',
     setup: (build) => {
-      const filter = /^[^.\/]|^\.[^.\/]|^\.\.[^\/]/; // Must not start with "/" or "./" or "../"
+      const filter = /^[^./]|^\.[^./]|^\.\.[^/]/; // Must not start with "/" or "./" or "../"
       build.onResolve({ filter }, (args) => {
         // avoid marking config file as external
         if (args.path.includes(configPath)) {

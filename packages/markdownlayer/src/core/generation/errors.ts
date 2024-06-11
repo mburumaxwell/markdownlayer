@@ -9,8 +9,8 @@ export class NoConfigFoundError extends Error {
 }
 
 export class ConfigReadError extends Error {
-  constructor({ configPath, error }: { readonly configPath: string; readonly error: Error }) {
-    super(`ConfigReadError (${configPath}): ${errorToString(error)}`);
+  constructor({ configPath, error }: { readonly configPath: string; readonly error: Error | unknown }) {
+    super(`ConfigReadError (${configPath}): ${errorToString(error as Error)}`);
   }
 }
 
@@ -20,7 +20,7 @@ export class ConfigNoDefaultExportError extends Error {
   }
 }
 
-export const errorToString = (error: any) => {
+export const errorToString = (error: Error) => {
   const stack = process.env.CL_DEBUG ? error.stack : undefined;
   const str = error.toString();
   const stackStr = stack ? `\n${stack}` : '';
