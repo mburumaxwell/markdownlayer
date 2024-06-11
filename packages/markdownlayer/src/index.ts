@@ -64,7 +64,7 @@ export function withMarkdownlayer(
 }
 
 class MarkdownWebpackPlugin {
-  constructor(private readonly pluginConfig: MarkdownlayerConfig | undefined | null) {}
+  constructor(private readonly pluginConfig?: MarkdownlayerConfig) {}
 
   apply(compiler: webpack.Compiler) {
     compiler.hooks.beforeCompile.tapPromise('MarkdownlayerWebpackPlugin', async () => {

@@ -21,11 +21,20 @@ export type GetConfigOptions = {
   outputFolder: string;
 
   /** The configuration, if any, that is passed via the NextJS plugin. */
-  pluginConfig: MarkdownlayerConfig | undefined | null;
+  pluginConfig?: MarkdownlayerConfig;
+
+  /**
+   * The path to the current configuration file, if any.
+   * This is only set when getting the configuration file subsequent times which should only happen when watching the file for changes.
+   */
+  currentConfigPath?: string;
 };
 
 /** Represents the result of getting the configuration. */
 export type GetConfigResult = {
+  /** The path to the configuration file. */
+  configPath?: string;
+
   /**
    * The hash of the configuration.
    * This is used to determine if the configuration has changed.
@@ -36,18 +45,22 @@ export type GetConfigResult = {
   config: MarkdownlayerConfig;
 };
 
-export async function getConfig({ cwd, outputFolder, pluginConfig }: GetConfigOptions): Promise<GetConfigResult> {
-  if (pluginConfig !== null && pluginConfig !== undefined) {
+export async function getConfig(options: GetConfigOptions): Promise<GetConfigResult> {
+  const { cwd, outputFolder, pluginConfig, currentConfigPath } = options;
+
+  if (pluginConfig) {
     return {
       configHash: hash(pluginConfig, {}),
       config: pluginConfig,
     };
   }
 
-  let configPath: string | null = null;
-  for (const name of possibleConfigFileNames) {
-    configPath = path.join(cwd, name);
-    if (fs.existsSync(configPath)) break;
+  let configPath: string | undefined = currentConfigPath;
+  if (!configPath) {
+    for (const name of possibleConfigFileNames) {
+      configPath = path.join(cwd, name);
+      if (fs.existsSync(configPath)) break;
+    }
   }
 
   if (!configPath) {
@@ -75,14 +88,11 @@ export async function getConfig({ cwd, outputFolder, pluginConfig }: GetConfigOp
     plugins: [markdownlayerGenPlugin(), makeAllPackagesExternalPlugin(configPath)],
   };
 
+  // Build the configuration file
   const buildResult = await esbuild.build(buildOptions);
-  // TODO: for dev mode, we need to watch the config file and recompile on change
-  // const buildContext = await esbuild.context({
-  //   ...buildOptions,
-  //   plugins: [...(buildOptions.plugins ?? []), watchPlugin(configPath)],
-  // } satisfies esbuild.BuildOptions);
-  // const buildResult = await buildContext.build();
-  // await buildContext.watch();
+  if (buildResult.errors.length > 0) {
+    throw new ConfigReadError({ error: buildResult.errors[0], configPath });
+  }
 
   // Will look like `path.join(cacheDir, 'compiled-markdownlayer-config-[SOME_HASH].mjs')
   const outputFileName = Object.keys(buildResult.metafile!.outputs).find(
@@ -116,35 +126,11 @@ export async function getConfig({ cwd, outputFolder, pluginConfig }: GetConfigOp
   }
 
   return {
+    configPath: configPath,
     configHash: esbuildHash,
     config: exports.default as MarkdownlayerConfig,
   };
 }
-
-// function watchPlugin(configPath: string): esbuild.Plugin {
-//   return ({
-//     name: 'markdownlayer-watch-plugin',
-//     setup(build) {
-//       let isFirstBuild = false
-
-//       build.onEnd((result) => {
-//         // runtime.runFiber(OT1.addEvent('esbuild-build-result', { result: JSON.stringify(result) }))
-
-//         // if (isFirstBuild) {
-//         //   isFirstBuild = false
-//         // } else {
-//         //   if (result.errors.length > 0) {
-//         //     runtime.runFiber(
-//         //       H.publish_(fsEventsHub, Ex.succeed(E.left(new KnownEsbuildError({ error: result.errors })))),
-//         //     )
-//         //   } else {
-//         //     runtime.runFiber(H.publish_(fsEventsHub, Ex.succeed(E.right(result!))))
-//         //   }
-//         // }
-//       })
-//     },
-//   })
-// }
 
 /**
  * This esbuild plugin is needed in some cases where users import code that imports from '.markdownlayer/*'
