@@ -1,5 +1,5 @@
 import { allChangelogs } from 'markdownlayer/generated';
-import { Metadata } from 'next';
+import { type Metadata } from 'next';
 
 // import { Markdownlayer } from "@/components/content/markdownlayer";
 

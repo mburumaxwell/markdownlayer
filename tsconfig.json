@@ -14,6 +14,8 @@
     "preserveWatchOutput": true,
     "skipLibCheck": true,
     "strict": true,
+    // Enforce the usage of type-only imports when needed, which helps avoid bundling issues.
+    "verbatimModuleSyntax": true,
     "lib": ["ES2015", "dom", "dom.iterable", "esnext"],
     "module": "ESNext",
     "target": "ES2015",

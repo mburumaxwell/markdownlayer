@@ -1,5 +1,5 @@
-import { Metadata } from 'next';
-import { TemplateString } from 'next/dist/lib/metadata/types/metadata-types';
+import type { Metadata } from 'next';
+import type { TemplateString } from 'next/dist/lib/metadata/types/metadata-types';
 
 import siteConfig from '@/site-config';
 

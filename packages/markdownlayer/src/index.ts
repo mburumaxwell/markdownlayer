@@ -1,7 +1,7 @@
 import type { NextConfig } from 'next';
 import webpack from 'webpack';
 
-import { type MarkdownlayerConfig } from './core';
+import type { MarkdownlayerConfig } from './core';
 import { runBeforeWebpackCompile } from './plugin';
 
 const devServerStartedRef = { current: false };
