@@ -26,3 +26,7 @@ Read the [blog](https://maxwellweru.com/blog/2024/03/replacing-contentlayer-with
 - Only NextJs support.
 - No JSON/YAML content as they can be loaded directly into the JS/TS code.
 - Requires ESM because the whole unified/remark/rehype ecosystem moved to ESM-only.
+
+## Not supported
+
+- Compiling with turbo including `next dev --turbo`. Haven't figured out how to adapt the webpack plugin.
