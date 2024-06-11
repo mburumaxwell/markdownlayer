@@ -12,7 +12,7 @@ export async function runBeforeWebpackCompile({
 }: {
   mode: WebpackOptionsNormalized['mode'];
   devServerStartedRef: { current: boolean };
-  pluginConfig: MarkdownlayerConfig | undefined | null;
+  pluginConfig?: MarkdownlayerConfig;
 }) {
   if (markdownInitialized) return;
   markdownInitialized = true;

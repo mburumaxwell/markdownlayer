@@ -19,9 +19,7 @@ let showedGitRequirementError = false;
 let showedFileNotTrackedError = false;
 
 export async function getFileLastUpdate(filePath: string): Promise<LastUpdateData | null> {
-  if (!filePath) {
-    return null;
-  }
+  if (!filePath) return null;
 
   // Wrap in try/catch in case the shell commands fail
   // (e.g. project doesn't use Git, etc).
