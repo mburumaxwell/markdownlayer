@@ -1,7 +1,7 @@
 import { globalExternals } from '@fal-works/esbuild-plugin-global-externals';
 import Markdoc, { type Config as MarkdocConfig } from '@markdoc/markdoc';
+import type { Options as CompileOptions } from '@mdx-js/esbuild';
 import mdxESBuild from '@mdx-js/esbuild';
-import type { CompileOptions } from '@mdx-js/mdx';
 import type { BuildOptions, Plugin } from 'esbuild';
 import * as esbuild from 'esbuild';
 import { StringDecoder } from 'string_decoder';
