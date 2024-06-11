@@ -1,5 +1,5 @@
 import { allLegalDocs } from 'markdownlayer/generated';
-import { Metadata, ResolvingMetadata } from 'next';
+import type { Metadata, ResolvingMetadata } from 'next';
 import { notFound } from 'next/navigation';
 
 import { FORMATS_DATE_LONG, formatDate } from '@/lib/formatting';

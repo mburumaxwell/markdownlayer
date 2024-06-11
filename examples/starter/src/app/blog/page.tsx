@@ -1,7 +1,7 @@
 import { FORMATS_DATE_LONG, formatDate } from '@/lib/formatting';
 import siteConfig from '@/site-config';
 import { allBlogPosts } from 'markdownlayer/generated';
-import { Metadata } from 'next';
+import { type Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 

@@ -1,5 +1,5 @@
 import siteConfig from '@/site-config';
-import { Metadata } from 'next';
+import type { Metadata } from 'next';
 
 const title = '';
 const description = '';

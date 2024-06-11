@@ -1,6 +1,6 @@
 import siteConfig from '@/site-config';
 import { allBlogPosts } from 'markdownlayer/generated';
-import { MetadataRoute } from 'next';
+import { type MetadataRoute } from 'next';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   type Route = MetadataRoute.Sitemap[number];

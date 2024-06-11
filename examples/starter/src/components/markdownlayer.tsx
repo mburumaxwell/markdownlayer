@@ -1,6 +1,6 @@
-import { DocumentFormat } from 'markdownlayer/core';
+import type { DocumentFormat } from 'markdownlayer/core';
 import { useMDXComponent, useMdocComponent } from 'markdownlayer/hooks';
-import { Route } from 'next';
+import type { Route } from 'next';
 import Link from 'next/link';
 import type { TweetProps } from 'react-tweet';
 import { Tweet } from 'react-tweet';
