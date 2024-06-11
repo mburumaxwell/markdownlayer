@@ -1,23 +1,11 @@
 import type { NextConfig } from 'next';
+import type { WebpackConfigContext } from 'next/dist/server/config-shared';
 import webpack from 'webpack';
 
 import type { MarkdownlayerConfig } from './core';
 import { runBeforeWebpackCompile } from './plugin';
 
 const devServerStartedRef = { current: false };
-
-interface WebpackConfigContext {
-  /** Next.js root directory */
-  dir: string;
-  /** Indicates if the compilation will be done in development */
-  dev: boolean;
-  /** It's `true` for server-side compilation, and `false` for client-side compilation */
-  isServer: boolean;
-  /**  The build id, used as a unique identifier between builds */
-  buildId: string;
-  /** The current server runtime */
-  nextRuntime?: 'nodejs' | 'edge';
-}
 
 /**
  * Next.js plugin for markdownlayer.
