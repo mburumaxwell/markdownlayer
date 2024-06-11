@@ -17,7 +17,7 @@ import { format } from 'date-fns/format';
  */
 export function tryParseDate(date: Date | string | null | undefined): Date | null {
   // check if value defined
-  if (!!!date) {
+  if (!date) {
     return null;
   }
   // check if value is a valid date.
@@ -45,14 +45,14 @@ export function tryParseDate(date: Date | string | null | undefined): Date | nul
  */
 export function formatDate(date: string | Date, dateFormat: string = FORMATS_DATE_TIME): string | null {
   // check if a value and the date format required has been provided
-  if (!!!date || !!!dateFormat) {
+  if (!date || !dateFormat) {
     return null;
   }
 
   // try parse the date value to a date object
-  let validDate: Date | null = tryParseDate(date);
+  const validDate: Date | null = tryParseDate(date);
 
-  if (!!!validDate) {
+  if (!validDate) {
     return null;
   }
 

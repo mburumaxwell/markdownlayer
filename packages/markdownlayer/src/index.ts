@@ -46,8 +46,8 @@ export function withMarkdownlayer(
       maxInactiveAge: 60 * 60 * 1000, // extend `maxInactiveAge` to 1 hour (from 15 sec by default)
       ...nextConfig?.onDemandEntries, // use existing onDemandEntries config if provided by user
     },
-    webpack(config: webpack.Configuration, options: any) {
-      const { buildId, dev, isServer, nextRuntime } = options as WebpackConfigContext;
+    webpack(config: webpack.Configuration, options: WebpackConfigContext) {
+      const { buildId, dev, isServer, nextRuntime } = options; // eslint-disable-line @typescript-eslint/no-unused-vars
 
       config.watchOptions = {
         ...config.watchOptions,

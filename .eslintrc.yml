@@ -1,15 +1,26 @@
 # eslint configuration
 root: true
-extends: ['next', 'turbo', 'prettier']
+extends:
+  - 'eslint:recommended'
+  - 'plugin:@typescript-eslint/eslint-recommended'
+  - 'plugin:@typescript-eslint/recommended'
+  - 'next'
+  - 'turbo'
+  - 'prettier'
 rules:
-  '@next/next/no-html-link-for-pages': error
-  '@next/next/no-img-element': error
-  'import/no-anonymous-default-export': error
-  'jsx-a11y/alt-text': error
-  'react-hooks/exhaustive-deps': error
+  '@next/next/no-html-link-for-pages': 'error'
+  '@next/next/no-img-element': 'error'
+  'import/no-anonymous-default-export': 'error'
+  'jsx-a11y/alt-text': 'error'
+  'react-hooks/exhaustive-deps': 'error'
 
 # Overrides for specific file patterns
 overrides:
+  - files: ['examples/**']
+    extends: ['turbo', 'prettier']
+    rules:
+      '@typescript-eslint/no-unused-vars': off
+
   - files: ['packages/**']
     extends: ['turbo', 'prettier']
     rules:

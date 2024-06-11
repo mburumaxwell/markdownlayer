@@ -20,7 +20,7 @@ export function useMDXComponent(code: string, globals: Record<string, unknown> =
 }
 
 export function getMdocComponent(code: string, components = {}): React.ReactNode {
-  var tree = JSON.parse(code) as RenderableTreeNode;
+  const tree = JSON.parse(code) as RenderableTreeNode;
   return Markdoc.renderers.react(tree, React, { components });
 }
 

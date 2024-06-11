@@ -1,7 +1,7 @@
 import { allChangelogs } from 'markdownlayer/generated';
 import { type Metadata } from 'next';
 
-// import { Markdownlayer } from "@/components/content/markdownlayer";
+import { Markdownlayer } from '@/components/markdownlayer';
 
 import siteConfig from '@/site-config';
 
@@ -25,5 +25,15 @@ export const metadata: Metadata = {
 export default async function Changelog() {
   const entries = allChangelogs.sort((a, b) => b.published.localeCompare(a.published));
 
-  return <></>;
+  return (
+    <>
+      {entries.map((entry) => (
+        <div key={entry.slug}>
+          <h2>{entry.title}</h2>
+          <p>{entry.published}</p>
+          <Markdownlayer type={entry.format} code={entry.body.code} />
+        </div>
+      ))}
+    </>
+  );
 }

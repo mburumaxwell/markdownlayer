@@ -5,7 +5,7 @@ import type { MetadataRoute } from 'next';
 export default function sitemap(): MetadataRoute.Sitemap {
   type Route = MetadataRoute.Sitemap[number];
 
-  let routes = [
+  const routes = [
     '', // root without trailing slash
     '/changelog',
   ].map(

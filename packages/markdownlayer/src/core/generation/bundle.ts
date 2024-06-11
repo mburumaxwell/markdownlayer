@@ -22,10 +22,10 @@ export type BundleProps = {
   format: DocumentFormat;
   mode: GenerationMode;
   plugins: MarkdownlayerConfigPlugins;
-  frontmatter: Record<string, any>;
+  frontmatter: Record<string, unknown>;
 };
 
-export type BundleResult = { code: string; errors: any[] };
+export type BundleResult = { code: string; errors: unknown[] };
 
 export async function bundle({
   entryPath,
@@ -82,6 +82,7 @@ async function bundleMdx({ entryPath, contents, format, mode, plugins }: BundleM
   const inMemoryPlugin: Plugin = {
     name: 'in-memory-plugin',
     setup(build) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       build.onResolve({ filter: /.*/ }, ({ path: filePath, importer }) => {
         if (filePath === entryPath) {
           return {
