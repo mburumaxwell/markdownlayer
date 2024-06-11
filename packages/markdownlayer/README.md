@@ -25,8 +25,4 @@ Read the [blog](https://maxwellweru.com/blog/2024/03/replacing-contentlayer-with
 - Only local content (no notion sources yet).
 - Only NextJs support (no Remix yet).
 - No JSON/YAML content as they can be loaded directly into the JS/TS code.
-
-## Known issues
-
 - Requires ESM because the whole unified/remark/rehype ecosystem moved to ESM-only.
-- Due to the ESM-only requirement, there is a webpack warning on build/dev. This will be resolved once `next.config.ts` is supported in <https://github.com/vercel/next.js/pull/63051>, of if there is a new idea before then.
