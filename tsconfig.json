@@ -8,7 +8,7 @@
     "forceConsistentCasingInFileNames": true,
     "inlineSources": false,
     "isolatedModules": true,
-    "moduleResolution": "node",
+    "moduleResolution": "Node",
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "preserveWatchOutput": true,
@@ -16,7 +16,7 @@
     "strict": true,
     // Enforce the usage of type-only imports when needed, which helps avoid bundling issues.
     "verbatimModuleSyntax": true,
-    "lib": ["ES2015", "dom", "dom.iterable", "esnext"],
+    "lib": ["ES2015", "DOM", "DOM.Iterable", "ESNext"],
     "module": "ESNext",
     "target": "ES2015",
     "jsx": "react-jsx"
