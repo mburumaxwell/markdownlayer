@@ -1,6 +1,6 @@
 import type { NextConfig } from 'next';
 import type { WebpackConfigContext } from 'next/dist/server/config-shared';
-import webpack from 'webpack';
+import type webpack from 'webpack';
 
 import type { MarkdownlayerConfig } from './core';
 import { runBeforeWebpackCompile } from './plugin';

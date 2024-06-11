@@ -13,6 +13,7 @@ rules:
   'import/no-anonymous-default-export': 'error'
   'jsx-a11y/alt-text': 'error'
   'react-hooks/exhaustive-deps': 'error'
+  '@typescript-eslint/consistent-type-imports': 'error'
 
 # Overrides for specific file patterns
 overrides:

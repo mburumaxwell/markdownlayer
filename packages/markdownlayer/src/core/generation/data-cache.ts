@@ -1,4 +1,4 @@
-import { BaseDoc } from '../types';
+import type { BaseDoc } from '../types';
 
 export type DataCacheEntry = {
   /**

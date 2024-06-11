@@ -1,4 +1,5 @@
-import chokidar, { FSWatcher } from 'chokidar';
+import type { FSWatcher } from 'chokidar';
+import chokidar from 'chokidar';
 
 export type WatcherPaths = string | ReadonlyArray<string>;
 export type ChokidarEventName = 'add' | 'addDir' | 'change' | 'unlink' | 'unlinkDir';
