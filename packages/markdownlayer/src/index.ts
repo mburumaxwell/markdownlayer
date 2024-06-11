@@ -49,11 +49,8 @@ export function withMarkdownlayer(
     webpack(config: webpack.Configuration, options: WebpackConfigContext) {
       const { buildId, dev, isServer, nextRuntime } = options; // eslint-disable-line @typescript-eslint/no-unused-vars
 
-      config.watchOptions = {
-        ...config.watchOptions,
-        // ignored: /node_modules([\\]+|\/)+(?!\.markdownlayer)/,
-        ignored: ['**/node_modules/!(.markdownlayer)/**/*'],
-      };
+      // contentlayer has (and we initially had) watch options that allowed watching the node_modules folder except for itself
+      // we do not have that here because we may want a recompilation if the package is update during a dev session
 
       config.plugins!.push(new MarkdownWebpackPlugin(pluginConfig));
 
