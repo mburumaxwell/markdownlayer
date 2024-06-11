@@ -32,7 +32,7 @@ export async function getFileLastUpdate(filePath: string): Promise<LastUpdateDat
   } catch (err) {
     if (err instanceof GitNotFoundError) {
       if (!showedGitRequirementError) {
-        console.warn('Sorry, the docs plugin last update options require Git.');
+        console.warn('Sorry, last update options for markdownlayer require Git.');
         showedGitRequirementError = true;
       }
     } else if (err instanceof FileNotTrackedError) {
