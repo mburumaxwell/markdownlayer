@@ -22,7 +22,7 @@ Read the [blog](https://maxwellweru.com/blog/2024/03/replacing-contentlayer-with
 - Remark GFM, Admonitions, Reading Time, Emoji, and Slug included by default.
 - Last update time and author based on Git but can be overridden via frontmatter.
 - Supply configuration in `next.config.js` as an alternative to `markdownlayer.config.js`.
-- Only local content (no notion sources yet).
-- Only NextJs support (no Remix yet).
+- Only local content.
+- Only NextJs support.
 - No JSON/YAML content as they can be loaded directly into the JS/TS code.
 - Requires ESM because the whole unified/remark/rehype ecosystem moved to ESM-only.
