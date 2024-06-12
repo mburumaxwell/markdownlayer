@@ -1,5 +1,6 @@
 import { camelCase } from 'change-case';
 import type { FSWatcher } from 'chokidar';
+import chokidar from 'chokidar';
 import fs from 'fs';
 import GithubSlugger from 'github-slugger';
 import { globby } from 'globby';
@@ -13,7 +14,6 @@ import type { BaseDoc, GenerationMode, TocItem } from '@/core/types';
 import { version } from '../../../package.json';
 import { getFileLastUpdate, type LastUpdateData } from '../git';
 import type { DocumentDefinition, DocumentMeta, MarkdownlayerConfig, MarkdownlayerConfigPlugins } from '../types';
-import { createWatcher, type ChokidarEventName } from '../watch';
 import { bundle, type BundleProps } from './bundle';
 import { getConfig } from './config-file';
 import type { DataCache } from './data-cache';
@@ -63,10 +63,10 @@ export async function generate(options: GenerateOptions) {
 
   // watch for config changes in the content folder (development mode only)
   if (mode === 'development' && configPath) {
-    configWatcher = createWatcher(configPath, async (eventName: ChokidarEventName) => {
-      const fileName = path.basename(configPath);
-      const currentConfigPath = configPath;
-
+    const fileName = path.basename(configPath);
+    const currentConfigPath = configPath;
+    configWatcher = chokidar.watch(configPath, { ignoreInitial: true });
+    configWatcher.on('all', async (eventName) => {
       if (eventName === 'add') console.log(`${fileName} added`);
       else if (eventName === 'change') console.log(`${fileName} changed`);
       else if (eventName === 'unlink') {
@@ -102,7 +102,8 @@ export async function generateInnerWatchIfNecessary(options: GenerateInnerOption
 
   // watch for content changes in the content folder (development mode only)
   if (mode === 'development') {
-    contentWatcher = createWatcher(config.contentDirPath, async (eventName: ChokidarEventName, path: string) => {
+    contentWatcher = chokidar.watch(config.contentDirPath, { ignoreInitial: true });
+    contentWatcher.on('all', async (eventName, path) => {
       if (eventName === 'add') console.log(`File added: ${path}`);
       else if (eventName === 'change') console.log(`File changed: ${path}`);
       else if (eventName === 'unlink') console.log(`File deleted: ${path}`);
