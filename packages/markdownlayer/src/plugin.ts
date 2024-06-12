@@ -1,6 +1,7 @@
 import type { WebpackOptionsNormalized } from 'webpack';
 
-import { generate, type GenerateOptions, type MarkdownlayerConfig } from '@/core';
+import { type MarkdownlayerConfig } from '@/core';
+import { generate, type GenerateOptions } from '@/core/generation';
 
 /** Seems like the next.config.js export function might be executed multiple times, so we need to make sure we only run it once */
 let markdownInitialized = false;

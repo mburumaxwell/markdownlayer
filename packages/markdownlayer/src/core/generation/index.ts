@@ -1,6 +1,5 @@
 import { camelCase } from 'change-case';
-import type { FSWatcher } from 'chokidar';
-import chokidar from 'chokidar';
+import chokidar, { type FSWatcher } from 'chokidar';
 import fs from 'fs';
 import GithubSlugger from 'github-slugger';
 import { globby } from 'globby';
