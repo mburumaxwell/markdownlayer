@@ -186,6 +186,7 @@ export interface DocumentDefinitionGitOptions {
    * author: z.string()
    * ```
    *
+   * @description Only the latest author is used because traversing the git history may be expensive.
    * @default false
    */
   authors?: boolean;
