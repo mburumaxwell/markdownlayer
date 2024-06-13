@@ -115,8 +115,8 @@ export type DocumentMeta = {
    */
   git?: DocumentGitLastUpdated;
 
-  /** Reading time of the document */
-  readingTime?: ReadTimeResults;
+  /** Read time of the document */
+  readTime?: ReadTimeResults;
 };
 
 export type ImageData = {
@@ -158,6 +158,9 @@ export type BaseDoc = DocumentMeta & {
   tableOfContents?: TocItem[];
 };
 
+/**
+ * Represents the definition of a document.
+ */
 export interface DocumentDefinition {
   /**
    * Format of contents of the files
@@ -207,6 +210,13 @@ export interface DocumentDefinition {
    * @default false
    */
   authorFromGit?: boolean; // TODO: rename to authorsFromGit once we can pull all the authors from commit history
+
+  /**
+   * Whether to generate a read time for the documents.
+   *
+   * @default true
+   */
+  readTime?: boolean;
 
   /**
    * Whether to generate a table of contents for the documents.
