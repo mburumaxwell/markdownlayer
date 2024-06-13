@@ -1,4 +1,4 @@
-import { allLegals } from 'markdownlayer/generated';
+import { allGuides } from 'markdownlayer/generated';
 import type { Metadata, ResolvingMetadata } from 'next';
 import { notFound } from 'next/navigation';
 
@@ -7,16 +7,16 @@ import { FORMATS_DATE_LONG, formatDate } from '@/lib/formatting';
 import { Markdownlayer } from '@/components/markdownlayer';
 import siteConfig from '@/site-config';
 
-type LegalProps = {
-  params: { slug: string };
+type GuideProps = {
+  params: { locale: string; name: string };
   searchParams: { [key: string]: string | string[] | undefined };
 };
 
 export async function generateMetadata(
-  { params: { slug }, searchParams }: LegalProps,
+  { params: { locale, name }, searchParams }: GuideProps,
   parent: ResolvingMetadata,
 ): Promise<Metadata> {
-  const doc = allLegals.find((doc) => doc.slug === slug);
+  const doc = allGuides.find((doc) => doc.slug === `${locale}/${name}`);
   if (!doc) {
     notFound();
   }
@@ -31,8 +31,8 @@ export async function generateMetadata(
   };
 }
 
-export default function LegalPage({ params: { slug } }: LegalProps) {
-  const doc = allLegals.find((doc) => doc.slug === slug);
+export default function GuidePage({ params: { locale, name } }: GuideProps) {
+  const doc = allGuides.find((doc) => doc.slug === `${locale}/${name}`);
   if (!doc) {
     notFound();
   }
@@ -59,5 +59,8 @@ export default function LegalPage({ params: { slug } }: LegalProps) {
 }
 
 export function generateStaticParams() {
-  return allLegals.map((doc): { slug: string } => ({ slug: doc.slug }));
+  return allGuides.map((doc): { locale: string; name: string } => ({
+    locale: doc.slug.split('/')[0],
+    name: doc.slug.split('/')[1],
+  }));
 }

@@ -1,10 +1,8 @@
-import { camelCase } from 'change-case';
 import chokidar, { type FSWatcher } from 'chokidar';
 import fs from 'fs';
-import GithubSlugger from 'github-slugger';
+import { slug as githubSlug } from 'github-slugger';
 import { globby } from 'globby';
 import matter from 'gray-matter';
-import { pluralize } from 'inflection';
 import beautify from 'js-beautify';
 import type { StaticImageData } from 'next/dist/shared/lib/image-external';
 import path from 'path';
@@ -28,6 +26,7 @@ import { bundle, type BundleProps } from './bundle';
 import { getConfig } from './config-file';
 import type { DataCache } from './data-cache';
 import { getFormat } from './format';
+import { getDataVariableName, getDocumentIdAndSlug, idToFileName, makeVariableName, toPascalCase } from './utils';
 
 type GeneratedCount = { cached: number; generated: number; total: number };
 
@@ -124,30 +123,9 @@ async function generateInner(options: GenerateInnerOptions) {
     mode,
     cwd,
     configHash,
-    config: { caching = true, contentDirPath, definitions, mdAsMarkdoc = false, ...plugins },
+    config: { caching = true, contentDirPath, patterns, definitions, mdAsMarkdoc = false, ...plugins },
   } = options;
   let outputFolder = options.outputFolder;
-
-  // ensure there are no definitions with duplicate types
-  const types = definitions.map((def) => def.type);
-  const uniqueTypes = new Set(types);
-  if (types.length !== uniqueTypes.size) {
-    const duplicates = types.filter((type, index) => types.indexOf(type) !== index);
-    throw new MarkdownlayerError({
-      ...MarkdownlayerErrorData.DuplicateDefinitionNameError,
-      message: MarkdownlayerErrorData.DuplicateDefinitionNameError.message({ names: duplicates }),
-    });
-  }
-
-  // ensure that all definitions have at least one pattern
-  const definitionsWithNoPatterns = definitions.filter((def) => def.patterns.length === 0);
-  if (definitionsWithNoPatterns.length > 0) {
-    const types = definitionsWithNoPatterns.map((def) => def.type);
-    throw new MarkdownlayerError({
-      ...MarkdownlayerErrorData.DefinitionsWithNoPatternsError,
-      message: MarkdownlayerErrorData.DefinitionsWithNoPatternsError.message({ names: types }),
-    });
-  }
 
   // load cache from file if it exists, otherwise create a new cache
   // changes in configuration options and plugins will invalidate the cache
@@ -165,9 +143,19 @@ async function generateInner(options: GenerateInnerOptions) {
   outputFolder = path.join(outputFolder, 'generated');
   const contentDir = path.join(cwd, contentDirPath);
   const generations: Record<string, GenerationResult> = {};
-  for (const def of definitions) {
-    const generation = await generateDocuments({ ...def, mode, contentDir, outputFolder, mdAsMarkdoc, plugins, cache });
-    generations[def.type] = generation;
+  for (const [type, def] of Object.entries(definitions)) {
+    const generation = await generateDocuments({
+      ...def,
+      type,
+      mode,
+      contentDir,
+      patterns,
+      outputFolder,
+      mdAsMarkdoc,
+      plugins,
+      cache,
+    });
+    generations[type] = generation;
   }
 
   // write cache to file
@@ -191,8 +179,10 @@ async function generateInner(options: GenerateInnerOptions) {
 }
 
 type GenerateDocsOptions = DocumentDefinition & {
+  type: string;
   mode: GenerationMode;
   contentDir: string;
+  patterns?: string | readonly string[];
   ignoreFiles?: string | readonly string[];
   outputFolder: string;
   mdAsMarkdoc: boolean;
@@ -207,7 +197,7 @@ async function generateDocuments(options: GenerateDocsOptions): Promise<Generati
     type,
     format = 'detect',
     contentDir,
-    patterns,
+    patterns = '**/*.{md,mdoc,mdx}',
     lastUpdatedFromGit = true,
     authorFromGit = false,
     toc: genToc = false,
@@ -219,8 +209,14 @@ async function generateDocuments(options: GenerateDocsOptions): Promise<Generati
     cache,
   } = options;
 
+  // ensure that all definitions have at least one pattern
+  if (patterns.length === 0) {
+    throw new MarkdownlayerError(MarkdownlayerErrorData.ConfigNoPatternsError);
+  }
+
   // find the files
-  const files = await globby(patterns, { cwd: contentDir, ignoreFiles: ignoreFiles, gitignore: true });
+  const definitionDir = path.join(contentDir, type);
+  const files = await globby(patterns, { cwd: definitionDir, ignoreFiles: ignoreFiles, gitignore: true });
 
   let cached = 0;
   let generated = 0;
@@ -244,7 +240,7 @@ async function generateDocuments(options: GenerateDocsOptions): Promise<Generati
 
   // parse the files and "compile" in a loop
   for (const file of files) {
-    const sourceFilePath = path.join(contentDir, file);
+    const sourceFilePath = path.join(definitionDir, file);
 
     // if the file has not been modified, use the cached version
     const hash = fs.statSync(sourceFilePath).mtimeMs.toString();
@@ -293,25 +289,23 @@ async function generateDocuments(options: GenerateDocsOptions): Promise<Generati
       // in production mode use git, otherwise set default values
       lastUpdate =
         mode === 'production'
-          ? await getFileLastUpdate(path.join(contentDir, file))
+          ? await getFileLastUpdate(path.join(definitionDir, file))
           : { date: new Date(), timestamp: 0, author: 'unknown' };
     }
 
+    const { id, slug } = getDocumentIdAndSlug(file);
+
     const meta: DocumentMeta = {
-      _id: file,
-      _info: {
-        sourceFilePath: file,
-        sourceFileName: path.basename(file),
-        sourceFileDir: path.dirname(file),
-        flattenedPath: getFlattenedPath(file),
-        frontmatter: frontmatter,
-      },
+      _id: id,
+      _filePath: sourceFilePath,
 
       type: type,
+      frontmatter: frontmatter,
       git: lastUpdate == undefined ? undefined : { date: lastUpdate.date, authors: [lastUpdate.author] },
       format: documentFormat,
       body: { raw: contents, code: code },
       readingTime: readingTime(contents),
+      slug: (frontmatter.slug as string) ?? slug,
     };
 
     let data: Record<string, unknown> = frontmatter;
@@ -372,7 +366,7 @@ async function generateDocuments(options: GenerateDocsOptions): Promise<Generati
               error: parsed.error,
             }),
             location: {
-              file: meta._info.sourceFilePath,
+              file: sourceFilePath,
               line: getYAMLErrorLine(parsedMatter.matter, String(parsed.error.errors[0].path[0])),
               column: 0,
             },
@@ -388,7 +382,6 @@ async function generateDocuments(options: GenerateDocsOptions): Promise<Generati
     const document: BaseDoc & { data: Record<string, unknown> } = {
       ...meta,
 
-      slug: (frontmatter.slug as string) ?? meta._info.flattenedPath,
       tableOfContents: toc,
 
       data,
@@ -427,14 +420,13 @@ async function generateDocuments(options: GenerateDocsOptions): Promise<Generati
   // write the collection files if there are collection changes (or if there are no documents, to allow imports)
   if (collectionChanged || docs.length == 0) {
     // write import file
-    const dataVariableName = getDataVariableName(type);
     const outputFilePath = path.join(outputFolder, type, 'index.mjs');
     const lines: string[] = [
       autogeneratedNote,
       '',
       ...docs.map((doc) => `import ${makeVariableName(doc._id)} from './${idToFileName(doc._id)}.mjs';`),
       '',
-      `export const ${dataVariableName} = [${docs.map((doc) => `${makeVariableName(doc._id)}`).join(', ')}]`,
+      `export const ${getDataVariableName(toPascalCase(type))} = [${docs.map((doc) => `${makeVariableName(doc._id)}`).join(', ')}]`,
       '',
     ];
     fs.writeFileSync(outputFilePath, lines.join('\n'), { encoding: 'utf8' });
@@ -469,7 +461,7 @@ async function writePackageJson({ outputFolder, configHash }: WritePackageJsonFi
 
 type WriteRootIndexFilesOptions = { outputFolder: string; generations: Record<string, GenerationResult> };
 async function writeRootIndexFiles({ outputFolder, generations }: WriteRootIndexFilesOptions) {
-  const documentTypeNames = Object.keys(generations);
+  const definitionTypes = Object.keys(generations);
 
   // write the index.d.ts file
   let lines: string[] = [
@@ -480,15 +472,17 @@ async function writeRootIndexFiles({ outputFolder, generations }: WriteRootIndex
     `export type { ImageData };`,
     '',
     ...Object.entries(generations).map(([type, { schema }]) => {
-      const converted = (schema ? printNode(zodToTs(schema).node) : undefined)?.replace(';\n}', ';\n\t}');
-      return `export type ${type} = BaseDoc & {\n\ttype: '${type}';\n\tdata: ${converted ?? 'any'};\n};\n`;
+      const converted = (schema ? printNode(zodToTs(schema).node) : undefined)?.replace(';\n}', ';\n  }');
+      return `export type ${toPascalCase(type)} = BaseDoc & {\n  data: ${converted ?? 'any'};\n};\n`;
     }),
     '',
-    `export type DocumentTypes = ${documentTypeNames.join(` | `)}`,
-    `export type DocumentTypeNames = '${documentTypeNames.join(`' | '`)}'`,
+    `export type DocumentTypes = ${definitionTypes.map((t) => toPascalCase(t)).join(` | `)}`,
+    `export type DocumentTypeNames = '${definitionTypes.join(`' | '`)}'`,
     '',
     '',
-    ...documentTypeNames.map((type) => `export declare const ${getDataVariableName(type)}: ${type}[];`),
+    ...definitionTypes.map(
+      (type) => `export declare const ${getDataVariableName(toPascalCase(type))}: ${toPascalCase(type)}[];`,
+    ),
     '',
     `export declare const allDocumentTypes: DocumentTypes[]`,
     '',
@@ -500,34 +494,17 @@ async function writeRootIndexFiles({ outputFolder, generations }: WriteRootIndex
   lines = [
     autogeneratedNote,
     '',
-    ...documentTypeNames.map((type) => `import { ${getDataVariableName(type)} } from './${type}/index.mjs';`),
+    ...definitionTypes.map(
+      (type) => `import { ${getDataVariableName(toPascalCase(type))} } from './${type}/index.mjs';`,
+    ),
     '',
-    `export { ${documentTypeNames.map((type) => getDataVariableName(type)).join(', ')} };`,
+    `export { ${definitionTypes.map((type) => getDataVariableName(toPascalCase(type))).join(', ')} };`,
     '',
-    `export const allDocuments = [...${documentTypeNames.map((type) => getDataVariableName(type)).join(', ...')}];`,
+    `export const allDocuments = [...${definitionTypes.map((type) => getDataVariableName(toPascalCase(type))).join(', ...')}];`,
     '',
   ];
   filePath = path.join(outputFolder, 'index.mjs');
   fs.writeFileSync(filePath, lines.join('\n'), { encoding: 'utf8' });
-}
-
-/**
- * Get flattened path from relative file path.
- * @param relativeFilePath
- * @returns string Flattened path.
- */
-function getFlattenedPath(relativeFilePath: string): string {
-  return (
-    relativeFilePath
-      // remove extension
-      .split('.')
-      .slice(0, -1)
-      .join('.')
-      // deal with root `index` file
-      .replace(/^index$/, '')
-      // remove tailing `/index`
-      .replace(/\/index$/, '')
-  );
 }
 
 // For some reason, generating toc using mdast-util-toc or even using docusaurus' own toc plugin generates entries from frontmatter.
@@ -535,13 +512,13 @@ function getFlattenedPath(relativeFilePath: string): string {
 // So we have to do it manually using regex. Hopefully this is a temporary solution and someone will fix this someday.
 // Regex solution from https://yusuf.fyi/posts/contentlayer-table-of-contents
 
-const slugger = new GithubSlugger();
 const regXHeader = /\n(?<flag>#{1,6})\s+(?<content>.+)/g;
 
 export function generateToc(contents: string): TocItem[] {
   return Array.from(contents.matchAll(regXHeader)).map(({ groups }) => {
     const { flag, content } = groups!;
-    const id = slugger.slug(content);
+    // Note: using `slug` instead of `new Slugger()` means no slug deduping.
+    const id = githubSlug(content);
     return {
       level: flag.length,
       value: content,
@@ -572,9 +549,3 @@ export function convertDocumentToMjsContent(obj: unknown): string {
   const code = [autogeneratedNote, '', `export default ${serialize(obj)}`].join('\n');
   return beautify.js(code, { indent_size: 2 });
 }
-
-const makeVariableName = (id: string) => camelCase(idToFileName(id).replace(/[^A-Z0-9_]/gi, '/0'));
-const getDataVariableName = (type: string): string => 'all' + uppercaseFirstChar(pluralize(type));
-const idToFileName = (id: string): string => leftPadWithUnderscoreIfStartsWithNumber(id).replace(/\//g, '__');
-const leftPadWithUnderscoreIfStartsWithNumber = (str: string): string => (/^[0-9]/.test(str) ? '_' + str : str);
-const uppercaseFirstChar = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);

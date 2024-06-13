@@ -1,4 +1,4 @@
-import type { DocumentFormat } from 'markdownlayer/core';
+import type { BaseDoc } from 'markdownlayer/core';
 import { useMDXComponent, useMdocComponent } from 'markdownlayer/hooks';
 import type { Route } from 'next';
 import Link from 'next/link';
@@ -36,13 +36,15 @@ const components = {
   },
 };
 
-type MarkdownlayerProps = { type: DocumentFormat; code: string; className?: string };
+type MarkdownlayerProps = { doc: BaseDoc; className?: string };
 
-export function Markdownlayer({ type, code, className }: MarkdownlayerProps) {
+export function Markdownlayer({ doc, className }: MarkdownlayerProps) {
+  const format = doc.format;
+  const code = doc.body.code;
   return (
     <div className={`prose dark:prose-invert max-w-none ${className}`}>
-      {(type == 'md' || type == 'mdx') && <MdOrMdx code={code} />}
-      {type == 'mdoc' && <Mdoc code={code} />}
+      {(format == 'md' || format == 'mdx') && <MdOrMdx code={code} />}
+      {format == 'mdoc' && <Mdoc code={code} />}
     </div>
   );
 }

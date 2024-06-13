@@ -7,7 +7,7 @@ export type DataCacheEntry = {
    */
   hash: string;
 
-  /** Type of document/collection */
+  /** Type of definition */
   type: string;
 
   /** Time in milliseconds elapsed when compiling/transforming the file into the document */

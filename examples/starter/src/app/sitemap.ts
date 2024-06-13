@@ -1,5 +1,5 @@
 import siteConfig from '@/site-config';
-import { allLegalDocs } from 'markdownlayer/generated';
+import { allLegals } from 'markdownlayer/generated';
 import type { MetadataRoute } from 'next';
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -19,7 +19,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   // pages for legal
   routes.push(
-    ...allLegalDocs.map(
+    ...allLegals.map(
       (doc): Route => ({
         url: `${siteConfig.siteUrl}/${doc.slug}`,
         lastModified: doc.data.updated,

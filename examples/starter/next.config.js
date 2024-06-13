@@ -15,18 +15,14 @@ export default withMarkdownlayer(nextConfig); // requires markdownlayer.config.t
 
 // export default withMarkdownlayer(nextConfig, {
 //   contentDirPath: './src/content',
-//   definitions: [
-//     {
-//       type: 'LegalDoc',
-//       patterns: 'legal/*.{md,mdoc,mdx}',
+//   definitions: {
+//     legal: {
 //       schema: z.object({
 //         title: z.string(),
 //         updated: z.coerce.date().optional(),
 //       }),
 //     },
-//     {
-//       type: 'BlogPost',
-//       patterns: 'blog/posts/*.{md,mdoc,mdx}',
+//     'blog-post': {
 //       schema: z.object({
 //         title: z.string(),
 //         description: z.string(),
@@ -40,9 +36,7 @@ export default withMarkdownlayer(nextConfig); // requires markdownlayer.config.t
 //       lastUpdatedFromGit: true,
 //       authorFromGit: true,
 //     },
-//     {
-//       type: 'Changelog',
-//       patterns: 'blog/changelog/*.{md,mdoc,mdx}',
+//     changelog: {
 //       schema: z.object({
 //         title: z.string(),
 //         published: z.coerce.date(),
@@ -52,9 +46,7 @@ export default withMarkdownlayer(nextConfig); // requires markdownlayer.config.t
 //       }),
 //       lastUpdatedFromGit: false,
 //     },
-//     {
-//       type: 'Project',
-//       patterns: 'projects/changelog/*.{md,mdoc,mdx}',
+//     project: {
 //       schema: ({ image }) =>
 //         z.object({
 //           title: z.string(),
@@ -68,19 +60,18 @@ export default withMarkdownlayer(nextConfig); // requires markdownlayer.config.t
 //           industry: z.enum(['agriculture', 'banking', 'hospitality', 'medicine']),
 //         }),
 //     },
-//     {
-//       type: 'Guide',
-//       patterns: 'guides/*.{md,mdoc,mdx}',
+//     guide: {
 //       schema: z.object({
 //         title: z.string(),
 //         description: z.string(),
+//         updated: z.coerce.date().optional(),
 //         draft: z.boolean().default(false),
 //         unlisted: z.boolean().default(false),
 //         sidebar_label: z.string().optional(),
 //         pagination_label: z.string().optional(),
 //       }),
 //     },
-//   ],
+//   },
 //   remarkPlugins: [],
 //   rehypePlugins: [rehypeSlug, rehypeAutolinkHeadings, rehypePrettyCode],
 // });
