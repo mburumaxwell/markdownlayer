@@ -12,21 +12,29 @@ Read the [blog](https://maxwellweru.com/blog/2024/03/replacing-contentlayer-with
 
 - Live reload on content changes
 - Fast and incremental builds
-- Simple but powerful schema DSL to design your content model (validates your content and generates types)
-- Auto-generated TypeScript types based on your content types
+- Schema design and validation using [`zod`](https://www.npmjs.com/package/zod).
+- Auto-generated TypeScript types based on definition schema.
+- Remark GFM, Admonitions, Reading Time, Emoji, and Slug included by default.
+- Markdoc support
+- Last update time and author based on Git but can be overridden via frontmatter.
+
+## Upcoming/Wishlist
+
+> These are in no particular order and depend on how much free time I have.
+
+- Conversion of link elements from `a` to NextJS's `Link` component.
+- Conversion of image elements from `img` to NextJS's `Image` component.
+- Image references in frontmatter.
+- Relative links in markdown content.
 
 ## Differences from Contentlayer
 
-- Markdoc support
 - The content type is inferred from the extension hence markdown is processed correctly and not forced into MDX.
-- Remark GFM, Admonitions, Reading Time, Emoji, and Slug included by default.
-- Last update time and author based on Git but can be overridden via frontmatter.
 - Supply configuration in `next.config.js` as an alternative to `markdownlayer.config.js`.
 - Only local content.
 - Only NextJs support.
 - No JSON/YAML content as they can be loaded directly into the JS/TS code.
 - Requires ESM because the whole unified/remark/rehype ecosystem moved to ESM-only.
-- Schema validation is done using [`zod`](https://www.npmjs.com/package/zod). With some useful defaults
 
 ## Not supported
 
