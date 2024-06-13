@@ -1,0 +1,9 @@
+{
+  "mode": "pre",
+  "tag": "beta",
+  "initialVersions": {
+    "starter": "0.0.1",
+    "markdownlayer": "0.3.1"
+  },
+  "changesets": []
+}
