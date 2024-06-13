@@ -2,4 +2,4 @@
 'markdownlayer': patch
 ---
 
-Make use of `remark-gfm` optional; enabled by default
+Make the use of `remark-gfm` optional; enabled by default
