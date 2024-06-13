@@ -1,6 +1,7 @@
 import type { Config as MarkdocConfig } from '@markdoc/markdoc';
 import type { ReadTimeResults } from 'reading-time';
 import type { RemarkEmojiOptions } from 'remark-emoji';
+import type { Options as RemarkGfmOptions } from 'remark-gfm';
 import type { Options as RemarkRehypeOptions } from 'remark-rehype';
 import type { PluggableList } from 'unified';
 import type {
@@ -263,7 +264,7 @@ export type MarkdownlayerConfigPlugins = {
   admonitions?: boolean | AdmonitionPluginOptions;
 
   /**
-   * Options for configuring the inbuilt remark-emoji plugin.
+   * Options for configuring the plugin for [emoji](https://github.com/rhysd/remark-emoji).
    * - `true`: Use default options
    * - `false`: Disable the plugin
    * - `RemarkEmojiOptions`: Use custom options
@@ -271,6 +272,16 @@ export type MarkdownlayerConfigPlugins = {
    * @default true
    */
   emoji?: boolean | RemarkEmojiOptions;
+
+  /**
+   * Options for configuring the plugin for [GitHub-flavored Markdown](https://github.com/remarkjs/remark-gfm).
+   * - `true`: Use default options
+   * - `false`: Disable the plugin
+   * - `RemarkGfmOptions`: Use custom options
+   *
+   * @default true
+   */
+  gfm?: boolean | RemarkGfmOptions;
 
   /** List of recma (esast, JavaScript) plugins. */
   recmaPlugins?: PluggableList | null | undefined;
@@ -330,9 +341,11 @@ export type MarkdownlayerConfig = {
 
   /**
    * Glob patterns to match documents, relative to `contentDirPath`.
-   * @default '**\/*.{md,mdx,mdoc}'
    *
+   * @description
    * See the supported [glob patterns](https://github.com/sindresorhus/globby#globbing-patterns)
+   *
+   * @default '**\/*.{md,mdx,mdoc}'
    */
   patterns?: string | readonly string[];
 

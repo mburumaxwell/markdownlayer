@@ -11,7 +11,7 @@ import rehypeRaw, { type Options as RehypeRawOptions } from 'rehype-raw';
 import remarkDirective from 'remark-directive';
 import remarkEmoji, { type RemarkEmojiOptions } from 'remark-emoji';
 import remarkFrontmatter from 'remark-frontmatter';
-import remarkGfm from 'remark-gfm';
+import remarkGfm, { type Options as RemarkGfmOptions } from 'remark-gfm';
 
 import { remarkAdmonitions, remarkHeadings, type AdmonitionPluginOptions } from '@/remark';
 import type { DocumentFormat, GenerationMode, MarkdownlayerConfigPlugins } from '../types';
@@ -137,7 +137,15 @@ const ProcessorsCache = new Map<GetCompileOptionsProps['format'], ProcessorCache
 
 function getCompileOptions({ mode, format, plugins }: GetCompileOptionsProps): CompileOptions {
   let cacheEntry = ProcessorsCache.get(format);
-  const { admonitions = true, emoji = true, recmaPlugins, remarkPlugins, rehypePlugins, remarkRehypeOptions } = plugins;
+  const {
+    admonitions = true,
+    emoji = true,
+    gfm = true,
+    recmaPlugins,
+    remarkPlugins,
+    rehypePlugins,
+    remarkRehypeOptions,
+  } = plugins;
 
   if (!cacheEntry) {
     const options: CompileOptions = {
@@ -156,7 +164,7 @@ function getCompileOptions({ mode, format, plugins }: GetCompileOptionsProps): C
         remarkHeadings, // must be added before handling of ToC and links
         ...getRemarkEmojiPlugins(emoji),
         // remarkToc,
-        remarkGfm,
+        ...getRemarkGfmPlugins(gfm),
 
         // user-provided plugins
         ...(remarkPlugins ?? []),
@@ -207,6 +215,15 @@ function getAdmonitionPlugins(admonitions: boolean | AdmonitionPluginOptions): P
 function getRemarkEmojiPlugins(emoji: boolean | RemarkEmojiOptions): PluggableList {
   if (emoji) {
     const plugin: Pluggable = emoji === true ? remarkEmoji : [remarkEmoji, emoji];
+    return [plugin];
+  }
+
+  return [];
+}
+
+function getRemarkGfmPlugins(gfm: boolean | RemarkGfmOptions): PluggableList {
+  if (gfm) {
+    const plugin: Pluggable = gfm === true ? remarkGfm : [remarkGfm, gfm];
     return [plugin];
   }
 
