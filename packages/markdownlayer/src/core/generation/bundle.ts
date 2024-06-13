@@ -9,7 +9,7 @@ import type { Pluggable, PluggableList } from 'unified';
 
 import rehypeRaw, { type Options as RehypeRawOptions } from 'rehype-raw';
 import remarkDirective from 'remark-directive';
-import remarkEmoji from 'remark-emoji';
+import remarkEmoji, { type RemarkEmojiOptions } from 'remark-emoji';
 import remarkFrontmatter from 'remark-frontmatter';
 import remarkGfm from 'remark-gfm';
 
@@ -137,7 +137,7 @@ const ProcessorsCache = new Map<GetCompileOptionsProps['format'], ProcessorCache
 
 function getCompileOptions({ mode, format, plugins }: GetCompileOptionsProps): CompileOptions {
   let cacheEntry = ProcessorsCache.get(format);
-  const { admonitions = true, recmaPlugins, remarkPlugins, rehypePlugins, remarkRehypeOptions } = plugins;
+  const { admonitions = true, emoji = true, recmaPlugins, remarkPlugins, rehypePlugins, remarkRehypeOptions } = plugins;
 
   if (!cacheEntry) {
     const options: CompileOptions = {
@@ -154,7 +154,7 @@ function getCompileOptions({ mode, format, plugins }: GetCompileOptionsProps): C
         remarkDirective, // necessary to handle all types of directives including admonitions (containerDirective)
         ...getAdmonitionPlugins(admonitions),
         remarkHeadings, // must be added before handling of ToC and links
-        remarkEmoji,
+        ...getRemarkEmojiPlugins(emoji),
         // remarkToc,
         remarkGfm,
 
@@ -198,6 +198,15 @@ function getCompileOptions({ mode, format, plugins }: GetCompileOptionsProps): C
 function getAdmonitionPlugins(admonitions: boolean | AdmonitionPluginOptions): PluggableList {
   if (admonitions) {
     const plugin: Pluggable = admonitions === true ? remarkAdmonitions : [remarkAdmonitions, admonitions];
+    return [plugin];
+  }
+
+  return [];
+}
+
+function getRemarkEmojiPlugins(emoji: boolean | RemarkEmojiOptions): PluggableList {
+  if (emoji) {
+    const plugin: Pluggable = emoji === true ? remarkEmoji : [remarkEmoji, emoji];
     return [plugin];
   }
 
