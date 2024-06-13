@@ -23,8 +23,7 @@ const markdownConfig: MarkdownlayerConfig = {
         draft: z.boolean().default(false),
         image: z.string().optional(),
       }),
-      lastUpdatedFromGit: true,
-      authorFromGit: true,
+      git: { authors: true },
     },
     changelog: {
       schema: z.object({
@@ -34,7 +33,7 @@ const markdownConfig: MarkdownlayerConfig = {
         link: z.string().url().optional(),
         category: z.enum(['sdk', 'dashboard', 'api', 'developer']).optional(),
       }),
-      lastUpdatedFromGit: false,
+      git: false,
     },
     project: {
       schema: ({ image }) =>
@@ -61,7 +60,7 @@ const markdownConfig: MarkdownlayerConfig = {
         sidebar_label: z.string().optional(),
         pagination_label: z.string().optional(),
       }),
-      authorFromGit: true,
+      git: { authors: true },
     },
   },
   remarkPlugins: [],
