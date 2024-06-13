@@ -8,20 +8,16 @@ import { authors } from '@/lib/authors';
 import { FORMATS_DATE_LONG, formatDate } from '@/lib/formatting';
 
 import { Markdownlayer } from '@/components/markdownlayer';
-import { slugFromParams, staticParamsFromSlug, type StaticParams } from '@/lib/slug';
-
-const slugPrefix = 'blog/posts';
 
 type BlogPostProps = {
-  params: StaticParams;
+  params: { slug: string };
   searchParams: { [key: string]: string | string[] | undefined };
 };
 
 export async function generateMetadata(
-  { params, searchParams }: BlogPostProps,
+  { params: { slug }, searchParams }: BlogPostProps,
   parent: ResolvingMetadata,
 ): Promise<Metadata> {
-  const slug = slugFromParams({ slug: params.slug, prefix: slugPrefix });
   const post = allBlogPosts.find((post) => post.slug === slug);
   if (!post) {
     notFound();
@@ -47,8 +43,7 @@ export async function generateMetadata(
   };
 }
 
-export default function BlogPostPage({ params }: BlogPostProps) {
-  const slug = slugFromParams({ slug: params.slug, prefix: slugPrefix });
+export default function BlogPostPage({ params: { slug } }: BlogPostProps) {
   const post = allBlogPosts.find((post) => post.slug === slug);
   if (!post) {
     notFound();
@@ -106,7 +101,7 @@ export default function BlogPostPage({ params }: BlogPostProps) {
             />
           </div>
         )}
-        <Markdownlayer type={post.format} code={post.body.code} />
+        <Markdownlayer doc={post} />
         <hr className="mt-12" />
         <div className="flex justify-center py-6 lg:py-10">
           {/* <Link href="/blog" className={cn(buttonVariants({ variant: 'ghost' }))}>
@@ -119,6 +114,6 @@ export default function BlogPostPage({ params }: BlogPostProps) {
   );
 }
 
-export function generateStaticParams(): StaticParams[] {
-  return allBlogPosts.map((doc) => staticParamsFromSlug({ slug: doc.slug, prefix: slugPrefix }));
+export function generateStaticParams() {
+  return allBlogPosts.map((post): { slug: string } => ({ slug: post.slug }));
 }

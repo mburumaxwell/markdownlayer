@@ -1,4 +1,4 @@
-import { allLegals } from 'markdownlayer/generated';
+import { allGuides } from 'markdownlayer/generated';
 import type { Metadata, ResolvingMetadata } from 'next';
 import { notFound } from 'next/navigation';
 
@@ -7,16 +7,16 @@ import { FORMATS_DATE_LONG, formatDate } from '@/lib/formatting';
 import { Markdownlayer } from '@/components/markdownlayer';
 import siteConfig from '@/site-config';
 
-type LegalProps = {
+type GuideProps = {
   params: { slug: string };
   searchParams: { [key: string]: string | string[] | undefined };
 };
 
 export async function generateMetadata(
-  { params: { slug }, searchParams }: LegalProps,
+  { params: { slug }, searchParams }: GuideProps,
   parent: ResolvingMetadata,
 ): Promise<Metadata> {
-  const doc = allLegals.find((doc) => doc.slug === slug);
+  const doc = allGuides.find((doc) => doc.slug === `en/${slug}`);
   if (!doc) {
     notFound();
   }
@@ -31,8 +31,8 @@ export async function generateMetadata(
   };
 }
 
-export default function LegalPage({ params: { slug } }: LegalProps) {
-  const doc = allLegals.find((doc) => doc.slug === slug);
+export default function GuidePage({ params: { slug } }: GuideProps) {
+  const doc = allGuides.find((doc) => doc.slug === `en/${slug}`);
   if (!doc) {
     notFound();
   }
@@ -59,5 +59,7 @@ export default function LegalPage({ params: { slug } }: LegalProps) {
 }
 
 export function generateStaticParams() {
-  return allLegals.map((doc): { slug: string } => ({ slug: doc.slug }));
+  return allGuides
+    .filter((doc) => doc.slug.startsWith('en/'))
+    .map((doc): { slug: string } => ({ slug: doc.slug.replace('en/', '') }));
 }

@@ -5,18 +5,14 @@ import { rehypeAutolinkHeadings, rehypePrettyCode } from './src/markdownlayer';
 
 const markdownConfig: MarkdownlayerConfig = {
   contentDirPath: './src/content',
-  definitions: [
-    {
-      type: 'LegalDoc',
-      patterns: 'legal/*.{md,mdoc,mdx}',
+  definitions: {
+    legal: {
       schema: z.object({
         title: z.string(),
         updated: z.coerce.date().optional(),
       }),
     },
-    {
-      type: 'BlogPost',
-      patterns: 'blog/posts/*.{md,mdoc,mdx}',
+    'blog-post': {
       schema: z.object({
         title: z.string(),
         description: z.string(),
@@ -30,9 +26,7 @@ const markdownConfig: MarkdownlayerConfig = {
       lastUpdatedFromGit: true,
       authorFromGit: true,
     },
-    {
-      type: 'Changelog',
-      patterns: 'blog/changelog/*.{md,mdoc,mdx}',
+    changelog: {
       schema: z.object({
         title: z.string(),
         published: z.coerce.date(),
@@ -42,9 +36,7 @@ const markdownConfig: MarkdownlayerConfig = {
       }),
       lastUpdatedFromGit: false,
     },
-    {
-      type: 'Project',
-      patterns: 'projects/*.{md,mdoc,mdx}',
+    project: {
       schema: ({ image }) =>
         z.object({
           title: z.string(),
@@ -58,19 +50,20 @@ const markdownConfig: MarkdownlayerConfig = {
           industry: z.enum(['agriculture', 'banking', 'hospitality', 'medicine']),
         }),
     },
-    {
-      type: 'Guide',
-      patterns: 'guides/*.{md,mdoc,mdx}',
+    guide: {
       schema: z.object({
         title: z.string(),
         description: z.string(),
+        updated: z.coerce.date().optional(),
+        authors: z.string().array().default([]),
         draft: z.boolean().default(false),
         unlisted: z.boolean().default(false),
         sidebar_label: z.string().optional(),
         pagination_label: z.string().optional(),
       }),
+      authorFromGit: true,
     },
-  ],
+  },
   remarkPlugins: [],
   rehypePlugins: [rehypeSlug, rehypeAutolinkHeadings, rehypePrettyCode],
 };

@@ -52,30 +52,14 @@ export const ConfigReadError = {
 
 /**
  * @docs
- * @message Config contains more than one definition with the same name: `NAME`. Names must be unique.
+ * @message No patterns found specified in the config.
  * @description
- * Duplicate definition types found
+ * Config file must have a non-null`patterns` field.
  */
-export const DuplicateDefinitionNameError = {
-  name: 'DuplicateDefinitionNameError',
-  title: 'Duplicate definition name found',
-  message({ names }: { readonly names: string[] }) {
-    return `Duplicate definition types found in config file: ${names.join(', ')}.`;
-  },
-} satisfies ErrorData;
-
-/**
- * @docs
- * @message Definitions with no patterns found: `NAMES`
- * @description
- * Definitions with no patterns found
- */
-export const DefinitionsWithNoPatternsError = {
-  name: 'DefinitionsWithNoPatternsError',
-  title: 'Definitions with no patterns found.',
-  message({ names }: { readonly names: string[] }) {
-    return `Definitions with no patterns found: ${names.join(', ')}.`;
-  },
+export const ConfigNoPatternsError = {
+  name: 'ConfigNoPatternsError',
+  title: 'No patterns found in the config.',
+  message: 'Config file must have a non-null `patterns` field.',
 } satisfies ErrorData;
 
 /**

@@ -41,7 +41,7 @@ const feed = new Feed({
 });
 
 posts.forEach((post) => {
-  const url = `${siteUrl}/${post.slug}`;
+  const url = `${siteUrl}/blog/posts/${post.slug}`;
   const mappedAuthors = post.data.authors
     .map((author) => authors.find((a) => [a.id, a.name].includes(author)))
     .filter(Boolean);

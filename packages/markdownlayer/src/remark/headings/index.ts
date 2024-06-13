@@ -1,13 +1,11 @@
 // inspired by Docusaurus
 // https://github.com/facebook/docusaurus/blob/5baa68bea013c30e5b2ad2e166b0252344c0baab/packages/docusaurus-mdx-loader/src/remark/headings/index.ts
 
-import GithubSlugger from 'github-slugger';
+import { slug as githubSlug } from 'github-slugger';
 import type { Heading, Text } from 'mdast';
 import { toString } from 'mdast-util-to-string';
 import type { Transformer } from 'unified';
 import { visit } from 'unist-util-visit';
-
-const slugger = new GithubSlugger();
 
 /**
  * Parses custom ID from a heading. The ID can contain any characters except
@@ -45,7 +43,8 @@ export default function remarkHeadings(): Transformer {
       let { id } = properties;
 
       if (id) {
-        id = slugger.slug(id, /* maintainCase */ true);
+        // Note: using `slug` instead of `new Slugger()` means no slug deduping.
+        id = githubSlug(id, /* maintainCase */ true);
       } else {
         const headingTextNodes = headingNode.children.filter(({ type }) => !['html', 'jsx'].includes(type));
         const heading = toString(headingTextNodes.length > 0 ? headingTextNodes : headingNode);
@@ -53,7 +52,8 @@ export default function remarkHeadings(): Transformer {
         // Support explicit heading IDs
         const parsedHeading = parseMarkdownHeadingId(heading);
 
-        id = parsedHeading.id ?? slugger.slug(heading);
+        // Note: using `slug` instead of `new Slugger()` means no slug deduping.
+        id = parsedHeading.id ?? githubSlug(heading);
 
         if (parsedHeading.id) {
           // When there's an id, it is always in the last child node

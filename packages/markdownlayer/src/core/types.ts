@@ -60,18 +60,6 @@ export type DocumentDefinitionSchema =
 
 export type SchemaContext = { image: ImageSchemaFunction };
 
-export type DocumentInfo = {
-  /** Relative to `contentDirPath` */
-  sourceFilePath: string;
-  sourceFileName: string;
-  /** Relative to `contentDirPath` */
-  sourceFileDir: string;
-  /** A path e.g. useful as URL paths based on `sourceFilePath` with file extension removed and `/index` removed. */
-  flattenedPath: string;
-  /** Frontmatter of the document. */
-  frontmatter: Record<string, unknown>;
-};
-
 export type DocumentGitLastUpdated = {
   /** Relevant commit date. */
   date?: Date;
@@ -97,9 +85,12 @@ export type DocumentBody = {
 
 export type DocumentMeta = {
   _id: string;
-  _info: DocumentInfo;
+  _filePath: string;
 
   type: string;
+
+  /** Frontmatter of the document. */
+  frontmatter: Record<string, unknown>;
 
   /**
    * Git commit information.
@@ -115,6 +106,17 @@ export type DocumentMeta = {
 
   /** Reading time of the document */
   readingTime?: ReadTimeResults;
+
+  /**
+   * Slug of the document relative to the content directory i.e. `{contentDirPath}/{type}`.
+   *
+   * @description This value can be overridden by setting `slug` in frontmatter.
+   *
+   * @example
+   * For when `contentDirPath` is set to `/src/content`, a definition named `posts` is defined,
+   * and there is a file at `/src/content/posts/my-first-post.md`, the slug will be `my-first-post`.
+   */
+  slug: string;
 };
 
 export type ImageData = {
@@ -153,18 +155,10 @@ export type TocItem = {
 };
 
 export type BaseDoc = DocumentMeta & {
-  slug: string;
-
   tableOfContents?: TocItem[];
 };
 
 export interface DocumentDefinition {
-  /**
-   * Unique identifier for the document type.
-   * This is also the name of the document type.
-   */
-  type: string;
-
   /**
    * Format of contents of the files
    * - `detect`: Detects the format based on the file extension
@@ -174,13 +168,6 @@ export interface DocumentDefinition {
    * @default 'detect'
    */
   format?: DocumentFormatInput;
-
-  /**
-   * Glob patterns to match documents, relative to the `contentDirPath` config
-   *
-   * See the supported [glob patterns](https://github.com/sindresorhus/globby#globbing-patterns)
-   */
-  patterns: string | readonly string[];
 
   /**
    * Schema for each document in the collection.
@@ -199,7 +186,7 @@ export interface DocumentDefinition {
    * ```
    * or
    * ```ts
-   * updated: z.date().optional()
+   * updated: z.coerce.date().optional()
    * ```
    *
    * @default true
@@ -303,17 +290,23 @@ export type MarkdownlayerConfig = {
 
   /**
    * Path to root directory that contains all content.
-   * Every content file path will be relative to this directory.
-   * This includes:
-   * - The `patterns` field of each document in `documents` is relative to `contentDirPath`
-   * - Each document`s `_info` fields such as ``flattenedPath`, `sourceFilePath`, and `sourceFileDir`
+   * Every content file path will be relative to this directory including the `patterns` field.
    */
   contentDirPath: string;
 
   /**
-   * Definitions of documents to generate.
+   * Glob patterns to match documents, relative to `contentDirPath`.
+   * @default '**\/*.{md,mdx,mdoc}'
+   *
+   * See the supported [glob patterns](https://github.com/sindresorhus/globby#globbing-patterns)
    */
-  definitions: DocumentDefinition[];
+  patterns?: string | readonly string[];
+
+  /**
+   * Definitions of documents to generate.
+   * The key is the type of the document and should match your documents directory name in `contentDirPath`.
+   */
+  definitions: Record<string, DocumentDefinition>;
 
   /**
    * Whether to use mdoc for `.md` files instead of mdx.

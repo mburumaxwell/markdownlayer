@@ -62,7 +62,7 @@ export default function BlogHomePage() {
                 {post.data.published && (
                   <p className="text-muted-foreground text-sm">{formatDate(post.data.published, FORMATS_DATE_LONG)}</p>
                 )}
-                <Link href={`/${post.slug}`} className="absolute inset-0">
+                <Link href={`blog/posts/${post.slug}`} className="absolute inset-0">
                   <span className="sr-only">View Article</span>
                 </Link>
               </article>
