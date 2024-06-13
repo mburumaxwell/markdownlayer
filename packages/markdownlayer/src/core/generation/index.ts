@@ -283,6 +283,8 @@ async function generateDocuments(options: GenerateDocsOptions): Promise<Generati
     const end = performance.now();
     const elapsed = end - start;
 
+    const { id, slug } = getDocumentIdAndSlug(file);
+
     //  only pull git info if enabled
     let lastUpdate: LastUpdateData | null = null;
     if (lastUpdatedFromGit) {
@@ -293,19 +295,17 @@ async function generateDocuments(options: GenerateDocsOptions): Promise<Generati
       lastUpdate ??= { date: new Date(), timestamp: 0, author: 'unknown' };
     }
 
-    const { id, slug } = getDocumentIdAndSlug(file);
-
     const meta: DocumentMeta = {
       _id: id,
       _filePath: sourceFilePath,
 
       type: type,
-      frontmatter: frontmatter,
-      git: lastUpdate == undefined ? undefined : { date: lastUpdate.date, authors: [lastUpdate.author] },
       format: documentFormat,
       body: { raw: contents, code: code },
-      readingTime: readingTime(contents),
+      frontmatter: frontmatter,
       slug: (frontmatter.slug as string) ?? slug,
+      git: lastUpdate == undefined ? undefined : { date: lastUpdate.date, authors: [lastUpdate.author] },
+      readingTime: readingTime(contents),
     };
 
     let data: Record<string, unknown> = frontmatter;

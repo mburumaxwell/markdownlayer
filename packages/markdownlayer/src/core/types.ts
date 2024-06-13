@@ -89,23 +89,14 @@ export type DocumentMeta = {
 
   type: string;
 
-  /** Frontmatter of the document. */
-  frontmatter: Record<string, unknown>;
-
-  /**
-   * Git commit information.
-   * This only populates in production mode and when `lastUpdatedFromGit` is enabled.
-   */
-  git?: DocumentGitLastUpdated;
-
   /** File format */
   format: DocumentFormat;
 
   /** File body */
   body: DocumentBody;
 
-  /** Reading time of the document */
-  readingTime?: ReadTimeResults;
+  /** Frontmatter of the document. */
+  frontmatter: Record<string, unknown>;
 
   /**
    * Slug of the document relative to the content directory i.e. `{contentDirPath}/{type}`.
@@ -117,6 +108,15 @@ export type DocumentMeta = {
    * and there is a file at `/src/content/posts/my-first-post.md`, the slug will be `my-first-post`.
    */
   slug: string;
+
+  /**
+   * Git commit information.
+   * This only populates in production mode and when `lastUpdatedFromGit` is enabled.
+   */
+  git?: DocumentGitLastUpdated;
+
+  /** Reading time of the document */
+  readingTime?: ReadTimeResults;
 };
 
 export type ImageData = {
