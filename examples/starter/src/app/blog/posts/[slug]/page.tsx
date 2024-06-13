@@ -54,7 +54,9 @@ export default function BlogPostPage({ params }: BlogPostProps) {
     notFound();
   }
 
-  const mappedAuthors = post.data.authors?.map((author) => authors.find((a) => a.id === author));
+  const mappedAuthors = post.data.authors
+    .map((author) => authors.find((a) => [a.id, a.name].includes(author)))
+    .filter(Boolean);
 
   return (
     <>

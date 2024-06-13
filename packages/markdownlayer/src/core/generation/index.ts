@@ -325,21 +325,23 @@ async function generateDocuments(options: GenerateDocsOptions): Promise<Generati
         // we set updated in the frontmatter if:
         // - it is not already set
         // - it is present in the git metadata
-        // - it is present in the schema and is of type date or string
         if (!frontmatter.updated && meta.git?.date) {
-          if (schema.shape.updated && ['date', 'string'].includes(schema.shape.updated._def.typeName)) {
-            frontmatter.updated = meta.git.date.toISOString(); // we set the string and let the schema handle the coercion if necessary
-          }
+          // we set the string and let the schema handle the coercion if necessary
+          frontmatter.updated = meta.git.date.toISOString();
         }
 
-        // we set authors in the frontmatter if:
-        // - it is not already present
+        // we set authors/author in the frontmatter if:
         // - it is present in git metadata
         // - authorsFromGit is enabled
-        // - it is present in the schema and is of type string[]
-        if (!frontmatter.authors && meta.git?.authors && authorFromGit) {
-          if (schema.shape.authors && schema.shape.authors._def.typeName === 'array') {
+        // - it is not already present
+        if (meta.git?.authors && authorFromGit) {
+          if (!frontmatter.authors) {
             frontmatter.authors = meta.git.authors;
+          }
+
+          // first author is the latest
+          if (!frontmatter.author && meta.git.authors.length > 0) {
+            frontmatter.author = meta.git.authors[0];
           }
         }
       }

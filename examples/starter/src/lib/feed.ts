@@ -42,7 +42,9 @@ const feed = new Feed({
 
 posts.forEach((post) => {
   const url = `${siteUrl}/${post.slug}`;
-  const mappedAuthors = post.data.authors?.map((author) => authors.find((a) => a.id === author));
+  const mappedAuthors = post.data.authors
+    .map((author) => authors.find((a) => [a.id, a.name].includes(author)))
+    .filter(Boolean);
 
   feed.addItem({
     title: post.data.title,
@@ -50,10 +52,12 @@ posts.forEach((post) => {
     link: url,
     date: post.data.updated ?? post.data.published,
     description: post.data.description,
-    author: mappedAuthors?.filter(Boolean).map((author) => ({
-      name: author!.name,
-      link: `https://twitter.com/${author!.twitter}`,
-    })),
+    author: mappedAuthors.map((author) => {
+      return {
+        name: author!.name,
+        link: `https://twitter.com/${author!.twitter}`,
+      };
+    }),
     image: post.data.image && `${siteUrl}${post.data.image}`,
     published: new Date(post.data.published),
   });
