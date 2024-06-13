@@ -6,6 +6,7 @@ import matter from 'gray-matter';
 import beautify from 'js-beautify';
 import type { StaticImageData } from 'next/dist/shared/lib/image-external';
 import path from 'path';
+import type { ReadTimeResults } from 'reading-time';
 import readingTime from 'reading-time';
 import type { PackageJson } from 'type-fest';
 import { z, type ZodSchema } from 'zod';
@@ -200,6 +201,7 @@ async function generateDocuments(options: GenerateDocsOptions): Promise<Generati
     patterns = '**/*.{md,mdoc,mdx}',
     lastUpdatedFromGit = true,
     authorFromGit = false,
+    readTime = true,
     toc: genToc = false,
     validate,
     ignoreFiles,
@@ -295,6 +297,12 @@ async function generateDocuments(options: GenerateDocsOptions): Promise<Generati
       lastUpdate ??= { date: new Date(), timestamp: 0, author: 'unknown' };
     }
 
+    // only calculate read time if enabled
+    let readTimeResults: ReadTimeResults | undefined;
+    if (readTime) {
+      readTimeResults = readingTime(contents);
+    }
+
     const meta: DocumentMeta = {
       _id: id,
       _filePath: sourceFilePath,
@@ -305,7 +313,7 @@ async function generateDocuments(options: GenerateDocsOptions): Promise<Generati
       frontmatter: frontmatter,
       slug: (frontmatter.slug as string) ?? slug,
       git: lastUpdate == undefined ? undefined : { date: lastUpdate.date, authors: [lastUpdate.author] },
-      readingTime: readingTime(contents),
+      readTime: readTimeResults,
     };
 
     let data: Record<string, unknown> = frontmatter;
