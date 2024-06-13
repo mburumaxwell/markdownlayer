@@ -287,10 +287,10 @@ async function generateDocuments(options: GenerateDocsOptions): Promise<Generati
     let lastUpdate: LastUpdateData | null = null;
     if (lastUpdatedFromGit) {
       // in production mode use git, otherwise set default values
-      lastUpdate =
-        mode === 'production'
-          ? await getFileLastUpdate(path.join(definitionDir, file))
-          : { date: new Date(), timestamp: 0, author: 'unknown' };
+      if (mode === 'production') {
+        lastUpdate = await getFileLastUpdate(path.join(definitionDir, file));
+      }
+      lastUpdate ??= { date: new Date(), timestamp: 0, author: 'unknown' };
     }
 
     const { id, slug } = getDocumentIdAndSlug(file);
