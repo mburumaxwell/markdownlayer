@@ -1,0 +1,41 @@
+import fs from 'fs';
+import type { StaticImageData } from 'next/dist/shared/lib/image-external'; // this is what is used when you import the file in a Next.js project
+import path from 'path';
+import { z } from 'zod';
+
+import type { GenerationMode, StaticImageDataSchema } from '../types';
+
+type CreateImageOptions = { optional?: boolean; mode: GenerationMode; shouldEmitFile: boolean; sourceFilePath: string };
+
+export function createImage({ optional, shouldEmitFile, sourceFilePath }: CreateImageOptions): StaticImageDataSchema {
+  const schema = optional ? z.string().optional() : z.string();
+  const transformed = schema.transform(async (imagePath, context) => {
+    if (!imagePath) return z.never();
+
+    const resolvedFilePath = path.join(path.dirname(sourceFilePath), imagePath);
+    const metadata = await emitImage({ resolvedFilePath, shouldEmitFile });
+
+    if (!metadata) {
+      context.addIssue({
+        code: 'custom',
+        message: `Image ${imagePath} does not exist. Is the path correct?`,
+        fatal: true,
+      });
+
+      return z.never();
+    }
+
+    return metadata;
+  });
+
+  // @ts-expect-error - The type is correct but the error is due to the transform function
+  return transformed;
+}
+
+type EmitImageOptions = { resolvedFilePath: string; shouldEmitFile: boolean };
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+async function emitImage({ resolvedFilePath, shouldEmitFile }: EmitImageOptions): Promise<StaticImageData | undefined> {
+  if (!fs.existsSync(resolvedFilePath)) return undefined;
+
+  throw new Error('Image functionality is not fully implemented.');
+}

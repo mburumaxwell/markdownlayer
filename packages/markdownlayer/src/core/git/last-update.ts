@@ -1,7 +1,7 @@
 // inspired by Docusaurus at:
 // https://github.com/facebook/docusaurus/blob/4aef958a99bcd7e38886db0c3ba0517f5c1827e7/packages/docusaurus-plugin-content-docs/src/lastUpdate.ts
 
-import { FileNotTrackedError, GitNotFoundError, getFileCommitDate } from './gitUtils';
+import { FileNotTrackedError, GitNotFoundError, getFileCommitDate } from './utils';
 
 /**
  * Represents the data for the last update.

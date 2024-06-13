@@ -1,2 +1,2 @@
-export * from './lastUpdate';
-// export * from './gitUtils';
+export * from './last-update';
+// export * from './utils';

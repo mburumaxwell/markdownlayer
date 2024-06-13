@@ -2,10 +2,65 @@ import type { Config as MarkdocConfig } from '@markdoc/markdoc';
 import type { ReadTimeResults } from 'reading-time';
 import type { Options as RemarkRehypeOptions } from 'remark-rehype';
 import type { PluggableList } from 'unified';
+import type {
+  AnyZodObject,
+  ZodDiscriminatedUnion,
+  ZodEffects,
+  ZodIntersection,
+  ZodLiteral,
+  ZodNumber,
+  ZodObject,
+  ZodOptional,
+  ZodString,
+  ZodUnion,
+} from 'zod';
 
 import type { AdmonitionPluginOptions } from '@/remark';
 
-export type DocumentData = {
+// This needs to be in sync with StaticImageData
+export type StaticImageDataSchema = ZodObject<{
+  src: ZodString;
+  height: ZodNumber;
+  width: ZodNumber;
+  blurDataURL: ZodOptional<ZodString>;
+  blurWidth: ZodOptional<ZodNumber>;
+  blurHeight: ZodOptional<ZodNumber>;
+  format: ZodOptional<
+    ZodUnion<
+      [
+        ZodLiteral<'png'>,
+        ZodLiteral<'jpg'>,
+        ZodLiteral<'jpeg'>,
+        ZodLiteral<'tiff'>,
+        ZodLiteral<'webp'>,
+        ZodLiteral<'gif'>,
+        ZodLiteral<'svg'>,
+        ZodLiteral<'avif'>,
+      ]
+    >
+  >;
+}>;
+
+/**
+ * Schema for an image.
+ * @param optional Whether the image is optional.
+ * @returns A Zod object representing an image.
+ */
+export type ImageSchemaFunction = (optional?: boolean) => StaticImageDataSchema;
+
+type DocumentDefinitionSchemaWithoutEffects =
+  | AnyZodObject
+  | ZodUnion<[DocumentDefinitionSchemaWithoutEffects, ...DocumentDefinitionSchemaWithoutEffects[]]>
+  | ZodDiscriminatedUnion<string, AnyZodObject[]>
+  | ZodIntersection<DocumentDefinitionSchemaWithoutEffects, DocumentDefinitionSchemaWithoutEffects>;
+
+export type DocumentDefinitionSchema =
+  | DocumentDefinitionSchemaWithoutEffects
+  | ZodEffects<DocumentDefinitionSchemaWithoutEffects>;
+
+export type SchemaContext = { image: ImageSchemaFunction };
+
+export type DocumentInfo = {
   /** Relative to `contentDirPath` */
   sourceFilePath: string;
   sourceFileName: string;
@@ -17,6 +72,13 @@ export type DocumentData = {
   frontmatter: Record<string, unknown>;
 };
 
+export type DocumentGitLastUpdated = {
+  /** Relevant commit date. */
+  date?: Date;
+  /** Names of authors, as returned from git. Latest first */
+  authors?: string[];
+};
+
 export type DocumentFormat = 'md' | 'mdx' | 'mdoc';
 export type DocumentFormatInput = 'detect' | DocumentFormat;
 
@@ -26,19 +88,33 @@ export type DocumentBody = {
   /** Raw file content */
   raw: string;
 
-  /** Pre-bundled with mdx-bundler */
+  /**
+   * Pre-bundled react component to be rendered using hooks imported from `markdownlayer/hooks`.
+   * Check the examples for how to use this.
+   */
   code: string;
 };
 
 export type DocumentMeta = {
   _id: string;
-  _raw: DocumentData;
+  _info: DocumentInfo;
+
+  type: string;
+
+  /**
+   * Git commit information.
+   * This only populates in production mode and when `lastUpdatedFromGit` is enabled.
+   */
+  git?: DocumentGitLastUpdated;
 
   /** File format */
   format: DocumentFormat;
 
   /** File body */
   body: DocumentBody;
+
+  /** Reading time of the document */
+  readingTime?: ReadTimeResults;
 };
 
 export type ImageData = {
@@ -77,28 +153,9 @@ export type TocItem = {
 };
 
 export type BaseDoc = DocumentMeta & {
-  type: string;
-  title: string;
-  keywords: string[] | undefined;
-  authors: string[];
   slug: string;
-  published: string;
-  updated: string;
-  readingTime?: ReadTimeResults;
-  draft: boolean;
-  unlisted: boolean;
 
-  /** Short description that is used for SEO, in RSS/ATOM feed, and in some subtitles */
-  description?: string | undefined;
-
-  sidebarLabel?: string | undefined;
-  paginationLabel?: string | undefined;
-  image?: string | undefined;
   tableOfContents?: TocItem[];
-
-  /** Link for more information about the changelog such as docs or blog */
-  link?: string | URL | undefined;
-  category?: 'billing' | 'identity' | 'payments' | 'messaging' | 'development' | 'mobile' | undefined;
 };
 
 export interface DocumentDefinition {
@@ -126,7 +183,16 @@ export interface DocumentDefinition {
   patterns: string | readonly string[];
 
   /**
+   * Schema for each document in the collection.
+   */
+  schema?: DocumentDefinitionSchema | ((context: SchemaContext) => DocumentDefinitionSchema);
+
+  /**
    * Whether to use last update information from git commit history in production mode.
+   * Only author and last updated time can be pulled from Git.
+   *
+   * This will only work if the git history is available and the document schema contains
+   * a field named `updated` with type `string`. or `date`
    *
    * @default true
    */
@@ -135,9 +201,12 @@ export interface DocumentDefinition {
   /**
    * Whether to use author from git commit history when author is not specified in frontmatter.
    *
+   * This will only work if `lastUpdatedFromGit` is set to `true` and the document schema contains
+   * a field named `authors` with type `string[]`
+   *
    * @default false
    */
-  authorFromGit?: boolean;
+  authorFromGit?: boolean; // TODO: rename to authorsFromGit once we can pull all the authors from commit history
 
   /**
    * Whether to generate a table of contents for the documents.
@@ -148,8 +217,8 @@ export interface DocumentDefinition {
 
   /**
    * Validate the document. (optional)
-   * You can use `zod` here to ensure each document has the required shape.
-   * Or you can use `sharp` here to ensure the image in metadata has correct dimensions.
+   * You can use `sharp` here to ensure the image in metadata has correct dimensions.
+   * This will be removed once the library has proper image processing support.
    * @param document The document to validate
    */
   validate?: (document: BaseDoc) => Promise<void>;
@@ -224,7 +293,7 @@ export type MarkdownlayerConfig = {
    * Every content file path will be relative to this directory.
    * This includes:
    * - The `patterns` field of each document in `documents` is relative to `contentDirPath`
-   * - Each document`s `_raw` fields such as ``flattenedPath`, `sourceFilePath`, and `sourceFileDir`
+   * - Each document`s `_info` fields such as ``flattenedPath`, `sourceFilePath`, and `sourceFileDir`
    */
   contentDirPath: string;
 

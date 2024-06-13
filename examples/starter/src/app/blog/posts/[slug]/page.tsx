@@ -29,20 +29,20 @@ export async function generateMetadata(
 
   return {
     title: {
-      absolute: post.title,
+      absolute: post.data.title,
     },
-    description: post.description,
-    keywords: post.keywords,
+    description: post.data.description,
+    keywords: post.data.keywords,
     openGraph: {
       type: 'article',
       title: {
-        absolute: post.title,
+        absolute: post.data.title,
       },
-      description: post.description,
-      images: post.image && [post.image],
+      description: post.data.description,
+      images: post.data.image && [post.data.image],
       url: `/${post.slug}`,
-      publishedTime: post.published,
-      modifiedTime: post.updated,
+      publishedTime: post.data.published.toISOString(),
+      modifiedTime: post.data.updated?.toISOString(),
     },
   };
 }
@@ -54,18 +54,18 @@ export default function BlogPostPage({ params }: BlogPostProps) {
     notFound();
   }
 
-  const mappedAuthors = post.authors.map((author) => authors.find((a) => a.id === author));
+  const mappedAuthors = post.data.authors?.map((author) => authors.find((a) => a.id === author));
 
   return (
     <>
       <article className="container relative max-w-3xl py-6 lg:py-10">
         <div>
-          {post.published && (
-            <time dateTime={post.published} className="text-muted-foreground block text-sm">
-              Published on {formatDate(post.published, FORMATS_DATE_LONG)}
+          {post.data.published && (
+            <time dateTime={post.data.published.toISOString()} className="text-muted-foreground block text-sm">
+              Published on {formatDate(post.data.published, FORMATS_DATE_LONG)}
             </time>
           )}
-          <h1 className="font-heading mt-2 inline-block text-4xl leading-tight lg:text-5xl">{post.title}</h1>
+          <h1 className="font-heading mt-2 inline-block text-4xl leading-tight lg:text-5xl">{post.data.title}</h1>
           {mappedAuthors?.length ? (
             <div className="mt-4 flex space-x-4">
               {mappedAuthors.map((author) =>
@@ -92,11 +92,11 @@ export default function BlogPostPage({ params }: BlogPostProps) {
             </div>
           ) : null}
         </div>
-        {post.image && (
+        {post.data.image && (
           <div className="flex w-full justify-center">
             <Image
-              src={post.image}
-              alt={post.title}
+              src={post.data.image}
+              alt={post.data.title}
               width={720}
               height={405}
               className="bg-muted my-8 rounded-md border transition-colors"
