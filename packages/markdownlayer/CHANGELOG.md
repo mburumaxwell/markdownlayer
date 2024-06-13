@@ -1,5 +1,28 @@
 # markdownlayer
 
+## 0.4.0-beta.0
+
+### Minor Changes
+
+- 0cb4552: No longer need to ignore node_modules from webpack watch
+- 0cb4552: No longer expose methods for watching
+- 9adcdae: `definitions` have been changed from `DocumentDefinition[]` to `Record<string, DocumentDefinition>`, and the `DocumentDefinition` type no longer explicitly includes the `type` property, as it is now inferred from the record's key. Additionally, slugs are now generated relative to the content directory, i.e., `{contentDirPath}/{type}`, enabling improved logic for handling slugs, particularly in internationalization (i18n) scenarios. The `starter` examples demonstrates this well.
+- 65e178c: Rename `readingTime` to `readTime` and make it optional; configurable per definition.
+- 0cb4552: Enable verbatimModuleSyntax (#98)
+- b628835: Group git options into a type of its own to make it simpler to use.
+- 0cb4552: Support watching the config file for changes
+- 0cb4552: Added document schema validation using `zod`. Each definition now includes a `schema` defined with `zod` for validating frontmatter, inspired by Astro's content collections just like the new errors. The `_raw` property has been removed, and a new `data` property now contains the schema instead of placing it at the root, allowing for the use of `any` when there is no schema. Content is no longer serialized to JSON, instead MJS is used to preserve type information, such as dates. Additionally, files in the `.markdownlayer/generated` folder have been renamed, and older folders may need to be deleted.
+- 0cb4552: No longer expose generation logic
+- 0cb4552: Remove the plugin that allows co-locating document definitions with react components.
+  This is behaviour is not encouraged.
+- 0cb4552: Recommended eslint rules
+
+### Patch Changes
+
+- 0cb4552: Remove webpack-related error that is not manifest in next>=14.2.0
+- aba030d: Make the use of `remark-emoji` optional; enabled by default
+- 689615c: Make the use of `remark-gfm` optional; enabled by default
+
 ## 0.3.1
 
 ### Patch Changes

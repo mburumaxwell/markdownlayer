@@ -5,5 +5,20 @@
     "starter": "0.0.1",
     "markdownlayer": "0.3.1"
   },
-  "changesets": []
+  "changesets": [
+    "brave-students-explain",
+    "calm-queens-sniff",
+    "curly-beers-destroy",
+    "fresh-flies-float",
+    "little-cycles-remember",
+    "long-bees-train",
+    "nervous-mice-sell",
+    "rotten-ligers-yell",
+    "sharp-otters-vanish",
+    "smart-pets-rush",
+    "tidy-peaches-return",
+    "wise-trains-study",
+    "yellow-bobcats-report",
+    "young-gifts-arrive"
+  ]
 }
