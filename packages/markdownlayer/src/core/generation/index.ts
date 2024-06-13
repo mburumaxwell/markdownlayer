@@ -287,10 +287,14 @@ async function generateDocuments(options: GenerateDocsOptions): Promise<Generati
     const end = performance.now();
     const elapsed = end - start;
 
-    //  only pull git info if in production mode
+    //  only pull git info if enabled
     let lastUpdate: LastUpdateData | null = null;
-    if (mode === 'production' && lastUpdatedFromGit) {
-      lastUpdate = await getFileLastUpdate(path.join(contentDir, file));
+    if (lastUpdatedFromGit) {
+      // in production mode use git, otherwise set default values
+      lastUpdate =
+        mode === 'production'
+          ? await getFileLastUpdate(path.join(contentDir, file))
+          : { date: new Date(), timestamp: 0, author: 'unknown' };
     }
 
     const meta: DocumentMeta = {
