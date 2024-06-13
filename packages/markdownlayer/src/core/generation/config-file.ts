@@ -132,7 +132,6 @@ export async function getConfig(options: GetConfigOptions): Promise<GetConfigRes
   };
 }
 
-// TODO also take tsconfig.json `paths` mapping into account
 function makeAllPackagesExternalPlugin(configPath: string): esbuild.Plugin {
   return {
     name: 'make-all-packages-external',
