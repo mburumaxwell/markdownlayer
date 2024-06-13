@@ -42,7 +42,7 @@ export async function generateMetadata(
       images: post.data.image && [post.data.image],
       url: `/${post.slug}`,
       publishedTime: post.data.published.toISOString(),
-      modifiedTime: post.data.updated?.toISOString(),
+      modifiedTime: post.data.updated.toISOString(),
     },
   };
 }
@@ -66,7 +66,7 @@ export default function BlogPostPage({ params }: BlogPostProps) {
             </time>
           )}
           <h1 className="font-heading mt-2 inline-block text-4xl leading-tight lg:text-5xl">{post.data.title}</h1>
-          {mappedAuthors?.length ? (
+          {mappedAuthors.length ? (
             <div className="mt-4 flex space-x-4">
               {mappedAuthors.map((author) =>
                 author ? (

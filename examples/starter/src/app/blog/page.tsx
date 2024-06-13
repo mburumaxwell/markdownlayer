@@ -43,7 +43,7 @@ export default function BlogHomePage() {
           </div>
         </div>
         <hr className="my-8" />
-        {posts?.length ? (
+        {posts.length ? (
           <div className="grid gap-10 sm:grid-cols-3">
             {posts.map((post, index) => (
               <article key={post._id} className="group relative flex flex-col space-y-2">

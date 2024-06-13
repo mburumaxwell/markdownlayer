@@ -16,7 +16,7 @@ posts = posts.slice(0, 20);
 const updated = new Date(
   Math.max(
     ...posts
-      .map((post) => [post.data.published.getTime(), post.data.updated?.getTime()])
+      .map((post) => [post.data.published.getTime(), post.data.updated.getTime()])
       .flat()
       .filter(Boolean)
       .map(Number),
