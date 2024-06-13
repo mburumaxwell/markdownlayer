@@ -52,7 +52,8 @@ posts.forEach((post) => {
     link: url,
     date: post.data.updated ?? post.data.published,
     description: post.data.description,
-    author: mappedAuthors.map((author) => {
+    // for some reason author cannot be an empty array
+    author: (mappedAuthors.length ? mappedAuthors : undefined)?.map((author) => {
       return {
         name: author!.name,
         link: `https://twitter.com/${author!.twitter}`,
