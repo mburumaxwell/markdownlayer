@@ -474,8 +474,8 @@ async function writeRootIndexFiles({ outputFolder, generations }: WriteRootIndex
     `export type { ImageData };`,
     '',
     ...Object.entries(generations).map(([type, { schema }]) => {
-      const converted = schema ? printNode(zodToTs(schema).node) : undefined;
-      return `export type ${type} = BaseDoc & { type: '${type}'; data: ${converted ?? 'any'} };\n`;
+      const converted = (schema ? printNode(zodToTs(schema).node) : undefined)?.replace(';\n}', ';\n\t}');
+      return `export type ${type} = BaseDoc & {\n\ttype: '${type}';\n\tdata: ${converted ?? 'any'};\n};\n`;
     }),
     '',
     `export type DocumentTypes = ${documentTypeNames.join(` | `)}`,
