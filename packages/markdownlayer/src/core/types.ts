@@ -191,8 +191,16 @@ export interface DocumentDefinition {
    * Whether to use last update information from git commit history in production mode.
    * Only author and last updated time can be pulled from Git.
    *
-   * This will only work if the git history is available and the document schema contains
-   * a field named `updated` with type `string`. or `date`
+   * This will only work if the git history is available.
+   * Values can be overridden by setting `updated` in frontmatter.
+   * You may want to adjust your schema to include `updated` with type `string`. or `date`. For example:
+   * ```ts
+   * updated: z.string().optional()
+   * ```
+   * or
+   * ```ts
+   * updated: z.date().optional()
+   * ```
    *
    * @default true
    */
@@ -201,8 +209,13 @@ export interface DocumentDefinition {
   /**
    * Whether to use author from git commit history when author is not specified in frontmatter.
    *
-   * This will only work if `lastUpdatedFromGit` is set to `true` and the document schema contains
-   * a field named `authors` with type `string[]`
+   * This will only work if `lastUpdatedFromGit` is set to `true`.
+   * Values can be overridden by setting `authors` or `author` in frontmatter.
+   * You may also want to adjust your schema to include `authors` with type `string[]` or `author` with type `string`. For example:
+   * ```ts
+   * authors: z.string().array()
+   * author: z.string()
+   * ```
    *
    * @default false
    */
