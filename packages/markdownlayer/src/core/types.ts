@@ -111,7 +111,7 @@ export type DocumentMeta = {
 
   /**
    * Git commit information.
-   * This only populates in production mode and when `lastUpdatedFromGit` is enabled.
+   * This only populates in production mode and when git is enabled for the definition.
    */
   git?: DocumentGitLastUpdated;
 
@@ -158,6 +158,39 @@ export type BaseDoc = DocumentMeta & {
   tableOfContents?: TocItem[];
 };
 
+export interface DocumentDefinitionGitOptions {
+  /**
+   * Whether to use last update information from git commit history.
+   *
+   * Values can be overridden by setting `updated` in frontmatter.
+   * You may want to adjust your schema to include `updated` with type `string`. or `date`. For example:
+   * ```ts
+   * updated: z.string().optional()
+   * ```
+   * or
+   * ```ts
+   * updated: z.coerce.date().optional()
+   * ```
+   *
+   * @default true
+   */
+  updated?: boolean;
+
+  /**
+   * Whether to pull authors from git commit history.
+   *
+   * Values can be overridden by setting `authors` or `author` in frontmatter.
+   * You may also want to adjust your schema to include `authors` with type `string[]` or `author` with type `string`. For example:
+   * ```ts
+   * authors: z.string().array()
+   * author: z.string()
+   * ```
+   *
+   * @default false
+   */
+  authors?: boolean;
+}
+
 /**
  * Represents the definition of a document.
  */
@@ -178,38 +211,17 @@ export interface DocumentDefinition {
   schema?: DocumentDefinitionSchema | ((context: SchemaContext) => DocumentDefinitionSchema);
 
   /**
-   * Whether to use last update information from git commit history in production mode.
-   * Only author and last updated time can be pulled from Git.
+   * Options for pulling information from git in production mode.
+   * - `true`: Use default options
+   * - `false`: Disable the functionality
+   * - `DocumentDefinitionGitOptions`: Use custom options
    *
-   * This will only work if the git history is available.
-   * Values can be overridden by setting `updated` in frontmatter.
-   * You may want to adjust your schema to include `updated` with type `string`. or `date`. For example:
-   * ```ts
-   * updated: z.string().optional()
-   * ```
-   * or
-   * ```ts
-   * updated: z.coerce.date().optional()
-   * ```
+   * @description
+   * Only author and last updated time if the git history is available.
    *
    * @default true
    */
-  lastUpdatedFromGit?: boolean;
-
-  /**
-   * Whether to use author from git commit history when author is not specified in frontmatter.
-   *
-   * This will only work if `lastUpdatedFromGit` is set to `true`.
-   * Values can be overridden by setting `authors` or `author` in frontmatter.
-   * You may also want to adjust your schema to include `authors` with type `string[]` or `author` with type `string`. For example:
-   * ```ts
-   * authors: z.string().array()
-   * author: z.string()
-   * ```
-   *
-   * @default false
-   */
-  authorFromGit?: boolean; // TODO: rename to authorsFromGit once we can pull all the authors from commit history
+  git?: boolean | DocumentDefinitionGitOptions;
 
   /**
    * Whether to generate a read time for the documents.

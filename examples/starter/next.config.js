@@ -33,8 +33,7 @@ export default withMarkdownlayer(nextConfig); // requires markdownlayer.config.t
 //         draft: z.boolean().default(false),
 //         image: z.string().optional(),
 //       }),
-//       lastUpdatedFromGit: true,
-//       authorFromGit: true,
+//       git: { authors: true },
 //     },
 //     changelog: {
 //       schema: z.object({
@@ -44,7 +43,7 @@ export default withMarkdownlayer(nextConfig); // requires markdownlayer.config.t
 //         link: z.string().url().optional(),
 //         category: z.enum(['sdk', 'dashboard', 'api', 'developer']).optional(),
 //       }),
-//       lastUpdatedFromGit: false,
+//       git: false,
 //     },
 //     project: {
 //       schema: ({ image }) =>
@@ -70,6 +69,7 @@ export default withMarkdownlayer(nextConfig); // requires markdownlayer.config.t
 //         sidebar_label: z.string().optional(),
 //         pagination_label: z.string().optional(),
 //       }),
+//       git: { authors: true },
 //     },
 //   },
 //   remarkPlugins: [],
