@@ -85,7 +85,7 @@ export async function getConfig(options: GetConfigOptions): Promise<GetConfigRes
     logLevel: 'silent',
     metafile: true,
     absWorkingDir: cwd,
-    plugins: [markdownlayerGenPlugin(), makeAllPackagesExternalPlugin(configPath)],
+    plugins: [makeAllPackagesExternalPlugin(configPath)],
   };
 
   // Build the configuration file
@@ -129,26 +129,6 @@ export async function getConfig(options: GetConfigOptions): Promise<GetConfigRes
     configPath: configPath,
     configHash: esbuildHash,
     config: exports.default as MarkdownlayerConfig,
-  };
-}
-
-/**
- * This esbuild plugin is needed in some cases where users import code that imports from '.markdownlayer/*'
- * (e.g. when co-locating document type definitions with React components).
- */
-function markdownlayerGenPlugin(): esbuild.Plugin {
-  return {
-    name: 'markdownlayer-gen',
-    setup(build) {
-      build.onResolve({ filter: /markdownlayer\/generated/ }, (args) => ({
-        path: args.path,
-        namespace: 'markdownlayer-gen',
-      }));
-
-      build.onLoad({ filter: /.*/, namespace: 'markdownlayer-gen' }, () => ({
-        contents: '// empty',
-      }));
-    },
   };
 }
 
