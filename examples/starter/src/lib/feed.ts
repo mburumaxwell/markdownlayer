@@ -5,9 +5,9 @@ import { authors } from './authors';
 
 const siteUrl = siteConfig.siteUrl;
 
-let posts = allBlogPosts.sort((a, b) => b.published.localeCompare(a.published));
+let posts = allBlogPosts.sort((a, b) => b.data.published.getTime() - a.data.published.getTime());
 if (siteConfig.showDraftPosts) {
-  posts = posts.filter((post) => !post.draft);
+  posts = posts.filter((post) => !post.data.draft);
 }
 
 // limit to the latest 20 posts
@@ -16,8 +16,9 @@ posts = posts.slice(0, 20);
 const updated = new Date(
   Math.max(
     ...posts
-      .map((post) => [new Date(post.published), new Date(post.updated)])
+      .map((post) => [post.data.published.getTime(), post.data.updated?.getTime()])
       .flat()
+      .filter(Boolean)
       .map(Number),
   ),
 );
@@ -41,20 +42,20 @@ const feed = new Feed({
 
 posts.forEach((post) => {
   const url = `${siteUrl}/${post.slug}`;
-  const mappedAuthors = post.authors.map((author) => authors.find((a) => a.id === author));
+  const mappedAuthors = post.data.authors?.map((author) => authors.find((a) => a.id === author));
 
   feed.addItem({
-    title: post.title,
+    title: post.data.title,
     id: url,
     link: url,
-    date: new Date(post.updated),
-    description: post.description,
-    author: mappedAuthors.filter(Boolean).map((author) => ({
+    date: post.data.updated ?? post.data.published,
+    description: post.data.description,
+    author: mappedAuthors?.filter(Boolean).map((author) => ({
       name: author!.name,
       link: `https://twitter.com/${author!.twitter}`,
     })),
-    image: post.image && `${siteUrl}${post.image}`,
-    published: new Date(post.published),
+    image: post.data.image && `${siteUrl}${post.data.image}`,
+    published: new Date(post.data.published),
   });
 });
 

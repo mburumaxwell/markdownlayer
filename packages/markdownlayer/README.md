@@ -26,6 +26,7 @@ Read the [blog](https://maxwellweru.com/blog/2024/03/replacing-contentlayer-with
 - Only NextJs support.
 - No JSON/YAML content as they can be loaded directly into the JS/TS code.
 - Requires ESM because the whole unified/remark/rehype ecosystem moved to ESM-only.
+- Schema validation is done using [`zod`](https://www.npmjs.com/package/zod). With some useful defaults
 
 ## Not supported
 

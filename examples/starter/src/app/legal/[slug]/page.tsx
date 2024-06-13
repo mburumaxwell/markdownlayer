@@ -26,9 +26,9 @@ export async function generateMetadata(
   }
 
   return {
-    title: doc.title,
+    title: doc.data.title,
     openGraph: {
-      title: doc.title,
+      title: doc.data.title,
       url: `/${doc.slug}`,
       images: [siteConfig.socialImage],
     },
@@ -47,11 +47,11 @@ export default function LegalDocPage({ params }: LegalDocProps) {
       <article className="border-t border-gray-200 bg-gray-50">
         <div className="bg-white py-16 sm:py-32">
           <h1 className="font-display mt-5 text-center text-3xl font-bold leading-[1.15] text-black sm:text-5xl sm:leading-[1.15]">
-            {doc.title}
+            {doc.data.title}
           </h1>
-          {doc.updated && (
+          {doc.data.updated && (
             <div className="mt-5 w-full text-center">
-              <p className="text-gray-500">Last updated on {formatDate(doc.updated, FORMATS_DATE_LONG)}</p>
+              <p className="text-gray-500">Last updated on {formatDate(doc.data.updated, FORMATS_DATE_LONG)}</p>
             </div>
           )}
         </div>

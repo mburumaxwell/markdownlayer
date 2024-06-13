@@ -3,8 +3,8 @@ import fs from 'fs';
 import hash from 'object-hash';
 import path from 'path';
 
+import { ConfigNoDefaultExportError, ConfigReadError, MarkdownlayerErrorData, NoConfigFoundError } from '../errors';
 import type { MarkdownlayerConfig } from '../types';
-import { ConfigNoDefaultExportError, ConfigReadError, NoConfigFoundError } from './errors';
 
 const possibleConfigFileNames = ['markdownlayer.config.ts', 'markdownlayer.config.js'];
 
@@ -56,6 +56,13 @@ export async function getConfig(options: GetConfigOptions): Promise<GetConfigRes
   }
 
   let configPath: string | undefined = currentConfigPath;
+  if (configPath && !fs.existsSync(configPath)) {
+    throw new NoConfigFoundError({
+      ...MarkdownlayerErrorData.NoConfigFoundError,
+      message: MarkdownlayerErrorData.NoConfigFoundError.message({ cwd, configPath }),
+    });
+  }
+
   if (!configPath) {
     for (const name of possibleConfigFileNames) {
       configPath = path.join(cwd, name);
@@ -64,7 +71,10 @@ export async function getConfig(options: GetConfigOptions): Promise<GetConfigRes
   }
 
   if (!configPath) {
-    throw new NoConfigFoundError({ cwd });
+    throw new NoConfigFoundError({
+      ...MarkdownlayerErrorData.NoConfigFoundError,
+      message: MarkdownlayerErrorData.NoConfigFoundError.message({ cwd }),
+    });
   }
 
   const cacheDir = path.join(outputFolder, 'cache');
@@ -91,16 +101,30 @@ export async function getConfig(options: GetConfigOptions): Promise<GetConfigRes
   // Build the configuration file
   const buildResult = await esbuild.build(buildOptions);
   if (buildResult.errors.length > 0) {
-    throw new ConfigReadError({ error: buildResult.errors[0], configPath });
+    const error = buildResult.errors[0];
+    throw new ConfigReadError({
+      ...MarkdownlayerErrorData.ConfigReadError,
+      message: error.text,
+      location: {
+        file: configPath,
+        column: error.location?.column,
+        line: error.location?.line,
+      },
+      hint: error.location?.suggestion,
+    });
   }
 
   // Will look like `path.join(cacheDir, 'compiled-markdownlayer-config-[SOME_HASH].mjs')
   const outputFileName = Object.keys(buildResult.metafile!.outputs).find(
     (f) => f.match(/compiled-markdownlayer-config-.+.mjs$/) !== null,
   );
-  if (!outputFileName) throw new Error('Could not find output file name');
-  // Needs to be absolute path for ESM import to work
-  outputPath = path.join(cwd, outputFileName);
+  if (!outputFileName) {
+    throw new ConfigReadError({
+      ...MarkdownlayerErrorData.ConfigReadError,
+      message: 'Could not find output file name',
+    });
+  }
+  outputPath = path.join(cwd, outputFileName); // Needs to be absolute path for ESM import to work
 
   const esbuildHash = outputPath.match(/compiled-markdownlayer-config-(.+).mjs$/)![1]!;
 
@@ -108,7 +132,14 @@ export async function getConfig(options: GetConfigOptions): Promise<GetConfigRes
   try {
     (await import('source-map-support')).install();
   } catch (error) {
-    throw new ConfigReadError({ error, configPath });
+    throw new ConfigReadError({
+      ...MarkdownlayerErrorData.ConfigReadError,
+      message: MarkdownlayerErrorData.ConfigReadError.message({
+        configPath,
+        error: error as Error,
+      }),
+      stack: (error as Error).stack,
+    });
   }
 
   let exports: any; // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -118,11 +149,27 @@ export async function getConfig(options: GetConfigOptions): Promise<GetConfigRes
     // 2) `file://` prefix is needed for Windows to work properly
     exports = await import(`file://${outputPath}?x=${Date.now()}`);
   } catch (error) {
-    throw new ConfigReadError({ error, configPath });
+    throw new ConfigReadError({
+      ...MarkdownlayerErrorData.ConfigReadError,
+      message: MarkdownlayerErrorData.ConfigReadError.message({
+        configPath,
+        error: error as Error,
+      }),
+      stack: (error as Error).stack,
+      location: {
+        file: outputPath,
+      },
+    });
   }
 
   if (!('default' in exports)) {
-    throw new ConfigNoDefaultExportError({ configPath, availableExports: Object.keys(exports) });
+    throw new ConfigNoDefaultExportError({
+      ...MarkdownlayerErrorData.ConfigNoDefaultExportError,
+      message: MarkdownlayerErrorData.ConfigNoDefaultExportError.message({
+        configPath,
+        availableExports: Object.keys(exports),
+      }),
+    });
   }
 
   return {
