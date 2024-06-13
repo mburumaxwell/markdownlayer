@@ -3,6 +3,8 @@ import { slug as githubSlug } from 'github-slugger';
 import { pluralize } from 'inflection';
 import path from 'path';
 
+import type { DocumentDefinitionGitOptions } from '../types';
+
 export function makeVariableName(id: string) {
   return leftPadWithUnderscoreIfStartsWithNumber(camelCase(idToFileName(id).replace(/[^A-Z0-9_]/gi, '/0')));
 }
@@ -45,4 +47,18 @@ export function getDocumentIdAndSlug(relativePath: string): { id: string; slug: 
     id: path.normalize(relativePath),
     slug,
   };
+}
+
+export function getDocumentDefinitionGitOptions(
+  git: boolean | DocumentDefinitionGitOptions,
+): DocumentDefinitionGitOptions {
+  // If git is false, return default values with git functionality disabled
+  if (git === false) return { updated: false, authors: false };
+
+  // If git is true, return the default values
+  if (git === true) return { updated: true, authors: false };
+
+  // If git is an object, destructure it with default values
+  const { updated = true, authors = false } = git;
+  return { updated, authors };
 }

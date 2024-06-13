@@ -2,6 +2,7 @@ import { expect, test } from 'vitest';
 
 import {
   getDataVariableName,
+  getDocumentDefinitionGitOptions,
   getDocumentIdAndSlug,
   idToFileName,
   leftPadWithUnderscoreIfStartsWithNumber,
@@ -63,5 +64,31 @@ test('getDocumentIdAndSlug', () => {
   expect(getDocumentIdAndSlug('en/posts/my-first-post.md')).toEqual({
     id: 'en/posts/my-first-post.md',
     slug: 'en/posts/my-first-post',
+  });
+});
+
+test('getDocumentDefinitionGitOptions', () => {
+  // Test case 1: git is false
+  expect(getDocumentDefinitionGitOptions(false)).toEqual({ updated: false, authors: false });
+
+  // Test case 2: git is true
+  expect(getDocumentDefinitionGitOptions(true)).toEqual({ updated: true, authors: false });
+
+  // Test case 3: git is an object with updated and authors properties
+  expect(getDocumentDefinitionGitOptions({ updated: true, authors: true })).toEqual({
+    updated: true,
+    authors: true,
+  });
+
+  // Test case 4: git is an object with only updated property
+  expect(getDocumentDefinitionGitOptions({ updated: false })).toEqual({
+    updated: false,
+    authors: false,
+  });
+
+  // Test case 5: git is an object with only authors property
+  expect(getDocumentDefinitionGitOptions({ authors: true })).toEqual({
+    updated: true,
+    authors: true,
   });
 });
