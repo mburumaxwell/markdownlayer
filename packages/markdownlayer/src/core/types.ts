@@ -1,5 +1,6 @@
 import type { Config as MarkdocConfig } from '@markdoc/markdoc';
 import type { ReadTimeResults } from 'reading-time';
+import type { RemarkEmojiOptions } from 'remark-emoji';
 import type { Options as RemarkRehypeOptions } from 'remark-rehype';
 import type { PluggableList } from 'unified';
 import type {
@@ -260,6 +261,16 @@ export type MarkdownlayerConfigPlugins = {
    * @default true
    */
   admonitions?: boolean | AdmonitionPluginOptions;
+
+  /**
+   * Options for configuring the inbuilt remark-emoji plugin.
+   * - `true`: Use default options
+   * - `false`: Disable the plugin
+   * - `RemarkEmojiOptions`: Use custom options
+   *
+   * @default true
+   */
+  emoji?: boolean | RemarkEmojiOptions;
 
   /** List of recma (esast, JavaScript) plugins. */
   recmaPlugins?: PluggableList | null | undefined;
