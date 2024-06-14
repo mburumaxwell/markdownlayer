@@ -137,8 +137,8 @@ async function generateInner(options: GenerateInnerOptions) {
   let outputFolder = options.outputFolder;
 
   // load cache from file if it exists, otherwise create a new cache
-  // changes in configuration options and plugins will invalidate the cache
-  const cacheFilePath = path.join(outputFolder, `cache/v${version}/data-${configHash}.json`);
+  // changes in mode, version, configuration options, plugins will invalidate the cache
+  const cacheFilePath = path.join(outputFolder, `cache/${mode}/v${version}/data-${configHash}.json`);
   let cache: DataCache = { items: {} };
   if (caching && fs.existsSync(cacheFilePath)) {
     cache = JSON.parse(fs.readFileSync(cacheFilePath, 'utf8'));
