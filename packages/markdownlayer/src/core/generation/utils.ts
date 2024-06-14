@@ -1,6 +1,6 @@
 import { camelCase } from 'change-case';
 import { slug as githubSlug } from 'github-slugger';
-import { pluralize } from 'inflection';
+import { pluralize, singularize } from 'inflection';
 import beautify from 'js-beautify';
 import path from 'path';
 
@@ -13,6 +13,11 @@ export function makeVariableName(id: string) {
 export function getDataVariableName(type: string): string {
   return 'all' + uppercaseFirstChar(pluralize(type));
 }
+
+export function generateTypeName(type: string): string {
+  return singularize(toPascalCase(type));
+}
+
 export function idToFileName(id: string): string {
   return leftPadWithUnderscoreIfStartsWithNumber(id).replace(/\//g, '__');
 }

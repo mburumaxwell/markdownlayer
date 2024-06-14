@@ -3,6 +3,7 @@ import { expect, test } from 'vitest';
 
 import {
   convertDocumentToMjsContent,
+  generateTypeName,
   getDataVariableName,
   getDocumentDefinitionGitOptions,
   getDocumentIdAndSlug,
@@ -28,6 +29,12 @@ test('getDataVariableName', () => {
   expect(getDataVariableName('post')).toBe('allPosts');
 });
 
+test('generateTypeName', () => {
+  expect(generateTypeName('blog-posts')).toBe('BlogPost');
+  expect(generateTypeName('posts')).toBe('Post');
+  expect(generateTypeName('comments')).toBe('Comment');
+});
+
 test('idToFileName', () => {
   expect(idToFileName('en/post-1.md')).toBe('en__post-1.md');
 });
@@ -49,9 +56,11 @@ test('uppercaseFirstChar', () => {
 test('toPascalCase', () => {
   expect(toPascalCase('blog')).toBe('Blog');
   expect(toPascalCase('blog-post')).toBe('BlogPost');
+  expect(toPascalCase('blog-posts')).toBe('BlogPosts');
   expect(toPascalCase('blog_post')).toBe('BlogPost');
   expect(toPascalCase('Blog')).toBe('Blog');
   expect(toPascalCase('Blog-Post')).toBe('BlogPost');
+  expect(toPascalCase('Blog-Posts')).toBe('BlogPosts');
   expect(toPascalCase('post')).toBe('Post');
   expect(toPascalCase('pOST')).toBe('Post');
 });

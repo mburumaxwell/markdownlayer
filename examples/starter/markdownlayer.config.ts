@@ -12,7 +12,7 @@ const markdownConfig: MarkdownlayerConfig = {
         updated: z.coerce.date().optional(),
       }),
     },
-    'blog-post': {
+    'blog-posts': {
       schema: z.object({
         title: z.string(),
         description: z.string(),
