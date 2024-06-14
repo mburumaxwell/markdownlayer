@@ -59,7 +59,7 @@ export default function GuidePage({ params: { locale, name } }: GuideProps) {
 }
 
 export function generateStaticParams() {
-  return allGuides.map((doc): { locale: string; name: string } => ({
+  return allGuides.map((doc) => ({
     locale: doc.slug.split('/')[0],
     name: doc.slug.split('/')[1],
   }));

@@ -115,5 +115,5 @@ export default function BlogPostPage({ params: { slug } }: BlogPostProps) {
 }
 
 export function generateStaticParams() {
-  return allBlogPosts.map((post): { slug: string } => ({ slug: post.slug }));
+  return allBlogPosts.map((post) => ({ slug: post.slug }));
 }

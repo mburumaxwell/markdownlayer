@@ -59,5 +59,5 @@ export default function LegalPage({ params: { slug } }: LegalProps) {
 }
 
 export function generateStaticParams() {
-  return allLegals.map((doc): { slug: string } => ({ slug: doc.slug }));
+  return allLegals.map((doc) => ({ slug: doc.slug }));
 }
