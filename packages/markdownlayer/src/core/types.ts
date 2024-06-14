@@ -43,12 +43,19 @@ export type StaticImageDataSchema = ZodObject<{
   >;
 }>;
 
+export type ImageSchemaFunctionOptions = {
+  /** Whether the image is optional. */
+  optional?: boolean;
+
+  // other options like optimization with sharp would go here
+};
+
 /**
  * Schema for an image.
- * @param optional Whether the image is optional.
+ * @param options - Options for the image schema.
  * @returns A Zod object representing an image.
  */
-export type ImageSchemaFunction = (optional?: boolean) => StaticImageDataSchema;
+export type ImageSchemaFunction = (options?: ImageSchemaFunctionOptions) => StaticImageDataSchema;
 
 type DocumentDefinitionSchemaWithoutEffects =
   | AnyZodObject

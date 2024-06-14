@@ -3,9 +3,13 @@ import type { StaticImageData } from 'next/dist/shared/lib/image-external'; // t
 import path from 'path';
 import { z } from 'zod';
 
-import type { GenerationMode, StaticImageDataSchema } from '../types';
+import type { GenerationMode, ImageSchemaFunctionOptions, StaticImageDataSchema } from '../types';
 
-type CreateImageOptions = { optional?: boolean; mode: GenerationMode; shouldEmitFile: boolean; sourceFilePath: string };
+type CreateImageOptions = ImageSchemaFunctionOptions & {
+  mode: GenerationMode;
+  shouldEmitFile: boolean;
+  sourceFilePath: string;
+};
 
 export function createImage({ optional, shouldEmitFile, sourceFilePath }: CreateImageOptions): StaticImageDataSchema {
   const schema = optional ? z.string().optional() : z.string();
