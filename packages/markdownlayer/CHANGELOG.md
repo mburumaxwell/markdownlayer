@@ -1,5 +1,16 @@
 # markdownlayer
 
+## 0.4.0-beta.1
+
+### Minor Changes
+
+- aef8c2a: Use an object as the argument for `ImageFunction` to allow for more options later
+- 544a1b9: Type names should be singularized
+
+### Patch Changes
+
+- 4898e1c: Ensure watch happens for the `contentDirPath` (bug introduced in `0.4.0-beta.0`)
+
 ## 0.4.0-beta.0
 
 ### Minor Changes
