@@ -6,6 +6,7 @@ import type { Options as RemarkRehypeOptions } from 'remark-rehype';
 import type { PluggableList } from 'unified';
 import type {
   AnyZodObject,
+  RawCreateParams,
   ZodDiscriminatedUnion,
   ZodEffects,
   ZodIntersection,
@@ -43,7 +44,7 @@ export type StaticImageDataSchema = ZodObject<{
   >;
 }>;
 
-export type ImageSchemaFunctionOptions = {
+export type ImageSchemaFunctionOptions = RawCreateParams & {
   /** Whether the image is optional. */
   optional?: boolean;
 
