@@ -1,5 +1,5 @@
 import siteConfig from '@/site-config';
-import { allBlogPosts, allChangelogs } from 'markdownlayer/generated';
+import { allBlogPosts } from 'markdownlayer/generated';
 import { type MetadataRoute } from 'next';
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -8,7 +8,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const routes: Route[] = [];
 
   // blog posts
-  routes.push({ url: `${siteConfig.siteUrl}/blog`, priority: 0.5 })
+  routes.push({ url: `${siteConfig.siteUrl}/blog`, priority: 0.5 });
   routes.push(
     ...allBlogPosts
       .filter((post) => !post.data.draft)
@@ -23,7 +23,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   );
 
   // changelog
-  routes.push({ url: `${siteConfig.siteUrl}/blog/changelog`, priority: 0.5 })
+  routes.push({ url: `${siteConfig.siteUrl}/blog/changelog`, priority: 0.5 });
 
   return routes;
 }

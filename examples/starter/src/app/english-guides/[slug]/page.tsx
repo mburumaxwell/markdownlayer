@@ -59,5 +59,7 @@ export default function GuidePage({ params: { slug } }: GuideProps) {
 }
 
 export function generateStaticParams() {
-  return allGuides.filter((guide) => guide.slug.startsWith('en/')).map((guide) => ({ slug: guide.slug.replace('en/', '') }));
+  return allGuides
+    .filter((guide) => guide.slug.startsWith('en/'))
+    .map((guide) => ({ slug: guide.slug.replace('en/', '') }));
 }
