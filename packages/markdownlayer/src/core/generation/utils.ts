@@ -46,8 +46,9 @@ export function getDocumentIdAndSlug(relativePath: string): { id: string; slug: 
     // Slugify each route segment to handle capitalization and spaces.
     // Note: using `slug` instead of `new Slugger()` means no slug deduping.
     .map((segment) => githubSlug(segment))
-    .join('/')
-    .replace(/\/index$/, '');
+    // Remove the last segment if it is "index"
+    .filter((segment, index) => !(index === rawSlugSegments.length - 1 && segment === 'index'))
+    .join('/');
 
   return {
     id: path.normalize(relativePath),
