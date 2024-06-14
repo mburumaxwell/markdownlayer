@@ -1,4 +1,3 @@
-import beautify from 'js-beautify';
 import { expect, test } from 'vitest';
 
 import {
@@ -106,48 +105,40 @@ test('getDocumentDefinitionGitOptions', () => {
 
 test('convertDocumentToMjsContent', () => {
   // Test case 1: Empty object
-  expect(convertDocumentToMjsContent({})).toBe('export default {}');
+  expect(convertDocumentToMjsContent({})).toBe('export default {  }');
 
   // Test case 2: Object with string properties
-  expect(convertDocumentToMjsContent({ name: 'John', age: '30' })).toBe(
-    beautify.js(`export default { name: "John", age: "30" }`, { indent_size: 2 }),
-  );
+  expect(convertDocumentToMjsContent({ name: 'John', age: '30' })).toBe(`export default { name: "John", age: "30" }`);
 
   // Test case 3: Object with number properties
-  expect(convertDocumentToMjsContent({ id: 1, quantity: 5 })).toBe(
-    beautify.js(`export default { id: 1, quantity: 5 }`, { indent_size: 2 }),
-  );
+  expect(convertDocumentToMjsContent({ id: 1, quantity: 5 })).toBe(`export default { id: 1, quantity: 5 }`);
 
   // Test case 4: Object with boolean properties
   expect(convertDocumentToMjsContent({ isActive: true, isAdmin: false })).toBe(
-    beautify.js(`export default { isActive: true, isAdmin: false }`, { indent_size: 2 }),
+    `export default { isActive: true, isAdmin: false }`,
   );
 
   // Test case 5: Object with array properties
   expect(convertDocumentToMjsContent({ numbers: [1, 2, 3], names: ['Alice', 'Bob'] })).toBe(
-    beautify.js(`export default { numbers: [1, 2, 3], names: ["Alice", "Bob"] }`, { indent_size: 2 }),
+    `export default { numbers: [1, 2, 3], names: ["Alice", "Bob"] }`,
   );
 
   // Test case 6: Object with nested objects
   expect(convertDocumentToMjsContent({ person: { name: 'John', age: 30 } })).toBe(
-    beautify.js(`export default { person: { name: "John", age: 30 } }`, { indent_size: 2 }),
+    `export default { person: { name: "John", age: 30 } }`,
   );
 
   // Test case 7: Object with Date property
   const date = new Date('2022-01-01T00:00:00.000Z');
   expect(convertDocumentToMjsContent({ createdAt: date })).toBe(
-    beautify.js(`export default { createdAt: new Date('2022-01-01T00:00:00.000Z') }`, { indent_size: 2 }),
+    `export default { createdAt: new Date('2022-01-01T00:00:00.000Z') }`,
   );
 
   // Test case 8: Object with null property
-  expect(convertDocumentToMjsContent({ name: null })).toBe(
-    beautify.js(`export default { name: null }`, { indent_size: 2 }),
-  );
+  expect(convertDocumentToMjsContent({ name: null })).toBe(`export default { name: null }`);
 
   // Test case 9: Object with undefined property
-  expect(convertDocumentToMjsContent({ name: undefined })).toBe(
-    beautify.js(`export default { name: null }`, { indent_size: 2 }),
-  );
+  expect(convertDocumentToMjsContent({ name: undefined })).toBe(`export default { name: null }`);
 
   // Test case 10: Object with 3 levels of nesting
   expect(
@@ -155,10 +146,5 @@ test('convertDocumentToMjsContent', () => {
       isActive: true,
       person: { name: 'John', address: { city: 'New York', country: 'USA' } },
     }),
-  ).toBe(
-    beautify.js(
-      `export default { isActive: true, person: { name: "John", address: { city: "New York", country: "USA" } } }`,
-      { indent_size: 2 },
-    ),
-  );
+  ).toBe(`export default { isActive: true, person: { name: "John", address: { city: "New York", country: "USA" } } }`);
 });
