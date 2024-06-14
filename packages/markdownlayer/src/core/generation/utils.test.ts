@@ -71,10 +71,22 @@ test('getDocumentIdAndSlug', () => {
     slug: 'my-first-post',
   });
 
+  // with index
+  expect(getDocumentIdAndSlug('index.md')).toEqual({
+    id: 'index.md',
+    slug: '',
+  });
+
   // nested directory
   expect(getDocumentIdAndSlug('en/posts/my-first-post.md')).toEqual({
     id: 'en/posts/my-first-post.md',
     slug: 'en/posts/my-first-post',
+  });
+
+  // nested directory with index
+  expect(getDocumentIdAndSlug('en/docs/index.md')).toEqual({
+    id: 'en/docs/index.md',
+    slug: 'en/docs',
   });
 });
 
