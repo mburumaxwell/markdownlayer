@@ -14,8 +14,8 @@ const markdownConfig: MarkdownlayerConfig = {
     },
     'blog-posts': {
       schema: z.object({
-        title: z.string(),
-        description: z.string(),
+        title: z.string({ description: 'The title of the blog post' }),
+        description: z.string({ description: 'Short description that is used for SEO, in RSS/ATOM feed, and in some subtitles' }),
         published: z.coerce.date(),
         updated: z.coerce.date(),
         authors: z.string().array(),
@@ -30,8 +30,8 @@ const markdownConfig: MarkdownlayerConfig = {
         title: z.string(),
         published: z.coerce.date(),
         updated: z.coerce.date().optional(),
-        link: z.string().url().optional(),
         category: z.enum(['sdk', 'dashboard', 'api', 'developer']).optional(),
+        link: z.string({ description: 'Link for more information about the changelog such as docs or blog' }).url().optional(),
       }),
       git: false,
     },
@@ -39,7 +39,7 @@ const markdownConfig: MarkdownlayerConfig = {
       schema: ({ image }) =>
         z.object({
           title: z.string(),
-          description: z.string(),
+          description: z.string({ description: 'Short description that is used for SEO, in RSS/ATOM feed, and in some subtitles' }),
           logo: image().refine((img) => img.width >= 128, {
             message: 'The logo must be at least 128 pixels wide!',
           }),
@@ -52,7 +52,7 @@ const markdownConfig: MarkdownlayerConfig = {
     guide: {
       schema: z.object({
         title: z.string(),
-        description: z.string(),
+        description: z.string({ description: 'Short description that is used for SEO, in RSS/ATOM feed, and in some subtitles' }),
         updated: z.coerce.date().optional(),
         authors: z.string().array().default([]),
         draft: z.boolean().default(false),
