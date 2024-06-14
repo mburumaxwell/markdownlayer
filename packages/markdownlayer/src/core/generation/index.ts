@@ -28,6 +28,7 @@ import type { DataCache } from './data-cache';
 import { getFormat } from './format';
 import {
   convertDocumentToMjsContent,
+  generateTypeName,
   getDataVariableName,
   getDocumentDefinitionGitOptions,
   getDocumentIdAndSlug,
@@ -494,15 +495,15 @@ async function writeRootIndexFiles({ outputFolder, generations }: WriteRootIndex
     '',
     ...Object.entries(generations).map(([type, { schema }]) => {
       const converted = (schema ? printNode(zodToTs(schema).node) : undefined)?.replace(';\n}', ';\n  }');
-      return `export type ${toPascalCase(type)} = BaseDoc & {\n  data: ${converted ?? 'any'};\n};\n`;
+      return `export type ${generateTypeName(type)} = BaseDoc & {\n  data: ${converted ?? 'any'};\n};\n`;
     }),
     '',
-    `export type DocumentTypes = ${definitionTypes.map((t) => toPascalCase(t)).join(` | `)}`,
+    `export type DocumentTypes = ${definitionTypes.map((t) => generateTypeName(t)).join(` | `)}`,
     `export type DocumentTypeNames = '${definitionTypes.join(`' | '`)}'`,
     '',
     '',
     ...definitionTypes.map(
-      (type) => `export declare const ${getDataVariableName(toPascalCase(type))}: ${toPascalCase(type)}[];`,
+      (type) => `export declare const ${getDataVariableName(toPascalCase(type))}: ${generateTypeName(type)}[];`,
     ),
     '',
     `export declare const allDocumentTypes: DocumentTypes[]`,
