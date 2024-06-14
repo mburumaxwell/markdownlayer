@@ -1,7 +1,6 @@
 import { camelCase } from 'change-case';
 import { slug as githubSlug } from 'github-slugger';
 import { pluralize, singularize } from 'inflection';
-import beautify from 'js-beautify';
 import path from 'path';
 
 import type { DocumentDefinitionGitOptions } from '../types';
@@ -100,6 +99,5 @@ export function convertDocumentToMjsContent(obj: unknown): string {
     }
   }
 
-  const code = `export default ${serialize(obj)}`;
-  return beautify.js(code, { indent_size: 2 });
+  return `export default ${serialize(obj)}`;
 }
