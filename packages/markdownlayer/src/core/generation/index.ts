@@ -72,7 +72,7 @@ export async function generate(options: GenerateOptions) {
   const { configPath, configHash, config } = await getConfig({ cwd, outputFolder, pluginConfig });
 
   // generate the content (initial)
-  await generateInner({ mode, cwd, outputFolder, config, configHash });
+  await generateInnerWatchIfNecessary({ mode, cwd, outputFolder, config, configHash });
 
   // watch for config changes in the content folder (development mode only)
   if (mode === 'development' && configPath) {
@@ -89,7 +89,7 @@ export async function generate(options: GenerateOptions) {
 
       // get the new config and regenerate the content
       const { configHash, config } = await getConfig({ cwd, outputFolder, pluginConfig, currentConfigPath });
-      await generateInner({ mode, cwd, outputFolder, config, configHash });
+      await generateInnerWatchIfNecessary({ mode, cwd, outputFolder, config, configHash });
     });
   }
 }
