@@ -25,7 +25,7 @@ export async function generateMetadata(
     title: doc.data.title,
     openGraph: {
       title: doc.data.title,
-      url: `/${doc.slug}`,
+      url: `/legal/${doc.slug}`,
       images: [siteConfig.socialImage],
     },
   };

@@ -29,7 +29,7 @@ export default async function Changelog() {
   return (
     <>
       {entries.map((entry) => (
-        <div key={entry.slug}>
+        <div key={entry._id}>
           <h2>{entry.data.title}</h2>
           <p>{formatDate(entry.data.published)}</p>
           <Markdownlayer doc={entry} />

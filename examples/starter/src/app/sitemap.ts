@@ -21,7 +21,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   routes.push(
     ...allLegals.map(
       (doc): Route => ({
-        url: `${siteConfig.siteUrl}/${doc.slug}`,
+        url: `${siteConfig.siteUrl}/legal/${doc.slug}`,
         lastModified: doc.data.updated,
         changeFrequency: 'daily',
         priority: 0.5,

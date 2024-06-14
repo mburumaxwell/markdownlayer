@@ -36,7 +36,7 @@ export async function generateMetadata(
       },
       description: post.data.description,
       images: post.data.image && [post.data.image],
-      url: `/${post.slug}`,
+      url: `/blog/posts/${post.slug}`,
       publishedTime: post.data.published.toISOString(),
       modifiedTime: post.data.updated.toISOString(),
     },
