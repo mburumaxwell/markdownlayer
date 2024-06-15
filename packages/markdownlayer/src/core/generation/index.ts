@@ -243,7 +243,7 @@ async function generateDocuments(options: GenerateDocsOptions): Promise<Generati
       // TODO: figure out how to handle images in the schema without needing to pass the file path (module augmentation may help)
       image: (options) =>
         // @ts-expect-error - The type is correct but the error is due to the transform function
-        (options?.optional ? z.string().optional() : z.string()).transform(
+        (options?.optional ? z.string({ ...options }).optional() : z.string({ ...options })).transform(
           (): StaticImageData => ({ src: '', height: 0, width: 0 }),
         ),
       // image: (options) => createImage({ ...options, shouldEmitFile: false, mode, sourceFilePath }),

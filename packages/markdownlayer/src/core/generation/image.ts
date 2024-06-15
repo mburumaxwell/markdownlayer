@@ -11,8 +11,8 @@ type CreateImageOptions = ImageSchemaFunctionOptions & {
   sourceFilePath: string;
 };
 
-export function createImage({ optional, shouldEmitFile, sourceFilePath }: CreateImageOptions): StaticImageDataSchema {
-  const schema = optional ? z.string().optional() : z.string();
+export function createImage({ optional, shouldEmitFile, sourceFilePath, ...remaining }: CreateImageOptions): StaticImageDataSchema {
+  const schema = optional ? z.string({ ...remaining }).optional() : z.string({ ...remaining });
   const transformed = schema.transform(async (imagePath, context) => {
     if (!imagePath) return z.never();
 
