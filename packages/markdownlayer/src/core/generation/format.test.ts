@@ -27,3 +27,11 @@ test('getFormat should return the provided format when format is not "detect"', 
   const result = getFormat({ file: 'example.md', format: 'mdx' });
   expect(result).toBe('mdx');
 });
+
+test('getFormat works with full path', () => {
+  const result = getFormat({
+    file: '/Users/mike/Documents/markdownlayer/examples/starter/src/content/posts/example.md',
+    format: 'detect',
+  });
+  expect(result).toBe('md');
+});

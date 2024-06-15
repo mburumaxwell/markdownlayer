@@ -252,11 +252,14 @@ async function generateDocuments(options: GenerateDocsOptions): Promise<Generati
 
   // parse the files and "compile" in a loop
   for (const file of files) {
-    const sourceFilePath = path.join(definitionDir, file);
+    const sourceFilePath = path.normalize(path.join(definitionDir, file));
+
+    // using the sourceFilePath as the key ensure no collisions for files named the same but in different directories;
+    const cacheEntryKey = sourceFilePath;
 
     // if the file has not been modified, use the cached version
     const hash = fs.statSync(sourceFilePath).mtimeMs.toString();
-    const cacheEntry = cache.items[file];
+    const cacheEntry = cache.items[cacheEntryKey];
     const changed = !cacheEntry || cacheEntry.hash !== hash;
     if (!changed) {
       docs.push(cacheEntry.document);
@@ -275,7 +278,7 @@ async function generateDocuments(options: GenerateDocsOptions): Promise<Generati
     const frontmatter = parsedMatter.data as Record<string, unknown>;
 
     // determine the document format
-    let documentFormat = getFormat({ file, format });
+    let documentFormat = getFormat({ file: sourceFilePath, format });
     if (documentFormat === 'md' && mdAsMarkdoc) documentFormat = 'mdoc';
 
     const bundleOptions: BundleProps = {
@@ -289,7 +292,7 @@ async function generateDocuments(options: GenerateDocsOptions): Promise<Generati
     const { code, errors } = await bundle(bundleOptions);
     if (errors && errors.length) {
       console.error(errors);
-      throw new Error('Failed to bundle file: ' + file);
+      throw new Error(`Failed to bundle file: ${sourceFilePath}`);
     }
 
     const end = performance.now();
@@ -302,7 +305,7 @@ async function generateDocuments(options: GenerateDocsOptions): Promise<Generati
     if (gitUpdatedEnabled || gitUpdatedEnabled) {
       // in production mode use git, otherwise set default values
       if (mode === 'production') {
-        lastUpdate = await getFileLastUpdate(path.join(definitionDir, file));
+        lastUpdate = await getFileLastUpdate(sourceFilePath);
       }
       lastUpdate ??= { date: new Date(), timestamp: 0, author: 'unknown' };
     }
@@ -418,7 +421,7 @@ async function generateDocuments(options: GenerateDocsOptions): Promise<Generati
     fs.writeFileSync(outputFilePath, lines.join('\n'), { encoding: 'utf8' });
 
     // update the cache
-    cache.items[file] = { hash, type, document, elapsed };
+    cache.items[cacheEntryKey] = { hash, type, document, elapsed };
     generated++;
   }
 
