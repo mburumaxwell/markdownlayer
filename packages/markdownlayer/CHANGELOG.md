@@ -1,5 +1,18 @@
 # markdownlayer
 
+## 0.4.0-beta.2
+
+### Minor Changes
+
+- 0aa65b0: Include version in the data cache path to ensure generations do not cross dev/prod boundaries. This is useful in two scenarios:
+
+  1. Local dev and build when one forgets to remove the `.markdownlayer` folder.
+  2. When the `.markdownlayer` folder is cached such as in a CI build.
+
+### Patch Changes
+
+- 2c22b48: Fix stripping of trailing "index" when generating slug (bug introduced in `0.4.0-beta.0`)
+
 ## 0.4.0-beta.1
 
 ### Minor Changes
