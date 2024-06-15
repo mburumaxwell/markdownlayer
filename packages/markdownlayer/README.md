@@ -18,7 +18,7 @@ Read the [blog](https://maxwellweru.com/blog/2024/03/replacing-contentlayer-with
 - Markdoc support
 - Last update time and author based on Git but can be overridden via frontmatter.
 
-## Upcoming/Wishlist
+## Wishlist/Upcoming
 
 > These are in no particular order and depend on how much free time I have.
 

@@ -11,7 +11,7 @@ export function makeVariableName(id: string) {
 }
 
 export function getDataVariableName(type: string): string {
-  return 'all' + uppercaseFirstChar(pluralize(type));
+  return 'all' + pluralize(toPascalCase(type));
 }
 
 export function generateTypeName(type: string): string {
@@ -24,10 +24,6 @@ export function idToFileName(id: string): string {
 
 export function leftPadWithUnderscoreIfStartsWithNumber(str: string): string {
   return /^[0-9]/.test(str) ? '_' + str : str;
-}
-
-export function uppercaseFirstChar(str: string) {
-  return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
 export function toPascalCase(str: string) {

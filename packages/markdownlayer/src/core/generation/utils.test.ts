@@ -11,7 +11,6 @@ import {
   leftPadWithUnderscoreIfStartsWithNumber,
   makeVariableName,
   toPascalCase,
-  uppercaseFirstChar,
 } from './utils';
 
 test('makeVariableName', () => {
@@ -27,6 +26,11 @@ test('makeVariableName', () => {
 test('getDataVariableName', () => {
   expect(getDataVariableName('blog')).toBe('allBlogs');
   expect(getDataVariableName('post')).toBe('allPosts');
+
+  expect(getDataVariableName('blog')).toBe('allBlogs');
+  expect(getDataVariableName('Blog')).toBe('allBlogs');
+  expect(getDataVariableName('bLOG')).toBe('allBlogs');
+  expect(getDataVariableName('BLOG')).toBe('allBlogs');
 });
 
 test('generateTypeName', () => {
@@ -44,13 +48,6 @@ test('leftPadWithUnderscoreIfStartsWithNumber', () => {
   expect(leftPadWithUnderscoreIfStartsWithNumber('1en')).toBe('_1en');
   expect(leftPadWithUnderscoreIfStartsWithNumber('en1')).toBe('en1');
   expect(leftPadWithUnderscoreIfStartsWithNumber('1en1')).toBe('_1en1');
-});
-
-test('uppercaseFirstChar', () => {
-  expect(uppercaseFirstChar('blog')).toBe('Blog');
-  expect(uppercaseFirstChar('Blog')).toBe('Blog');
-  expect(uppercaseFirstChar('bLOG')).toBe('BLOG');
-  expect(uppercaseFirstChar('BLOG')).toBe('BLOG');
 });
 
 test('toPascalCase', () => {
