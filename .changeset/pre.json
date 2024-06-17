@@ -6,8 +6,10 @@
     "markdownlayer": "0.3.1"
   },
   "changesets": [
+    "beige-bobcats-think",
     "brave-students-explain",
     "calm-queens-sniff",
+    "clean-brooms-invent",
     "curly-beers-destroy",
     "forty-spiders-glow",
     "fresh-flies-float",
