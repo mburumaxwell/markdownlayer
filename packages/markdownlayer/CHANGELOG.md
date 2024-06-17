@@ -1,5 +1,12 @@
 # markdownlayer
 
+## 0.4.0-beta.3
+
+### Patch Changes
+
+- 75e1898: Use full file path as cache key to prevent collisions when files are named the same but in a different folder
+- 100433d: No longer reference type-fest
+
 ## 0.4.0-beta.2
 
 ### Minor Changes
