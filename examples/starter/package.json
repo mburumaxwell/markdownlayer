@@ -30,7 +30,7 @@
     "rehype-autolink-headings": "7.1.0",
     "rehype-slug": "6.0.0",
     "remark": "15.0.1",
-    "unified": "11.0.4",
+    "unified": "11.0.5",
     "unist-util-filter": "5.0.1"
   },
   "engines": {

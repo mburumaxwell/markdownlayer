@@ -84,7 +84,7 @@
     "@types/unist": "3.0.2",
     "mdast-util-directive": "3.0.0",
     "remark-rehype": "11.1.0",
-    "unified": "11.0.4",
+    "unified": "11.0.5",
     "unist-util-visit": "5.0.0"
   },
   "peerDependencies": {
