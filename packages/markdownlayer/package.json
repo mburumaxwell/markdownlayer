@@ -55,7 +55,7 @@
     "change-case": "5.4.4",
     "chokidar": "3.6.0",
     "github-slugger": "2.0.0",
-    "globby": "14.0.1",
+    "globby": "14.0.2",
     "gray-matter": "4.0.3",
     "inflection": "3.0.0",
     "js-beautify": "1.15.1",
