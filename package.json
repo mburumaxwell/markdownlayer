@@ -38,7 +38,7 @@
     "prettier": "3.3.2",
     "prettier-plugin-organize-imports": "3.2.4",
     "prettier-plugin-tailwindcss": "0.6.5",
-    "rimraf": "5.0.7",
+    "rimraf": "5.0.8",
     "tsup": "8.1.0",
     "turbo": "2.0.6",
     "typescript": "5.5.2",
