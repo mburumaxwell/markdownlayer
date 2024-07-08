@@ -41,7 +41,7 @@
     "rimraf": "5.0.8",
     "tsup": "8.1.0",
     "turbo": "2.0.6",
-    "typescript": "5.5.2",
+    "typescript": "5.5.3",
     "vitest": "1.6.0"
   },
   "packageManager": "pnpm@9.2.0"
