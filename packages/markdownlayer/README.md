@@ -17,6 +17,7 @@ Read the [blog](https://maxwellweru.com/blog/2024/03/replacing-contentlayer-with
 - Remark GFM, Admonitions, Reading Time, Emoji, and Slug included by default.
 - Markdoc support
 - Last update time and author based on Git but can be overridden via frontmatter.
+- Turbopack support
 
 ## Wishlist/Upcoming
 
@@ -35,7 +36,3 @@ Read the [blog](https://maxwellweru.com/blog/2024/03/replacing-contentlayer-with
 - Only NextJs support.
 - No JSON/YAML content as they can be loaded directly into the JS/TS code.
 - Requires ESM because the whole unified/remark/rehype ecosystem moved to ESM-only.
-
-## Not supported
-
-- Compiling with turbo including `next dev --turbo`. Haven't figured out how to adapt the webpack plugin.

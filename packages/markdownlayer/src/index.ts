@@ -1,10 +1,15 @@
+import { generate } from '@/core/generation';
 import type { NextConfig } from 'next';
-import type { WebpackConfigContext } from 'next/dist/server/config-shared';
-import type webpack from 'webpack';
+import type { GenerationMode } from './core';
 
-import { runBeforeWebpackCompile } from './plugin';
+export type MarkdownlayerPluginOptions = {
+  /** Currently unused! */
+  configPath: string;
+};
 
-const devServerStartedRef = { current: false };
+const defaultOptions: MarkdownlayerPluginOptions = {
+  configPath: 'markdownlayer.config.ts',
+};
 
 /**
  * Next.js plugin for markdownlayer.
@@ -20,39 +25,17 @@ const devServerStartedRef = { current: false };
  * })
  * ```
  */
-export function withMarkdownlayer(nextConfig?: Partial<NextConfig>): Partial<NextConfig> {
-  return {
-    ...nextConfig,
-    onDemandEntries: {
-      maxInactiveAge: 60 * 60 * 1000, // extend `maxInactiveAge` to 1 hour (from 15 sec by default)
-      ...nextConfig?.onDemandEntries, // use existing onDemandEntries config if provided by user
-    },
-    webpack(config: webpack.Configuration, options: WebpackConfigContext) {
-      const { buildId, dev, isServer, nextRuntime } = options; // eslint-disable-line @typescript-eslint/no-unused-vars
+export const withMarkdownlayer = createMarkdownlayerPlugin(defaultOptions);
 
-      // contentlayer has (and we initially had) watch options that allowed watching the node_modules folder except for itself
-      // we do not have that here because we may want a recompilation if the package is update during a dev session
+export function createMarkdownlayerPlugin(pluginOptions: MarkdownlayerPluginOptions) {
+  return async function (nextConfig: Partial<NextConfig> = {}): Promise<Partial<NextConfig>> {
+    const [command] = process.argv.slice(2).filter((arg) => !arg.startsWith('-'));
+    if (command === 'build' || command === 'dev') {
+      const mode: GenerationMode = command === 'dev' ? 'development' : 'production';
 
-      config.plugins!.push(new MarkdownWebpackPlugin());
+      await generate({ mode, ...pluginOptions });
+    }
 
-      if (typeof nextConfig?.webpack === 'function') {
-        return nextConfig.webpack(config, options);
-      }
-
-      return config;
-    },
-  } satisfies NextConfig;
-}
-
-class MarkdownWebpackPlugin {
-  constructor() {}
-
-  apply(compiler: webpack.Compiler) {
-    compiler.hooks.beforeCompile.tapPromise('MarkdownlayerWebpackPlugin', async () => {
-      await runBeforeWebpackCompile({
-        devServerStartedRef,
-        mode: compiler.options.mode,
-      });
-    });
-  }
+    return nextConfig;
+  };
 }
