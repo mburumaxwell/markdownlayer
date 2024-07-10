@@ -195,9 +195,6 @@ importers:
       remark-gfm:
         specifier: 4.0.0
         version: 4.0.0
-      source-map-support:
-        specifier: 0.5.21
-        version: 0.5.21
       zod:
         specifier: 3.23.8
         version: 3.23.8
@@ -217,9 +214,6 @@ importers:
       '@types/mdx':
         specifier: 2.0.13
         version: 2.0.13
-      '@types/source-map-support':
-        specifier: 0.5.10
-        version: 0.5.10
       '@types/unist':
         specifier: 3.0.2
         version: 3.0.2
@@ -1037,9 +1031,6 @@ packages:
 
   '@types/semver@7.5.8':
     resolution: {integrity: sha512-I8EUhyrgfLrcTkzV3TSsGyl1tSuPrEDzr0yd5m90UgNxQkyDXULk3b6MlQqTCpZpNtWe1K0hzclnZkTcLBe2UQ==}
-
-  '@types/source-map-support@0.5.10':
-    resolution: {integrity: sha512-tgVP2H469x9zq34Z0m/fgPewGhg/MLClalNOiPIzQlXrSS2YrKu/xCdSCKnEDwkFha51VKEKB6A9wW26/ZNwzA==}
 
   '@types/unist@2.0.10':
     resolution: {integrity: sha512-IfYcSBWE3hLpBg8+X2SEa8LVkJdJEkT2Ese2aaLs3ptGdVtABxndrMaxuFlQ1qdFf9Q5rDvDpxI3WwgvKFAsQA==}
@@ -4607,10 +4598,6 @@ snapshots:
 
   '@types/semver@7.5.8': {}
 
-  '@types/source-map-support@0.5.10':
-    dependencies:
-      source-map: 0.6.1
-
   '@types/unist@2.0.10': {}
 
   '@types/unist@3.0.2': {}
@@ -4932,7 +4919,8 @@ snapshots:
     dependencies:
       fill-range: 7.1.1
 
-  buffer-from@1.1.2: {}
+  buffer-from@1.1.2:
+    optional: true
 
   bundle-require@4.2.1(esbuild@0.21.5):
     dependencies:
@@ -7556,8 +7544,10 @@ snapshots:
     dependencies:
       buffer-from: 1.1.2
       source-map: 0.6.1
+    optional: true
 
-  source-map@0.6.1: {}
+  source-map@0.6.1:
+    optional: true
 
   source-map@0.7.4: {}
 

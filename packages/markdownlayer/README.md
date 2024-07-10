@@ -31,7 +31,6 @@ Read the [blog](https://maxwellweru.com/blog/2024/03/replacing-contentlayer-with
 ## Differences from Contentlayer
 
 - The content type is inferred from the extension hence markdown is processed correctly and not forced into MDX.
-- Supply configuration in `next.config.js` as an alternative to `markdownlayer.config.js`.
 - Only local content.
 - Only NextJs support.
 - No JSON/YAML content as they can be loaded directly into the JS/TS code.

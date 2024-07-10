@@ -1,4 +1,5 @@
 import type { ZodError } from 'zod';
+import type { GenerationMode } from '../types';
 
 export interface ErrorData {
   name: string;
@@ -8,17 +9,29 @@ export interface ErrorData {
 
 /**
  * @docs
- * @message Could not find markdownlayer.config.ts or markdownlayer.config.js
+ * @message Invalid generation mode. Accepted values are 'development' or 'production'.
+ * @description
+ * The generation mode must be either 'development' or 'production'.
+ */
+export const InvalidGenerationModeError = {
+  name: 'InvalidGenerationModeError',
+  title: 'Invalid generation mode.',
+  message({ mode }: { readonly mode: GenerationMode }) {
+    return `Invalid generation mode: ${mode}. Accepted values are 'development' or 'production'.`;
+  },
+} satisfies ErrorData;
+
+/**
+ * @docs
+ * @message Could not find markdownlayer.config.ts
  * @description
  * Config file must be provided .
  */
 export const NoConfigFoundError = {
   name: 'NoConfigFoundError',
   title: 'No config file found.',
-  message({ configPath, cwd }: { readonly configPath?: string; readonly cwd: string }) {
-    return configPath
-      ? `Couldn't find ${configPath}`
-      : `Could not find markdownlayer.config.ts or markdownlayer.config.js in ${cwd}.`;
+  message({ configPath }: { readonly configPath?: string }) {
+    return configPath ? `Couldn't find ${configPath}` : `Could not find markdownlayer.config.ts.`;
   },
 } satisfies ErrorData;
 
@@ -33,6 +46,20 @@ export const ConfigNoDefaultExportError = {
   title: 'Config file does not have a default export.',
   message({ configPath, availableExports }: { readonly configPath: string; readonly availableExports: string[] }) {
     return `ConfigNoDefaultExportError (${configPath}): Available exports: ${availableExports.join(', ')}`;
+  },
+} satisfies ErrorData;
+
+/**
+ * @docs
+ * @message ConfigNoDefinitionsError (`CONFIG_PATH`): 'definitions' is required in the config file
+ * @description
+ * The config must have a `definitions` field.
+ */
+export const ConfigNoDefinitionsError = {
+  name: 'ConfigNoDefinitionsError',
+  title: 'Config does not have a definitions field',
+  message({ configPath }: { readonly configPath: string }) {
+    return `ConfigNoDefinitionsError (${configPath}): 'definitions' is required in the config file`;
   },
 } satisfies ErrorData;
 

@@ -15,7 +15,7 @@ import { MarkdownlayerError, MarkdownlayerErrorData, errorMap, getYAMLErrorLine 
 import { getFileLastUpdate, type LastUpdateData } from '../git';
 import type { DocumentDefinition, DocumentDefinitionSchema, DocumentMeta, MarkdownlayerConfigPlugins } from '../types';
 import { bundle, type BundleProps } from './bundle';
-import { getConfig, type GetConfigResult } from './config-file';
+import { getConfig, type ResolvedConfig } from './config-file';
 import type { DataCache } from './data-cache';
 import { getFormat } from './format';
 import {
@@ -42,12 +42,22 @@ export type GenerateOptions = {
    */
   mode: GenerationMode;
 
-  /** Current working directory. */
-  cwd?: string;
+  /**
+   * The path to the configuration file.
+   */
+  configPath?: string;
 };
 
-export async function generate(options: GenerateOptions) {
-  const { mode, cwd = process.cwd() } = options;
+export async function generate({ mode, configPath: providedConfigPath }: GenerateOptions) {
+  const cwd = process.cwd();
+
+  // ensure we have known modes
+  if (mode !== 'development' && mode !== 'production') {
+    throw new MarkdownlayerError({
+      ...MarkdownlayerErrorData.InvalidGenerationModeError,
+      message: MarkdownlayerErrorData.InvalidGenerationModeError.message({ mode }),
+    });
+  }
 
   // close the config watcher if it exists
   if (configWatcher) {
@@ -57,15 +67,14 @@ export async function generate(options: GenerateOptions) {
 
   // get the config (provided in the plugin or compiled from the config file)
   const outputFolder = path.join(cwd, '.markdownlayer');
-  const { configPath, configHash, config } = await getConfig({ cwd, outputFolder });
+  const { configPath, ...config } = await getConfig({ configPath: providedConfigPath });
 
   // generate the content (initial)
-  await generateInnerWatchIfNecessary({ mode, cwd, outputFolder, configPath, configHash, config });
+  await generateInnerWatchIfNecessary({ mode, cwd, outputFolder, configPath, ...config });
 
   // watch for config changes in the content folder (development mode only)
   if (mode === 'development' && configPath) {
     const fileName = path.basename(configPath);
-    const currentConfigPath = configPath;
     configWatcher = chokidar.watch(configPath, { ignoreInitial: true });
     configWatcher.on('all', async (eventName) => {
       if (eventName === 'add') console.log(`${fileName} added`);
@@ -76,8 +85,8 @@ export async function generate(options: GenerateOptions) {
       } else return;
 
       // get the new config and regenerate the content
-      const { configHash, config } = await getConfig({ cwd, outputFolder, currentConfigPath });
-      await generateInnerWatchIfNecessary({ mode, cwd, outputFolder, configPath, configHash, config });
+      const config = await getConfig({ configPath });
+      await generateInnerWatchIfNecessary({ mode, cwd, outputFolder, ...config });
     });
   }
 }
@@ -85,10 +94,10 @@ export async function generate(options: GenerateOptions) {
 type GenerateInnerOptions = Pick<GenerateOptions, 'mode'> & {
   cwd: string;
   outputFolder: string;
-} & GetConfigResult;
+} & ResolvedConfig;
 
 export async function generateInnerWatchIfNecessary(options: GenerateInnerOptions) {
-  const { mode, cwd = process.cwd(), outputFolder, configPath, configHash, config } = options;
+  const { mode, ...config } = options;
 
   // close the content watcher if it exists
   if (contentWatcher) {
@@ -97,7 +106,7 @@ export async function generateInnerWatchIfNecessary(options: GenerateInnerOption
   }
 
   // generate the documents (initial)
-  await generateInner({ mode, cwd, outputFolder, configPath, configHash, config });
+  await generateInner({ mode, ...config });
 
   // watch for content changes in the content folder (development mode only)
   if (mode === 'development') {
@@ -108,7 +117,7 @@ export async function generateInnerWatchIfNecessary(options: GenerateInnerOption
       else if (eventName === 'unlink') console.log(`File deleted: ${path}`);
       else return;
 
-      await generateInner({ mode, cwd, outputFolder, configPath, configHash, config });
+      await generateInner({ mode, ...config });
     });
   }
 }
@@ -119,7 +128,13 @@ async function generateInner(options: GenerateInnerOptions) {
     cwd,
     configPath,
     configHash,
-    config: { caching = true, contentDirPath, patterns, definitions, mdAsMarkdoc = false, ...plugins },
+
+    caching = true,
+    contentDirPath,
+    patterns,
+    definitions,
+    mdAsMarkdoc = false,
+    ...plugins
   } = options;
   let outputFolder = options.outputFolder;
 
@@ -453,7 +468,7 @@ async function writeRootIndexFiles({ outputFolder, configPath, generations }: Wr
   const configModPath = path
     .relative(outputFolder, configPath)
     .replace(/\\/g, '/') // replace windows path separator
-    .replace(/\.[mc]?[jt]s$/i, ''); // remove extension
+    .replace(/\.[jt]s$/i, ''); // remove extension (mjs, cjs, mts, and cts are excluded)
 
   const definitionTypes = Object.keys(generations);
 
