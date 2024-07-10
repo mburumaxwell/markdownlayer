@@ -66,7 +66,6 @@
     "remark-emoji": "5.0.0",
     "remark-frontmatter": "5.0.0",
     "remark-gfm": "4.0.0",
-    "shelljs": "0.8.5",
     "source-map-support": "0.5.21",
     "zod": "3.23.8"
   },
@@ -76,7 +75,6 @@
     "@types/js-beautify": "1.14.3",
     "@types/mdast": "4.0.4",
     "@types/mdx": "2.0.13",
-    "@types/shelljs": "0.8.15",
     "@types/source-map-support": "0.5.10",
     "@types/unist": "3.0.2",
     "mdast-util-directive": "3.0.0",

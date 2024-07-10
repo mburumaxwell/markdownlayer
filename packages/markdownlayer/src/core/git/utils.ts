@@ -1,8 +1,9 @@
 // inspired by Docusaurus at:
 // https://github.com/facebook/docusaurus/blob/4aef958a99bcd7e38886db0c3ba0517f5c1827e7/packages/docusaurus-utils/src/gitUtils.ts#L27
 
+import { execSync, type ExecException } from 'child_process';
+import fs from 'fs';
 import path from 'path';
-import shell from 'shelljs';
 
 /** Custom error thrown when git is not found in `PATH`. */
 export class GitNotFoundError extends Error {}
@@ -81,11 +82,15 @@ export function getFileCommitDate(
   timestamp: number;
   author?: string;
 } {
-  if (!shell.which('git')) {
+  // check if git is installed
+  try {
+    execSync('git --version', { stdio: 'ignore' });
+  } catch (error) {
     throw new GitNotFoundError(`Failed to retrieve git history for "${file}" because git is not installed.`);
   }
 
-  if (!shell.test('-f', file)) {
+  // check if the file exists
+  if (!fs.existsSync(file)) {
     throw new Error(`Failed to retrieve git history for "${file}" because the file does not exist.`);
   }
 
@@ -97,22 +102,24 @@ export function getFileCommitDate(
     .filter(Boolean)
     .join(' ');
 
-  const result = shell.exec(`git log ${args} -- "${path.basename(file)}"`, {
-    // Setting cwd is important, see: https://github.com/facebook/docusaurus/pull/5048
-    cwd: path.dirname(file),
-    silent: true,
-  });
-  if (result.code !== 0) {
-    throw new Error(
-      `Failed to retrieve the git history for file "${file}" with exit code ${result.code}: ${result.stderr}`,
-    );
+  let result: Buffer;
+  try {
+    result = execSync(`git log ${args} -- "${path.basename(file)}"`, {
+      // Setting cwd is important, see: https://github.com/facebook/docusaurus/pull/5048
+      cwd: path.dirname(file),
+      stdio: 'pipe', // To capture stdout and stderr
+    });
+  } catch (error) {
+    const err = error as ExecException;
+    throw new Error(`Failed to retrieve the git history for file "${file}" with exit code ${err.code}: ${err.stderr}`);
   }
+
   let regex = /^(?<timestamp>\d+)$/;
   if (includeAuthor) {
     regex = /^(?<timestamp>\d+),(?<author>.+)$/;
   }
 
-  const output = result.stdout.trim();
+  const output = result.toString().trim();
 
   if (!output) {
     throw new FileNotTrackedError(
