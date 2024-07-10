@@ -1,6 +1,7 @@
 import { defineConfig, Options } from 'tsup';
 
 export default defineConfig((options: Options) => ({
+  target: 'es2020',
   treeshake: false,
   splitting: false,
   entry: [
