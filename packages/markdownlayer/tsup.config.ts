@@ -18,6 +18,6 @@ export default defineConfig((options: Options) => ({
   clean: true,
   shims: true,
   sourcemap: true,
-  external: ['react', 'react-dom', 'react/jsx-runtime', 'next', 'chokidar', 'webpack'],
+  external: ['react', 'react-dom', 'react/jsx-runtime', 'next', 'chokidar'],
   ...options,
 }));

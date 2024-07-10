@@ -5,4 +5,4 @@ const nextConfig = {
   reactStrictMode: true,
 };
 
-export default withMarkdownlayer(nextConfig); // requires markdownlayer.config.ts
+export default withMarkdownlayer(nextConfig);
