@@ -115,7 +115,7 @@ export async function getConfig(options: GetConfigOptions): Promise<GetConfigRes
   }
   outputPath = path.join(cwd, outputFileName); // Needs to be absolute path for ESM import to work
 
-  const esbuildHash = outputPath.match(/compiled-markdownlayer-config-(.+).mjs$/)![1]!;
+  const esbuildHash = outputPath.match(/compiled-markdownlayer-config-([a-zA-Z0-9]+).mjs$/)![1]!;
 
   // Needed in order for source maps of dynamic file to work
   try {
