@@ -51,13 +51,10 @@ export type GenerateOptions = {
 
   /** Current working directory. */
   cwd?: string;
-
-  /** Plugin configuration. */
-  pluginConfig?: MarkdownlayerConfig;
 };
 
 export async function generate(options: GenerateOptions) {
-  const { mode, cwd = process.cwd(), pluginConfig } = options;
+  const { mode, cwd = process.cwd() } = options;
 
   // close the config watcher if it exists
   if (configWatcher) {
@@ -67,7 +64,7 @@ export async function generate(options: GenerateOptions) {
 
   // get the config (provided in the plugin or compiled from the config file)
   const outputFolder = path.join(cwd, '.markdownlayer');
-  const { configPath, configHash, config } = await getConfig({ cwd, outputFolder, pluginConfig });
+  const { configPath, configHash, config } = await getConfig({ cwd, outputFolder });
 
   // generate the content (initial)
   await generateInnerWatchIfNecessary({ mode, cwd, outputFolder, config, configHash });
@@ -86,7 +83,7 @@ export async function generate(options: GenerateOptions) {
       } else return;
 
       // get the new config and regenerate the content
-      const { configHash, config } = await getConfig({ cwd, outputFolder, pluginConfig, currentConfigPath });
+      const { configHash, config } = await getConfig({ cwd, outputFolder, currentConfigPath });
       await generateInnerWatchIfNecessary({ mode, cwd, outputFolder, config, configHash });
     });
   }

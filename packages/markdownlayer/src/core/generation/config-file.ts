@@ -1,6 +1,5 @@
 import * as esbuild from 'esbuild';
 import fs from 'fs';
-import hash from 'object-hash';
 import path from 'path';
 
 import { ConfigNoDefaultExportError, ConfigReadError, MarkdownlayerErrorData, NoConfigFoundError } from '../errors';
@@ -19,9 +18,6 @@ export type GetConfigOptions = {
    * @example /Users/mike/Documents/markdownlayer/examples/starter/.markdownlayer
    */
   outputFolder: string;
-
-  /** The configuration, if any, that is passed via the NextJS plugin. */
-  pluginConfig?: MarkdownlayerConfig;
 
   /**
    * The path to the current configuration file, if any.
@@ -46,14 +42,7 @@ export type GetConfigResult = {
 };
 
 export async function getConfig(options: GetConfigOptions): Promise<GetConfigResult> {
-  const { cwd, outputFolder, pluginConfig, currentConfigPath } = options;
-
-  if (pluginConfig) {
-    return {
-      configHash: hash(pluginConfig, {}),
-      config: pluginConfig,
-    };
-  }
+  const { cwd, outputFolder, currentConfigPath } = options;
 
   let configPath: string | undefined = currentConfigPath;
   if (configPath && !fs.existsSync(configPath)) {
