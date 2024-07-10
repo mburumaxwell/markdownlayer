@@ -10,7 +10,7 @@ export interface ErrorData {
  * @docs
  * @message Could not find markdownlayer.config.ts or markdownlayer.config.js
  * @description
- * Config file must be provided or passed in the `withMarkdownlayer` function.
+ * Config file must be provided .
  */
 export const NoConfigFoundError = {
   name: 'NoConfigFoundError',
@@ -18,7 +18,7 @@ export const NoConfigFoundError = {
   message({ configPath, cwd }: { readonly configPath?: string; readonly cwd: string }) {
     return configPath
       ? `Couldn't find ${configPath}`
-      : `Could not find markdownlayer.config.ts or markdownlayer.config.js in ${cwd}. Create one or pass the config in the 'withMarkdownlayer' function.`;
+      : `Could not find markdownlayer.config.ts or markdownlayer.config.js in ${cwd}.`;
   },
 } satisfies ErrorData;
 
