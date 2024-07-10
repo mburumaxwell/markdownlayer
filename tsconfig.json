@@ -16,9 +16,9 @@
     "strict": true,
     // Enforce the usage of type-only imports when needed, which helps avoid bundling issues.
     "verbatimModuleSyntax": true,
-    "lib": ["ES2015", "DOM", "DOM.Iterable", "ESNext"],
+    "lib": ["ES2020", "DOM", "DOM.Iterable", "ESNext"],
     "module": "ESNext",
-    "target": "ES2015",
+    "target": "ES2020",
     "jsx": "react-jsx"
   }
 }
