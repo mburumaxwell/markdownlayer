@@ -1,96 +1,128 @@
 import * as esbuild from 'esbuild';
-import fs from 'fs';
+import { access } from 'node:fs/promises';
+import { pathToFileURL } from 'node:url';
 import path from 'path';
 
-import { ConfigNoDefaultExportError, ConfigReadError, MarkdownlayerErrorData, NoConfigFoundError } from '../errors';
+import { name } from '../../../package.json';
+import {
+  ConfigNoDefaultExportError,
+  ConfigNoDefinitionsError,
+  ConfigReadError,
+  MarkdownlayerErrorData,
+  NoConfigFoundError,
+} from '../errors';
 import type { MarkdownlayerConfig } from '../types';
-
-const possibleConfigFileNames = ['markdownlayer.config.ts', 'markdownlayer.config.js'];
 
 /** Represents the options for getting the configuration. */
 export type GetConfigOptions = {
-  /** The current working directory. */
-  cwd: string;
-
   /**
-   * The output folder for the compiled file.
-   *
-   * @example /Users/mike/Documents/markdownlayer/examples/starter/.markdownlayer
+   * The path to the configuration file, if any.
    */
-  outputFolder: string;
-
-  /**
-   * The path to the current configuration file, if any.
-   * This is only set when getting the configuration file subsequent times which should only happen when watching the file for changes.
-   */
-  currentConfigPath?: string;
+  configPath?: string;
 };
 
 /** Represents the result of getting the configuration. */
-export type GetConfigResult = {
+export type ResolvedConfig = MarkdownlayerConfig & {
   /** The path to the configuration file. */
-  configPath: string;
+  readonly configPath: string;
 
   /**
    * The hash of the configuration.
    * This is used to determine if the configuration has changed.
    */
-  configHash: string;
+  readonly configHash: string;
 
-  /** The configuration. */
-  config: MarkdownlayerConfig;
+  /**
+   * Dependencies of the config file
+   */
+  readonly configImports: string[];
 };
 
-export async function getConfig(options: GetConfigOptions): Promise<GetConfigResult> {
-  const { cwd, outputFolder, currentConfigPath } = options;
+export async function getConfig(options: GetConfigOptions = {}): Promise<ResolvedConfig> {
+  const { configPath: providedConfigPath } = options;
 
-  let configPath: string | undefined = currentConfigPath;
-  if (configPath && !fs.existsSync(configPath)) {
+  // prettier-ignore
+  const files = providedConfigPath != null ? [providedConfigPath] : [
+    name + '.config.js',
+    name + '.config.ts',
+    name + '.config.mjs',
+    name + '.config.mts',
+    name + '.config.cjs',
+    name + '.config.cts'
+  ]
+
+  const configPath = await searchFiles(files);
+  if (configPath == null) {
     throw new NoConfigFoundError({
       ...MarkdownlayerErrorData.NoConfigFoundError,
-      message: MarkdownlayerErrorData.NoConfigFoundError.message({ cwd, configPath }),
+      message: MarkdownlayerErrorData.NoConfigFoundError.message({ configPath: providedConfigPath }),
     });
   }
 
-  if (!configPath) {
-    for (const name of possibleConfigFileNames) {
-      configPath = path.join(cwd, name);
-      if (fs.existsSync(configPath)) break;
+  const [loadedConfig, configHash, configImports] = await loadConfig(configPath);
+
+  return {
+    ...loadedConfig,
+    configPath,
+    configHash,
+    configImports,
+  };
+}
+
+/**
+ * recursive 3-level search files in cwd and its parent directories
+ * @param files filenames (relative or absolute)
+ * @param cwd start directory
+ * @param depth search depth
+ * @returns filename first searched
+ */
+async function searchFiles(
+  files: string[],
+  cwd: string = process.cwd(),
+  depth: number = 3,
+): Promise<string | undefined> {
+  for (const file of files) {
+    try {
+      const configPath = path.resolve(cwd, file);
+      await access(configPath); // check file exists
+      return configPath;
+    } catch {
+      continue;
     }
   }
+  if (depth > 0 && !(cwd === '/' || cwd.endsWith(':\\'))) {
+    return await searchFiles(files, path.dirname(cwd), depth - 1);
+  }
+}
 
-  if (!configPath) {
-    throw new NoConfigFoundError({
-      ...MarkdownlayerErrorData.NoConfigFoundError,
-      message: MarkdownlayerErrorData.NoConfigFoundError.message({ cwd }),
-    });
+/**
+ * bundle and load user config file
+ * @param path config file path
+ * @returns user config object and dependencies
+ */
+async function loadConfig(configPath: string): Promise<[MarkdownlayerConfig, string, string[]]> {
+  if (!/\.(js|mjs|cjs|ts|mts|cts)$/.test(configPath)) {
+    const ext = configPath.split('.').pop();
+    throw new Error(`not supported config file with '${ext}' extension`);
   }
 
-  const cacheDir = path.join(outputFolder, 'cache');
-  let outputPath = path.join(cacheDir, 'compiled-markdownlayer-config.mjs');
-  fs.mkdirSync(path.dirname(outputPath), { recursive: true });
+  const outfile = path.join(configPath, '../node_modules/compiled-markdownlayer-config.mjs');
 
-  const buildOptions: esbuild.BuildOptions = {
+  const result = await esbuild.build({
     entryPoints: [configPath],
     entryNames: '[name]-[hash]',
-    outfile: outputPath,
-    sourcemap: true,
-    platform: 'node',
-    target: 'es2020',
-    format: 'esm',
-    // needed in case models are co-located with React components
-    jsx: 'transform',
+    outfile,
     bundle: true,
-    logLevel: 'silent',
+    write: true,
+    format: 'esm',
+    target: 'node18',
+    platform: 'node',
     metafile: true,
-    absWorkingDir: cwd,
-    plugins: [makeAllPackagesExternalPlugin(configPath)],
-  };
+    packages: 'external',
+  });
 
-  // Build the configuration file
-  const buildResult = await esbuild.build(buildOptions);
-  if (buildResult.errors.length > 0) {
-    const error = buildResult.errors[0];
+  if (result.errors.length > 0) {
+    const error = result.errors[0];
     throw new ConfigReadError({
       ...MarkdownlayerErrorData.ConfigReadError,
       message: error.text,
@@ -103,84 +135,53 @@ export async function getConfig(options: GetConfigOptions): Promise<GetConfigRes
     });
   }
 
-  // Will look like `path.join(cacheDir, 'compiled-markdownlayer-config-[SOME_HASH].mjs')
-  const outputFileName = Object.keys(buildResult.metafile!.outputs).find(
+  // Will look like `node_modules/compiled-markdownlayer-config-[SOME_HASH].mjs'
+  const outputFile = Object.keys(result.metafile!.outputs).find(
     (f) => f.match(/compiled-markdownlayer-config-.+.mjs$/) !== null,
   );
-  if (!outputFileName) {
+  if (!outputFile) {
     throw new ConfigReadError({
       ...MarkdownlayerErrorData.ConfigReadError,
       message: 'Could not find output file name',
     });
   }
-  outputPath = path.join(cwd, outputFileName); // Needs to be absolute path for ESM import to work
+  const hash = outputFile.match(/compiled-markdownlayer-config-([a-zA-Z0-9]+).mjs$/)![1]!;
 
-  const esbuildHash = outputPath.match(/compiled-markdownlayer-config-([a-zA-Z0-9]+).mjs$/)![1]!;
+  const configUrl = pathToFileURL(outputFile);
+  configUrl.searchParams.set('t', Date.now().toString()); // prevent import cache
 
-  // Needed in order for source maps of dynamic file to work
+  let mod;
   try {
-    (await import('source-map-support')).install();
+    mod = await import(configUrl.href);
   } catch (error) {
     throw new ConfigReadError({
       ...MarkdownlayerErrorData.ConfigReadError,
-      message: MarkdownlayerErrorData.ConfigReadError.message({
-        configPath,
-        error: error as Error,
-      }),
+      message: MarkdownlayerErrorData.ConfigReadError.message({ configPath, error: error as Error }),
       stack: (error as Error).stack,
+      location: { file: outputFile },
     });
   }
 
-  let exports: any; // eslint-disable-line @typescript-eslint/no-explicit-any
-  try {
-    // NOTES:
-    // 1) `?x=` suffix needed in case of re-loading when watching the config file for changes
-    // 2) `file://` prefix is needed for Windows to work properly
-    exports = await import(`file://${outputPath}?x=${Date.now()}`);
-  } catch (error) {
-    throw new ConfigReadError({
-      ...MarkdownlayerErrorData.ConfigReadError,
-      message: MarkdownlayerErrorData.ConfigReadError.message({
-        configPath,
-        error: error as Error,
-      }),
-      stack: (error as Error).stack,
-      location: {
-        file: outputPath,
-      },
-    });
-  }
-
-  if (!('default' in exports)) {
+  if (!('default' in mod)) {
     throw new ConfigNoDefaultExportError({
       ...MarkdownlayerErrorData.ConfigNoDefaultExportError,
       message: MarkdownlayerErrorData.ConfigNoDefaultExportError.message({
         configPath,
-        availableExports: Object.keys(exports),
+        availableExports: Object.keys(mod),
       }),
     });
   }
 
-  return {
-    configPath: configPath,
-    configHash: esbuildHash,
-    config: exports.default as MarkdownlayerConfig,
-  };
-}
+  if (!('definitions' in mod.default)) {
+    throw new ConfigNoDefinitionsError({
+      ...MarkdownlayerErrorData.ConfigNoDefinitionsError,
+      message: MarkdownlayerErrorData.ConfigNoDefinitionsError.message({
+        configPath,
+      }),
+    });
+  }
 
-function makeAllPackagesExternalPlugin(configPath: string): esbuild.Plugin {
-  return {
-    name: 'make-all-packages-external',
-    setup: (build) => {
-      const filter = /^[^./]|^\.[^./]|^\.\.[^/]/; // Must not start with "/" or "./" or "../"
-      build.onResolve({ filter }, (args) => {
-        // avoid marking config file as external
-        if (args.path.includes(configPath)) {
-          return { path: args.path, external: false };
-        }
+  const deps = Object.keys(result.metafile.inputs).map((file) => path.join(configPath, '..', file));
 
-        return { path: args.path, external: true };
-      });
-    },
-  };
+  return [mod.default, hash, deps];
 }

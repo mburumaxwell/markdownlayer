@@ -3,8 +3,7 @@ import type { NextConfig } from 'next';
 import type { GenerationMode } from './core';
 
 export type MarkdownlayerPluginOptions = {
-  /** Currently unused! */
-  configPath: string;
+  configPath?: string;
 };
 
 const defaultOptions: MarkdownlayerPluginOptions = {

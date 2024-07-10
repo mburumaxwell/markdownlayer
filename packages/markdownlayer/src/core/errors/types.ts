@@ -14,7 +14,12 @@ export interface ErrorLocation {
   column?: number;
 }
 
-type ErrorTypes = 'MarkdownlayerError' | 'NoConfigFoundError' | 'ConfigReadError' | 'ConfigNoDefaultExportError';
+type ErrorTypes =
+  | 'MarkdownlayerError'
+  | 'NoConfigFoundError'
+  | 'ConfigReadError'
+  | 'ConfigNoDefaultExportError'
+  | 'ConfigNoDefinitionsError';
 
 export function isMarkdownlayerError(e: unknown): e is MarkdownlayerError {
   return e instanceof MarkdownlayerError;
@@ -97,5 +102,17 @@ export class ConfigNoDefaultExportError extends MarkdownlayerError {
 
   static is(err: unknown): err is ConfigNoDefaultExportError {
     return (err as ConfigNoDefaultExportError).type === 'ConfigNoDefaultExportError';
+  }
+}
+
+export class ConfigNoDefinitionsError extends MarkdownlayerError {
+  type: ErrorTypes = 'ConfigNoDefinitionsError';
+
+  constructor(props: ErrorProperties, options?: ErrorOptions) {
+    super(props, options);
+  }
+
+  static is(err: unknown): err is ConfigNoDefinitionsError {
+    return (err as ConfigNoDefinitionsError).type === 'ConfigNoDefinitionsError';
   }
 }
