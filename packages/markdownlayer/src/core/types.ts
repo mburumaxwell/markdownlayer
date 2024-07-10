@@ -168,7 +168,7 @@ export type BaseDoc = DocumentMeta & {
   tableOfContents?: TocItem[];
 };
 
-export interface DocumentDefinitionGitOptions {
+export type DocumentDefinitionGitOptions = {
   /**
    * Whether to use last update information from git commit history.
    *
@@ -200,12 +200,12 @@ export interface DocumentDefinitionGitOptions {
    * @default false
    */
   authors?: boolean;
-}
+};
 
 /**
  * Represents the definition of a document.
  */
-export interface DocumentDefinition {
+export type DocumentDefinition = {
   /**
    * Format of contents of the files
    * - `detect`: Detects the format based on the file extension
@@ -255,7 +255,7 @@ export interface DocumentDefinition {
    * @param document The document to validate
    */
   validate?: (document: BaseDoc) => Promise<void>;
-}
+};
 
 export type MarkdownlayerConfigPlugins = {
   /** Options for using markdoc. */
@@ -328,7 +328,9 @@ export type MarkdownlayerConfigMarkdoc = {
   transformConfig?: MarkdocConfig;
 };
 
-export type MarkdownlayerConfig = {
+export type DocumentDefinitions = { [type: string]: DocumentDefinition };
+
+export type MarkdownlayerConfig<T extends DocumentDefinitions = DocumentDefinitions> = {
   /**
    * Whether to cache the generated documents.
    * This is useful for development mode to speed up HMR.
@@ -361,7 +363,7 @@ export type MarkdownlayerConfig = {
    * Definitions of documents to generate.
    * The key is the type of the document and should match your documents directory name in `contentDirPath`.
    */
-  definitions: Record<string, DocumentDefinition>;
+  definitions: T;
 
   /**
    * Whether to use mdoc for `.md` files instead of mdx.
@@ -371,3 +373,10 @@ export type MarkdownlayerConfig = {
    */
   mdAsMarkdoc?: boolean;
 } & MarkdownlayerConfigPlugins;
+
+/**
+ * Define config (identity function for type inference)
+ */
+export function defineConfig<T extends DocumentDefinitions>(config: MarkdownlayerConfig<T>): MarkdownlayerConfig<T> {
+  return config;
+}

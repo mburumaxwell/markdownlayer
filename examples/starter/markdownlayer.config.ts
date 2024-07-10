@@ -1,9 +1,9 @@
-import type { MarkdownlayerConfig } from 'markdownlayer/core';
+import { defineConfig } from 'markdownlayer/core';
 import rehypeSlug from 'rehype-slug';
 import { z } from 'zod';
 import { rehypeAutolinkHeadings, rehypePrettyCode } from './src/markdownlayer';
 
-const markdownConfig: MarkdownlayerConfig = {
+export default defineConfig({
   contentDirPath: './src/content',
   definitions: {
     legal: {
@@ -74,6 +74,4 @@ const markdownConfig: MarkdownlayerConfig = {
   },
   remarkPlugins: [],
   rehypePlugins: [rehypeSlug, rehypeAutolinkHeadings, rehypePrettyCode],
-};
-
-export default markdownConfig;
+});

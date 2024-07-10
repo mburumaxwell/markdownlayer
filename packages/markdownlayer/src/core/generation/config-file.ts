@@ -29,7 +29,7 @@ export type GetConfigOptions = {
 /** Represents the result of getting the configuration. */
 export type GetConfigResult = {
   /** The path to the configuration file. */
-  configPath?: string;
+  configPath: string;
 
   /**
    * The hash of the configuration.
