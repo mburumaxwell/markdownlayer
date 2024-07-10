@@ -8,21 +8,14 @@ import path from 'path';
 import type { ReadTimeResults } from 'reading-time';
 import readingTime from 'reading-time';
 import { z, type ZodSchema } from 'zod';
-import { printNode, zodToTs } from 'zod-to-ts';
 
 import type { BaseDoc, GenerationMode, TocItem } from '@/core/types';
 import { version } from '../../../package.json';
 import { MarkdownlayerError, MarkdownlayerErrorData, errorMap, getYAMLErrorLine } from '../errors';
 import { getFileLastUpdate, type LastUpdateData } from '../git';
-import type {
-  DocumentDefinition,
-  DocumentDefinitionSchema,
-  DocumentMeta,
-  MarkdownlayerConfig,
-  MarkdownlayerConfigPlugins,
-} from '../types';
+import type { DocumentDefinition, DocumentDefinitionSchema, DocumentMeta, MarkdownlayerConfigPlugins } from '../types';
 import { bundle, type BundleProps } from './bundle';
-import { getConfig } from './config-file';
+import { getConfig, type GetConfigResult } from './config-file';
 import type { DataCache } from './data-cache';
 import { getFormat } from './format';
 import {
@@ -67,7 +60,7 @@ export async function generate(options: GenerateOptions) {
   const { configPath, configHash, config } = await getConfig({ cwd, outputFolder });
 
   // generate the content (initial)
-  await generateInnerWatchIfNecessary({ mode, cwd, outputFolder, config, configHash });
+  await generateInnerWatchIfNecessary({ mode, cwd, outputFolder, configPath, configHash, config });
 
   // watch for config changes in the content folder (development mode only)
   if (mode === 'development' && configPath) {
@@ -84,7 +77,7 @@ export async function generate(options: GenerateOptions) {
 
       // get the new config and regenerate the content
       const { configHash, config } = await getConfig({ cwd, outputFolder, currentConfigPath });
-      await generateInnerWatchIfNecessary({ mode, cwd, outputFolder, config, configHash });
+      await generateInnerWatchIfNecessary({ mode, cwd, outputFolder, configPath, configHash, config });
     });
   }
 }
@@ -92,12 +85,10 @@ export async function generate(options: GenerateOptions) {
 type GenerateInnerOptions = Pick<GenerateOptions, 'mode'> & {
   cwd: string;
   outputFolder: string;
-  config: MarkdownlayerConfig;
-  configHash: string;
-};
+} & GetConfigResult;
 
 export async function generateInnerWatchIfNecessary(options: GenerateInnerOptions) {
-  const { mode, cwd = process.cwd(), outputFolder, config, configHash } = options;
+  const { mode, cwd = process.cwd(), outputFolder, configPath, configHash, config } = options;
 
   // close the content watcher if it exists
   if (contentWatcher) {
@@ -106,7 +97,7 @@ export async function generateInnerWatchIfNecessary(options: GenerateInnerOption
   }
 
   // generate the documents (initial)
-  await generateInner({ mode, cwd, outputFolder, config, configHash });
+  await generateInner({ mode, cwd, outputFolder, configPath, configHash, config });
 
   // watch for content changes in the content folder (development mode only)
   if (mode === 'development') {
@@ -117,7 +108,7 @@ export async function generateInnerWatchIfNecessary(options: GenerateInnerOption
       else if (eventName === 'unlink') console.log(`File deleted: ${path}`);
       else return;
 
-      await generateInner({ mode, cwd, outputFolder, config, configHash });
+      await generateInner({ mode, cwd, outputFolder, configPath, configHash, config });
     });
   }
 }
@@ -126,6 +117,7 @@ async function generateInner(options: GenerateInnerOptions) {
   const {
     mode,
     cwd,
+    configPath,
     configHash,
     config: { caching = true, contentDirPath, patterns, definitions, mdAsMarkdoc = false, ...plugins },
   } = options;
@@ -164,7 +156,7 @@ async function generateInner(options: GenerateInnerOptions) {
   fs.writeFileSync(cacheFilePath, JSON.stringify(cache, null, 2), { encoding: 'utf8' });
 
   // write files that would be imported by the application (index.d.ts, index.mjs)
-  await writeRootIndexFiles({ outputFolder, generations });
+  await writeRootIndexFiles({ outputFolder, configPath, generations });
 
   // print some stats
   const { cached, total }: GeneratedCount = Object.values(generations)
@@ -451,30 +443,35 @@ async function generateDocuments(options: GenerateDocsOptions): Promise<Generati
   return { schema, counts: { cached, generated, total: docs.length } };
 }
 
-type WriteRootIndexFilesOptions = { outputFolder: string; generations: Record<string, GenerationResult> };
-async function writeRootIndexFiles({ outputFolder, generations }: WriteRootIndexFilesOptions) {
+type WriteRootIndexFilesOptions = {
+  outputFolder: string;
+  configPath: string;
+  generations: Record<string, GenerationResult>;
+};
+async function writeRootIndexFiles({ outputFolder, configPath, generations }: WriteRootIndexFilesOptions) {
+  // generate entry according to `config.collections`
+  const configModPath = path
+    .relative(outputFolder, configPath)
+    .replace(/\\/g, '/') // replace windows path separator
+    .replace(/\.[mc]?[jt]s$/i, ''); // remove extension
+
   const definitionTypes = Object.keys(generations);
 
   // write the index.d.ts file
   let lines: string[] = [
     autogeneratedNote,
     '',
-    `import type { ImageData, BaseDoc } from 'markdownlayer/core';`,
+    `import type { BaseDoc } from 'markdownlayer/core';`,
+    `import config from '${configModPath}'`,
     '',
-    `export type { ImageData };`,
+    `type Definitions = typeof config.definitions`,
     '',
     ...Object.entries(generations).map(([type, { schema }]) => {
-      const converted = (schema ? printNode(zodToTs(schema).node) : undefined)?.replace(';\n}', ';\n  }');
-      return `export type ${generateTypeName(type)} = BaseDoc & {\n  data: ${converted ?? 'any'};\n};\n`;
+      const converted = schema ? `Definitions['${type}']['schema']['_output']` : undefined;
+      return `export type ${generateTypeName(type)} = BaseDoc & { data: ${converted ?? 'any'}; };`;
     }),
     '',
-    `export type DocumentTypes = ${definitionTypes.map((t) => generateTypeName(t)).join(` | `)}`,
-    `export type DocumentTypeNames = '${definitionTypes.join(`' | '`)}'`,
-    '',
-    '',
     ...definitionTypes.map((type) => `export declare const ${getDataVariableName(type)}: ${generateTypeName(type)}[];`),
-    '',
-    `export declare const allDocumentTypes: DocumentTypes[]`,
     '',
   ];
   let filePath = path.join(outputFolder, 'index.d.ts');

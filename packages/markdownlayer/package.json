@@ -68,8 +68,7 @@
     "remark-gfm": "4.0.0",
     "shelljs": "0.8.5",
     "source-map-support": "0.5.21",
-    "zod": "3.23.8",
-    "zod-to-ts": "1.2.0"
+    "zod": "3.23.8"
   },
   "devDependencies": {
     "@types/estree": "1.0.5",
