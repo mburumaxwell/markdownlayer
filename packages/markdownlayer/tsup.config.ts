@@ -7,7 +7,7 @@ export default defineConfig((options: Options) => ({
   entry: [
     'src/index.ts',
     'src/core/index.ts',
-    'src/hooks/index.ts',
+    'src/react/index.ts',
 
     // Remark plugins
     'src/remark/index.ts',

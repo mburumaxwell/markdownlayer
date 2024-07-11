@@ -1,6 +1,6 @@
+import type { GenerationMode } from '@/core';
 import { generate } from '@/core/generation';
 import type { NextConfig } from 'next';
-import type { GenerationMode } from './core';
 
 export type MayBePromise<T> = T | Promise<T>;
 

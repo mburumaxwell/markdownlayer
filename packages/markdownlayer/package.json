@@ -12,9 +12,9 @@
       "import": "./dist/core/index.js",
       "types": "./dist/core/index.d.ts"
     },
-    "./hooks": {
-      "import": "./dist/hooks/index.js",
-      "types": "./dist/hooks/index.d.ts"
+    "./react": {
+      "import": "./dist/react/index.js",
+      "types": "./dist/react/index.d.ts"
     },
     "./remark": {
       "import": "./dist/remark/index.js",
@@ -23,18 +23,10 @@
   },
   "typesVersions": {
     "*": {
-      ".": [
-        "./dist"
-      ],
-      "core": [
-        "./dist/core"
-      ],
-      "hooks": [
-        "./dist/hooks"
-      ],
-      "remark": [
-        "./dist/remark"
-      ]
+      ".": ["./dist"],
+      "core": ["./dist/core"],
+      "react": ["./dist/react"],
+      "remark": ["./dist/remark"]
     }
   },
   "files": [
