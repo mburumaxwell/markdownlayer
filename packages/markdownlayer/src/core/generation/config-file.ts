@@ -106,7 +106,7 @@ async function loadConfig(configPath: string): Promise<[MarkdownlayerConfig, str
     throw new Error(`not supported config file with '${ext}' extension`);
   }
 
-  const outfile = path.join(configPath, '../node_modules/compiled-markdownlayer-config.mjs');
+  const outfile = path.join(configPath, `../.${name}/cache/compiled-markdownlayer-config.mjs`);
 
   const result = await esbuild.build({
     entryPoints: [configPath],
