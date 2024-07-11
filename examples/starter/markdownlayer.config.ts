@@ -22,10 +22,8 @@ export default defineConfig({
     },
     'blog-posts': {
       schema: z.object({
-        title: z.string({ description: 'The title of the blog post' }),
-        description: z.string({
-          description: 'Short description that is used for SEO, in RSS/ATOM feed, and in some subtitles',
-        }),
+        title: z.string(),
+        description: z.string(),
         published: isodate(),
         updated: isodate(),
         authors: z.string().array(),
@@ -41,10 +39,7 @@ export default defineConfig({
         published: isodate(),
         updated: isodate().optional(),
         category: z.enum(['sdk', 'dashboard', 'api', 'developer']).optional(),
-        link: z
-          .string({ description: 'Link for more information about the changelog such as docs or blog' })
-          .url()
-          .optional(),
+        link: z.string().url().optional(),
       }),
       git: false,
     },
@@ -52,12 +47,8 @@ export default defineConfig({
       schema: ({ image }) =>
         z.object({
           title: z.string(),
-          description: z.string({
-            description: 'Short description that is used for SEO, in RSS/ATOM feed, and in some subtitles',
-          }),
-          logo: image().refine((img) => img.width >= 128, {
-            message: 'The logo must be at least 128 pixels wide!',
-          }),
+          description: z.string(),
+          logo: image().refine((img) => img.width >= 128, { message: 'The logo must be at least 128 pixels wide!' }),
           start: isodate(),
           end: isodate().optional(),
           website: z.string().url().optional(),
@@ -67,9 +58,7 @@ export default defineConfig({
     guide: {
       schema: z.object({
         title: z.string(),
-        description: z.string({
-          description: 'Short description that is used for SEO, in RSS/ATOM feed, and in some subtitles',
-        }),
+        description: z.string(),
         updated: isodate().optional(),
         authors: z.string().array().default([]),
         draft: z.boolean().default(false),
