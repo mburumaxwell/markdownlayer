@@ -10,11 +10,18 @@ import type { ReadTimeResults } from 'reading-time';
 import readingTime from 'reading-time';
 import { z, type ZodSchema } from 'zod';
 
-import type { BaseDoc, GenerationMode, TocItem } from '@/core/types';
 import { version } from '../../../package.json';
 import { MarkdownlayerError, MarkdownlayerErrorData, errorMap, getYAMLErrorLine } from '../errors';
 import { getFileLastUpdate, type LastUpdateData } from '../git';
-import type { DocumentDefinition, DocumentDefinitionSchema, DocumentMeta, MarkdownlayerConfigPlugins } from '../types';
+import type {
+  BaseDoc,
+  DocumentDefinition,
+  DocumentDefinitionSchema,
+  DocumentMeta,
+  GenerationMode,
+  MarkdownlayerConfigPlugins,
+  TocItem,
+} from '../types';
 import { bundle, type BundleProps } from './bundle';
 import { getConfig, type ResolvedConfig } from './config-file';
 import type { DataCache } from './data-cache';

@@ -87,7 +87,8 @@ export type DocumentBody = {
   raw: string;
 
   /**
-   * Pre-bundled react component to be rendered using hooks imported from `markdownlayer/hooks`.
+   * Pre-bundled react component to be rendered using the `<Markdownlayer {...} />`
+   * component or various hooks imported from `markdownlayer/react`.
    * Check the examples for how to use this.
    */
   code: string;

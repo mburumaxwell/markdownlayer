@@ -1,5 +1,5 @@
 import type { BaseDoc } from 'markdownlayer/core';
-import { useMDXComponent, useMdocComponent } from 'markdownlayer/hooks';
+import { Markdownlayer as MarkdownlayerImpl } from 'markdownlayer/react';
 import type { Route } from 'next';
 import Link from 'next/link';
 import type { TweetProps } from 'react-tweet';
@@ -43,18 +43,7 @@ export function Markdownlayer({ doc, className }: MarkdownlayerProps) {
   const code = doc.body.code;
   return (
     <div className={`prose dark:prose-invert max-w-none ${className}`}>
-      {(format == 'md' || format == 'mdx') && <MdOrMdx code={code} />}
-      {format == 'mdoc' && <Mdoc code={code} />}
+      <MarkdownlayerImpl format={format} code={code} components={components} />
     </div>
   );
-}
-
-function Mdoc({ code }: { code: string }) {
-  const MdocComponent = useMdocComponent(code, components);
-  return <>{MdocComponent}</>;
-}
-
-function MdOrMdx({ code }: { code: string }) {
-  const MdxComponent = useMDXComponent(code);
-  return <MdxComponent components={{ ...components }} />;
 }
