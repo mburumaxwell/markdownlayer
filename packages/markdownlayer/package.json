@@ -1,6 +1,6 @@
 {
   "name": "markdownlayer",
-  "version": "0.4.0-beta.3",
+  "version": "0.4.0-beta.4",
   "type": "module",
   "types": "./dist/index.d.ts",
   "exports": {
@@ -23,10 +23,18 @@
   },
   "typesVersions": {
     "*": {
-      ".": ["./dist"],
-      "core": ["./dist/core"],
-      "react": ["./dist/react"],
-      "remark": ["./dist/remark"]
+      ".": [
+        "./dist"
+      ],
+      "core": [
+        "./dist/core"
+      ],
+      "react": [
+        "./dist/react"
+      ],
+      "remark": [
+        "./dist/remark"
+      ]
     }
   },
   "files": [
