@@ -1,5 +1,29 @@
 # markdownlayer
 
+## 0.4.0-beta.4
+
+### Minor Changes
+
+- 3348332: No longer need to produce package.json in the generated folder
+- ecbefbf: Infer types from config file by reference instead of generating them.
+  This improves the dev experience because changes in schema reflect instantly instead of waiting for a fresh build.
+- 11a32b5: Revert to using a mix of JSON and MJS for generated files.
+  This was originally introduced in the engine rewrite in #109 (363bb665a68f0ee69bbebe5c28c1000c2a68d833) to avoid losing type information. However, that comes at a performance penalty that is not worth it.
+- f6fb7fd: Added react export to replace the hooks export and included a default react component to reduce boilerplate code.
+- 69d0193: Improve watcher for files.
+  Using one watcher is more efficient since we can merge the files/directories for which we expect changes. This allows watching on config-related files such as additional remark plugins.
+  Consequently, the config is only rebuilt when there are changes to it or its related files.
+- afc25b5: No longer support passing of config via plugin.
+  This paves way for type inference from the config file.
+- 9cefc89: Support passing of a custom config file and improve config processing as inspired by velite
+- 7352ab1: Support for turbopack.
+  `withMarkdownlayer` must be the last plugin in the chain because the plugin returns a Promise, which is compatible with Next.js, but other plugins may not expect this behavior.
+- 2f94329: Ignore files starting with a dot or underscore
+
+### Patch Changes
+
+- 32d8fdf: Replace shelljs with child_process
+
 ## 0.4.0-beta.3
 
 ### Patch Changes
