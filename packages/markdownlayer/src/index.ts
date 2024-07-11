@@ -2,6 +2,8 @@ import { generate } from '@/core/generation';
 import type { NextConfig } from 'next';
 import type { GenerationMode } from './core';
 
+export type MayBePromise<T> = T | Promise<T>
+
 export type MarkdownlayerPluginOptions = {
   configPath?: string;
 };
@@ -41,7 +43,7 @@ const defaultOptions: MarkdownlayerPluginOptions = {
 export const withMarkdownlayer = createMarkdownlayerPlugin(defaultOptions);
 
 export function createMarkdownlayerPlugin(pluginOptions: MarkdownlayerPluginOptions) {
-  return async function (nextConfig: Partial<NextConfig> = {}): Promise<Partial<NextConfig>> {
+  return async function (nextConfig: MayBePromise<Partial<NextConfig>> = {}): Promise<Partial<NextConfig>> {
     const [command] = process.argv.slice(2).filter((arg) => !arg.startsWith('-'));
     if (command === 'build' || command === 'dev') {
       const mode: GenerationMode = command === 'dev' ? 'development' : 'production';
