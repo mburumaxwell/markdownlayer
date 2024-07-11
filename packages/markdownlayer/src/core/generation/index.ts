@@ -12,7 +12,7 @@ import { z, type ZodSchema } from 'zod';
 
 import { version } from '../../../package.json';
 import { MarkdownlayerError, MarkdownlayerErrorData, errorMap, getYAMLErrorLine } from '../errors';
-import { getFileLastUpdate, type LastUpdateData } from '../git';
+import { getGitFileLastUpdate, type GitFileLastUpdateResult } from '../git';
 import type {
   BaseDoc,
   DocumentDefinition,
@@ -290,13 +290,13 @@ async function generateDocuments(options: GenerateDocsOptions): Promise<Generati
     const { id, slug } = getDocumentIdAndSlug(file);
 
     //  only pull git info if enabled
-    let lastUpdate: LastUpdateData | null = null;
+    let lastUpdate: GitFileLastUpdateResult | null = null;
     if (gitUpdatedEnabled || gitUpdatedEnabled) {
       // in production mode use git, otherwise set default values
       if (mode === 'production') {
-        lastUpdate = await getFileLastUpdate(sourceFilePath);
+        lastUpdate = await getGitFileLastUpdate(sourceFilePath);
       }
-      lastUpdate ??= { date: new Date(), timestamp: 0, author: 'unknown' };
+      lastUpdate ??= { date: new Date(), author: 'unknown' };
     }
 
     // only calculate read time if enabled
