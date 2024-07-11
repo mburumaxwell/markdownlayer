@@ -28,7 +28,7 @@ export const metadata: Metadata = {
 };
 
 export default function BlogHomePage() {
-  let posts = allBlogPosts.sort((a, b) => b.data.published.getTime() - a.data.published.getTime());
+  let posts = allBlogPosts.sort((a, b) => b.data.published.localeCompare(a.data.published));
   if (siteConfig.showDraftPosts) {
     posts = posts.filter((post) => !post.data.draft);
   }

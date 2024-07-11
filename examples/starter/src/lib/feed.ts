@@ -5,7 +5,7 @@ import { authors } from './authors';
 
 const siteUrl = siteConfig.siteUrl;
 
-let posts = allBlogPosts.sort((a, b) => b.data.published.getTime() - a.data.published.getTime());
+let posts = allBlogPosts.sort((a, b) => b.data.published.localeCompare(a.data.published));
 if (siteConfig.showDraftPosts) {
   posts = posts.filter((post) => !post.data.draft);
 }
@@ -16,7 +16,7 @@ posts = posts.slice(0, 20);
 const updated = new Date(
   Math.max(
     ...posts
-      .map((post) => [post.data.published.getTime(), post.data.updated.getTime()])
+      .map((post) => [new Date(post.data.published), new Date(post.data.updated)])
       .flat()
       .filter(Boolean)
       .map(Number),
@@ -50,7 +50,7 @@ posts.forEach((post) => {
     title: post.data.title,
     id: url,
     link: url,
-    date: post.data.updated ?? post.data.published,
+    date: new Date(post.data.updated ?? post.data.published),
     description: post.data.description,
     // for some reason author cannot be an empty array
     author: (mappedAuthors.length ? mappedAuthors : undefined)?.map((author) => {
