@@ -67,7 +67,11 @@ export async function generate({ mode, configPath: providedConfigPath }: Generat
     const files = [config.contentDirPath];
     files.push(...configImports); // watch config file and its dependencies
 
-    const watcher = chokidar.watch(files, { ignoreInitial: true });
+    const watcher = chokidar.watch(files, {
+      cwd,
+      ignored: /(^|[/\\])[._]./, // ignore dot & underscore files
+      ignoreInitial: true, // ignore initial scan
+    });
     watcher.on('all', async (eventName, fileName) => {
       if (eventName === 'addDir' || eventName === 'unlinkDir') return; // ignore dir changes
       if (eventName === 'add') console.log(`${fileName} added`);
@@ -161,7 +165,6 @@ type GenerateDocsOptions = DocumentDefinition & {
   mode: GenerationMode;
   contentDir: string;
   patterns?: string | readonly string[];
-  ignoreFiles?: string | readonly string[];
   outputFolder: string;
   mdAsMarkdoc: boolean;
   plugins: MarkdownlayerConfigPlugins;
@@ -180,7 +183,6 @@ async function generateDocuments(options: GenerateDocsOptions): Promise<Generati
     readTime = true,
     toc: genToc = false,
     validate,
-    ignoreFiles,
     outputFolder,
     mdAsMarkdoc,
     plugins,
@@ -197,7 +199,13 @@ async function generateDocuments(options: GenerateDocsOptions): Promise<Generati
 
   // find the files
   const definitionDir = path.join(contentDir, type);
-  const files = await globby(patterns, { cwd: definitionDir, ignoreFiles, gitignore: true });
+  const files = await globby(patterns, {
+    cwd: definitionDir,
+    gitignore: true, // use .gitignore
+    ignore: ['**/_*'], // ignore files starting with underscore
+    dot: false, // ignore dot files
+    onlyFiles: true, // only files, skip directories
+  });
 
   let cached = 0;
   let generated = 0;
