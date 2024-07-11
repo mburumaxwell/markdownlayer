@@ -37,8 +37,8 @@ export async function generateMetadata(
       description: post.data.description,
       images: post.data.image && [post.data.image],
       url: `/blog/posts/${post.slug}`,
-      publishedTime: post.data.published.toISOString(),
-      modifiedTime: post.data.updated.toISOString(),
+      publishedTime: post.data.published,
+      modifiedTime: post.data.updated,
     },
   };
 }
@@ -58,7 +58,7 @@ export default function BlogPostPage({ params: { slug } }: BlogPostProps) {
       <article className="container relative max-w-3xl py-6 lg:py-10">
         <div>
           {post.data.published && (
-            <time dateTime={post.data.published.toISOString()} className="text-muted-foreground block text-sm">
+            <time dateTime={post.data.published} className="text-muted-foreground block text-sm">
               Published on {formatDate(post.data.published, FORMATS_DATE_LONG)}
             </time>
           )}

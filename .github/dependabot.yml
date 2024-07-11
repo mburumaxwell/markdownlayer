@@ -16,10 +16,6 @@ updates:
         patterns:
           - 'eslint'
           - '@typescript-eslint/*'
-      js-beautify:
-        patterns:
-          - 'js-beautify'
-          - '@types/js-beautify'
       react:
         patterns:
           - '@types/react'

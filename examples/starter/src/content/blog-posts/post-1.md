@@ -1,7 +1,7 @@
 ---
 title: Post 1
 description: Some description for post 1
-published: 2024-01-31
+published: 2023-08-12
 # image: /images/blog/posts/1.png
 ---
 

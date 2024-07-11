@@ -24,7 +24,7 @@ export const metadata: Metadata = {
 };
 
 export default async function Changelog() {
-  const entries = allChangelogs.sort((a, b) => b.data.published.getTime() - a.data.published.getTime());
+  const entries = allChangelogs.sort((a, b) => b.data.published.localeCompare(a.data.published));
 
   return (
     <>

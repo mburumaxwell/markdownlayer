@@ -1,7 +1,6 @@
 import { camelCase } from 'change-case';
 import { slug as githubSlug } from 'github-slugger';
 import { pluralize, singularize } from 'inflection';
-import beautify from 'js-beautify';
 import { extname, normalize, sep as separator } from 'node:path';
 
 import type { DocumentDefinitionGitOptions } from '../types';
@@ -69,31 +68,4 @@ export function getDocumentDefinitionGitOptions(
   // If git is an object, destructure it with default values
   const { updated = true, authors = false } = git;
   return { updated, authors };
-}
-
-/**
- * Converts a document object to a string representation in MJS format.
- * @param obj - The document object to convert.
- * @returns The string representation of the document object in MJS format.
- */
-export function convertDocumentToMjsContent(obj: unknown): string {
-  function serialize(obj: unknown): string {
-    if (Array.isArray(obj)) {
-      const elements = obj.map((el) => serialize(el)).join(', ');
-      return `[${elements}]`;
-    } else if (obj instanceof Date) {
-      return `new Date('${obj.toISOString()}')`;
-    } else if (typeof obj === 'string') {
-      // use JSON.stringify to escape special characters in strings
-      return `${JSON.stringify(obj)}`;
-    } else if (typeof obj === 'object' && obj !== null) {
-      const props = Object.entries(obj).map(([key, value]) => `${key}: ${serialize(value)}`);
-      return `{ ${props.join(', ')} }`;
-    } else {
-      return obj?.toString() ?? 'null';
-    }
-  }
-
-  const code = `export default ${serialize(obj)}`;
-  return beautify.js(code, { indent_size: 2 });
 }

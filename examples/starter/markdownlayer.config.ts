@@ -3,13 +3,21 @@ import rehypeSlug from 'rehype-slug';
 import { z } from 'zod';
 import { rehypeAutolinkHeadings, rehypePrettyCode } from './src/markdownlayer';
 
+// TODO: move this to the library but without coercing to string
+function isodate() {
+  return z.coerce
+    .string()
+    .refine((value) => !isNaN(Date.parse(value)), 'Invalid date string')
+    .transform<string>((value) => new Date(value).toISOString());
+}
+
 export default defineConfig({
   contentDirPath: './src/content',
   definitions: {
     legal: {
       schema: z.object({
         title: z.string(),
-        updated: z.coerce.date().optional(),
+        updated: isodate().optional(),
       }),
     },
     'blog-posts': {
@@ -18,8 +26,8 @@ export default defineConfig({
         description: z.string({
           description: 'Short description that is used for SEO, in RSS/ATOM feed, and in some subtitles',
         }),
-        published: z.coerce.date(),
-        updated: z.coerce.date(),
+        published: isodate(),
+        updated: isodate(),
         authors: z.string().array(),
         keywords: z.string().array().default([]),
         draft: z.boolean().default(false),
@@ -30,8 +38,8 @@ export default defineConfig({
     changelog: {
       schema: z.object({
         title: z.string(),
-        published: z.coerce.date(),
-        updated: z.coerce.date().optional(),
+        published: isodate(),
+        updated: isodate().optional(),
         category: z.enum(['sdk', 'dashboard', 'api', 'developer']).optional(),
         link: z
           .string({ description: 'Link for more information about the changelog such as docs or blog' })
@@ -50,8 +58,8 @@ export default defineConfig({
           logo: image().refine((img) => img.width >= 128, {
             message: 'The logo must be at least 128 pixels wide!',
           }),
-          start: z.coerce.date(),
-          end: z.coerce.date().optional(),
+          start: isodate(),
+          end: isodate().optional(),
           website: z.string().url().optional(),
           industry: z.enum(['agriculture', 'banking', 'hospitality', 'medicine']),
         }),
@@ -62,7 +70,7 @@ export default defineConfig({
         description: z.string({
           description: 'Short description that is used for SEO, in RSS/ATOM feed, and in some subtitles',
         }),
-        updated: z.coerce.date().optional(),
+        updated: isodate().optional(),
         authors: z.string().array().default([]),
         draft: z.boolean().default(false),
         unlisted: z.boolean().default(false),
