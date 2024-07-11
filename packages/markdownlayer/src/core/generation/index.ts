@@ -1,10 +1,11 @@
 import chokidar from 'chokidar';
-import fs from 'fs';
 import { slug as githubSlug } from 'github-slugger';
 import { globby } from 'globby';
 import matter from 'gray-matter';
 import type { StaticImageData } from 'next/dist/shared/lib/image-external';
-import path from 'path';
+import { existsSync } from 'node:fs';
+import { mkdir, readFile, stat, writeFile } from 'node:fs/promises';
+import { dirname, join, normalize, relative } from 'node:path';
 import type { ReadTimeResults } from 'reading-time';
 import readingTime from 'reading-time';
 import { z, type ZodSchema } from 'zod';
@@ -55,11 +56,11 @@ export async function generate({ mode, configPath: providedConfigPath }: Generat
   }
 
   // get the config
-  const { configPath, configImports, ...config } = await getConfig({ configPath: providedConfigPath });
+  const { configPath, configImports, ...config } = await getConfig(providedConfigPath);
 
   // generate the content (initial)
   const cwd = process.cwd();
-  const outputFolder = path.join(cwd, '.markdownlayer');
+  const outputFolder = join(cwd, '.markdownlayer');
   await generateInner({ mode, cwd, outputFolder, configPath, ...config });
 
   // watch for changes in the config or content folder (development mode only)
@@ -115,15 +116,15 @@ async function generateInner(options: GenerateInnerOptions) {
 
   // load cache from file if it exists, otherwise create a new cache
   // changes in mode, version, configuration options, plugins will invalidate the cache
-  const cacheFilePath = path.join(outputFolder, `cache/${mode}/v${version}/data-${configHash}.json`);
+  const cacheFilePath = join(outputFolder, `cache/${mode}/v${version}/data-${configHash}.json`);
   let cache: DataCache = { items: {} };
-  if (caching && fs.existsSync(cacheFilePath)) {
-    cache = JSON.parse(fs.readFileSync(cacheFilePath, 'utf8'));
+  if (caching && existsSync(cacheFilePath)) {
+    cache = JSON.parse(await readFile(cacheFilePath, 'utf8'));
   }
 
   // iterate over the definitions and generate the docs
-  outputFolder = path.join(outputFolder, 'generated');
-  const contentDir = path.join(cwd, contentDirPath);
+  outputFolder = join(outputFolder, 'generated');
+  const contentDir = join(cwd, contentDirPath);
   const generations: Record<string, GenerationResult> = {};
   for (const [type, def] of Object.entries(definitions)) {
     const generation = await generateDocuments({
@@ -142,8 +143,8 @@ async function generateInner(options: GenerateInnerOptions) {
 
   // write cache to file
   cache.elapsed = Object.values(cache.items).reduce((acc, item) => acc + item.elapsed, 0);
-  fs.mkdirSync(path.dirname(cacheFilePath), { recursive: true });
-  fs.writeFileSync(cacheFilePath, JSON.stringify(cache, null, 2), { encoding: 'utf8' });
+  await mkdir(dirname(cacheFilePath), { recursive: true });
+  await writeFile(cacheFilePath, JSON.stringify(cache, null, 2), { encoding: 'utf8' });
 
   // write files that would be imported by the application (index.d.ts, index.mjs)
   await writeRootIndexFiles({ outputFolder, configPath, generations });
@@ -198,7 +199,7 @@ async function generateDocuments(options: GenerateDocsOptions): Promise<Generati
   const { updated: gitUpdatedEnabled, authors: gitAuthorsEnabled } = getDocumentDefinitionGitOptions(git);
 
   // find the files
-  const definitionDir = path.join(contentDir, type);
+  const definitionDir = join(contentDir, type);
   const files = await globby(patterns, {
     cwd: definitionDir,
     gitignore: true, // use .gitignore
@@ -212,7 +213,7 @@ async function generateDocuments(options: GenerateDocsOptions): Promise<Generati
   const docs: BaseDoc[] = [];
   let collectionChanged = false;
 
-  fs.mkdirSync(path.join(outputFolder, type), { recursive: true });
+  await mkdir(join(outputFolder, type), { recursive: true });
 
   let schema = options.schema;
   if (typeof schema === 'function') {
@@ -229,13 +230,13 @@ async function generateDocuments(options: GenerateDocsOptions): Promise<Generati
 
   // parse the files and "compile" in a loop
   for (const file of files) {
-    const sourceFilePath = path.normalize(path.join(definitionDir, file));
+    const sourceFilePath = normalize(join(definitionDir, file));
 
     // using the sourceFilePath as the key ensure no collisions for files named the same but in different directories;
     const cacheEntryKey = sourceFilePath;
 
     // if the file has not been modified, use the cached version
-    const hash = fs.statSync(sourceFilePath).mtimeMs.toString();
+    const hash = (await stat(sourceFilePath)).mtimeMs.toString();
     const cacheEntry = cache.items[cacheEntryKey];
     const changed = !cacheEntry || cacheEntry.hash !== hash;
     if (!changed) {
@@ -250,7 +251,7 @@ async function generateDocuments(options: GenerateDocsOptions): Promise<Generati
 
     const start = performance.now();
 
-    const contents = fs.readFileSync(sourceFilePath, 'utf8');
+    const contents = await readFile(sourceFilePath, 'utf8');
     const parsedMatter = matter(contents);
     const frontmatter = parsedMatter.data as Record<string, unknown>;
 
@@ -393,9 +394,9 @@ async function generateDocuments(options: GenerateDocsOptions): Promise<Generati
     docs.push(document);
 
     // write mjs file
-    const outputFilePath = path.join(outputFolder, type, `${idToFileName(document._id)}.mjs`);
+    const outputFilePath = join(outputFolder, type, `${idToFileName(document._id)}.mjs`);
     const lines = [autogeneratedNote, '', convertDocumentToMjsContent(document)];
-    fs.writeFileSync(outputFilePath, lines.join('\n'), { encoding: 'utf8' });
+    await writeFile(outputFilePath, lines.join('\n'), { encoding: 'utf8' });
 
     // update the cache
     cache.items[cacheEntryKey] = { hash, type, document, elapsed };
@@ -422,7 +423,7 @@ async function generateDocuments(options: GenerateDocsOptions): Promise<Generati
   // write the collection files if there are collection changes (or if there are no documents, to allow imports)
   if (collectionChanged || docs.length == 0) {
     // write import file
-    const outputFilePath = path.join(outputFolder, type, 'index.mjs');
+    const outputFilePath = join(outputFolder, type, 'index.mjs');
     const lines: string[] = [
       autogeneratedNote,
       '',
@@ -431,7 +432,7 @@ async function generateDocuments(options: GenerateDocsOptions): Promise<Generati
       `export const ${getDataVariableName(type)} = [${docs.map((doc) => `${makeVariableName(doc._id)}`).join(', ')}]`,
       '',
     ];
-    fs.writeFileSync(outputFilePath, lines.join('\n'), { encoding: 'utf8' });
+    await writeFile(outputFilePath, lines.join('\n'), { encoding: 'utf8' });
   }
 
   return { schema, counts: { cached, generated, total: docs.length } };
@@ -444,8 +445,7 @@ type WriteRootIndexFilesOptions = {
 };
 async function writeRootIndexFiles({ outputFolder, configPath, generations }: WriteRootIndexFilesOptions) {
   // generate entry according to `config.collections`
-  const configModPath = path
-    .relative(outputFolder, configPath)
+  const configModPath = relative(outputFolder, configPath)
     .replace(/\\/g, '/') // replace windows path separator
     .replace(/\.[jt]s$/i, ''); // remove extension (mjs, cjs, mts, and cts are excluded)
 
@@ -468,8 +468,8 @@ async function writeRootIndexFiles({ outputFolder, configPath, generations }: Wr
     ...definitionTypes.map((type) => `export declare const ${getDataVariableName(type)}: ${generateTypeName(type)}[];`),
     '',
   ];
-  let filePath = path.join(outputFolder, 'index.d.ts');
-  fs.writeFileSync(filePath, lines.join('\n'), { encoding: 'utf8' });
+  let filePath = join(outputFolder, 'index.d.ts');
+  await writeFile(filePath, lines.join('\n'), { encoding: 'utf8' });
 
   // write the index.mjs file
   lines = [
@@ -482,8 +482,8 @@ async function writeRootIndexFiles({ outputFolder, configPath, generations }: Wr
     `export const allDocuments = [...${definitionTypes.map((type) => getDataVariableName(type)).join(', ...')}];`,
     '',
   ];
-  filePath = path.join(outputFolder, 'index.mjs');
-  fs.writeFileSync(filePath, lines.join('\n'), { encoding: 'utf8' });
+  filePath = join(outputFolder, 'index.mjs');
+  await writeFile(filePath, lines.join('\n'), { encoding: 'utf8' });
 }
 
 // For some reason, generating toc using mdast-util-toc or even using docusaurus' own toc plugin generates entries from frontmatter.

@@ -1,9 +1,9 @@
 // inspired by Docusaurus at:
 // https://github.com/facebook/docusaurus/blob/4aef958a99bcd7e38886db0c3ba0517f5c1827e7/packages/docusaurus-utils/src/gitUtils.ts#L27
 
-import { execSync, type ExecException } from 'child_process';
-import fs from 'fs';
-import path from 'path';
+import { execSync, type ExecException } from 'node:child_process';
+import { existsSync } from 'node:fs';
+import { basename, dirname } from 'node:path';
 
 /** Custom error thrown when git is not found in `PATH`. */
 export class GitNotFoundError extends Error {}
@@ -90,7 +90,7 @@ export function getFileCommitDate(
   }
 
   // check if the file exists
-  if (!fs.existsSync(file)) {
+  if (!existsSync(file)) {
     throw new Error(`Failed to retrieve git history for "${file}" because the file does not exist.`);
   }
 
@@ -104,9 +104,9 @@ export function getFileCommitDate(
 
   let result: Buffer;
   try {
-    result = execSync(`git log ${args} -- "${path.basename(file)}"`, {
+    result = execSync(`git log ${args} -- "${basename(file)}"`, {
       // Setting cwd is important, see: https://github.com/facebook/docusaurus/pull/5048
-      cwd: path.dirname(file),
+      cwd: dirname(file),
       stdio: 'pipe', // To capture stdout and stderr
     });
   } catch (error) {

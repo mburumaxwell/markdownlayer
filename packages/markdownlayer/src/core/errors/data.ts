@@ -30,8 +30,8 @@ export const InvalidGenerationModeError = {
 export const NoConfigFoundError = {
   name: 'NoConfigFoundError',
   title: 'No config file found.',
-  message({ configPath }: { readonly configPath?: string }) {
-    return configPath ? `Couldn't find ${configPath}` : `Could not find markdownlayer.config.ts.`;
+  message({ path }: { readonly path?: string }) {
+    return path ? `Couldn't find ${path}` : `Could not find markdownlayer.config.ts.`;
   },
 } satisfies ErrorData;
 
@@ -44,8 +44,8 @@ export const NoConfigFoundError = {
 export const ConfigNoDefaultExportError = {
   name: 'ConfigNoDefaultExportError',
   title: 'Config file does not have a default export.',
-  message({ configPath, availableExports }: { readonly configPath: string; readonly availableExports: string[] }) {
-    return `ConfigNoDefaultExportError (${configPath}): Available exports: ${availableExports.join(', ')}`;
+  message({ path, availableExports }: { readonly path: string; readonly availableExports: string[] }) {
+    return `ConfigNoDefaultExportError (${path}): Available exports: ${availableExports.join(', ')}`;
   },
 } satisfies ErrorData;
 
@@ -58,8 +58,8 @@ export const ConfigNoDefaultExportError = {
 export const ConfigNoDefinitionsError = {
   name: 'ConfigNoDefinitionsError',
   title: 'Config does not have a definitions field',
-  message({ configPath }: { readonly configPath: string }) {
-    return `ConfigNoDefinitionsError (${configPath}): 'definitions' is required in the config file`;
+  message({ path }: { readonly path: string }) {
+    return `ConfigNoDefinitionsError (${path}): 'definitions' is required in the config file`;
   },
 } satisfies ErrorData;
 
@@ -72,8 +72,8 @@ export const ConfigNoDefinitionsError = {
 export const ConfigReadError = {
   name: 'ConfigReadError',
   title: 'Error reading config file.',
-  message({ configPath, error }: { readonly configPath: string; readonly error: Error }) {
-    return `ConfigReadError ${configPath}: ${error.message}`;
+  message({ path, error }: { readonly path: string; readonly error: Error }) {
+    return `ConfigReadError ${path}: ${error.message}`;
   },
 } satisfies ErrorData;
 

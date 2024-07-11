@@ -4,7 +4,7 @@ import type { Options as CompileOptions } from '@mdx-js/esbuild';
 import mdxESBuild from '@mdx-js/esbuild';
 import type { BuildOptions, Plugin } from 'esbuild';
 import * as esbuild from 'esbuild';
-import { StringDecoder } from 'string_decoder';
+import { StringDecoder } from 'node:string_decoder';
 import type { Pluggable, PluggableList } from 'unified';
 
 import rehypeRaw, { type Options as RehypeRawOptions } from 'rehype-raw';

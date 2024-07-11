@@ -1,4 +1,4 @@
-import path from 'path';
+import { extname } from 'node:path';
 
 import type { DocumentFormat, DocumentFormatInput } from '../types';
 
@@ -19,7 +19,7 @@ const mdExtensions = [
 
 export function getFormat({ file, format }: { file: string; format: DocumentFormatInput }): DocumentFormat {
   if (format === 'detect') {
-    const ext = path.extname(file);
+    const ext = extname(file);
     if (mdExtensions.includes(ext)) return 'md';
     else if (ext === '.mdx') return 'mdx';
     else if (ext === '.mdoc') return 'mdoc';

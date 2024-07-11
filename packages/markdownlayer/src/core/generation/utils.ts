@@ -2,7 +2,7 @@ import { camelCase } from 'change-case';
 import { slug as githubSlug } from 'github-slugger';
 import { pluralize, singularize } from 'inflection';
 import beautify from 'js-beautify';
-import path from 'path';
+import { extname, normalize, sep as separator } from 'node:path';
 
 import type { DocumentDefinitionGitOptions } from '../types';
 
@@ -35,8 +35,8 @@ export function toPascalCase(str: string) {
 }
 
 export function getDocumentIdAndSlug(relativePath: string): { id: string; slug: string } {
-  const withoutFileExt = relativePath.replace(new RegExp(path.extname(relativePath) + '$'), '');
-  const rawSlugSegments = withoutFileExt.split(path.sep);
+  const withoutFileExt = relativePath.replace(new RegExp(extname(relativePath) + '$'), '');
+  const rawSlugSegments = withoutFileExt.split(separator);
 
   const slug = rawSlugSegments
     // Slugify each route segment to handle capitalization and spaces.
@@ -46,10 +46,7 @@ export function getDocumentIdAndSlug(relativePath: string): { id: string; slug: 
     .filter((segment, index) => !(index === rawSlugSegments.length - 1 && segment === 'index'))
     .join('/');
 
-  return {
-    id: path.normalize(relativePath),
-    slug,
-  };
+  return { id: normalize(relativePath), slug };
 }
 
 /**

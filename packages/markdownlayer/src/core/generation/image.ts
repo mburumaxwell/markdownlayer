@@ -1,6 +1,6 @@
-import fs from 'fs';
 import type { StaticImageData } from 'next/dist/shared/lib/image-external'; // this is what is used when you import the file in a Next.js project
-import path from 'path';
+import { existsSync } from 'node:fs';
+import { dirname, join } from 'node:path';
 import { z } from 'zod';
 
 import type { GenerationMode, ImageSchemaFunctionOptions, StaticImageDataSchema } from '../types';
@@ -21,7 +21,7 @@ export function createImage({
   const transformed = schema.transform(async (imagePath, context) => {
     if (!imagePath) return z.never();
 
-    const resolvedFilePath = path.join(path.dirname(sourceFilePath), imagePath);
+    const resolvedFilePath = join(dirname(sourceFilePath), imagePath);
     const metadata = await emitImage({ resolvedFilePath, shouldEmitFile });
 
     if (!metadata) {
@@ -44,7 +44,7 @@ export function createImage({
 type EmitImageOptions = { resolvedFilePath: string; shouldEmitFile: boolean };
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function emitImage({ resolvedFilePath, shouldEmitFile }: EmitImageOptions): Promise<StaticImageData | undefined> {
-  if (!fs.existsSync(resolvedFilePath)) return undefined;
+  if (!existsSync(resolvedFilePath)) return undefined;
 
   throw new Error('Image functionality is not fully implemented.');
 }
