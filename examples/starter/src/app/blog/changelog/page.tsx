@@ -32,7 +32,7 @@ export default async function Changelog() {
         <div key={entry._id}>
           <h2>{entry.data.title}</h2>
           <p>{formatDate(entry.data.published)}</p>
-          <Markdownlayer doc={entry} />
+          <Markdownlayer format={entry.format} code={entry.body.code} />
         </div>
       ))}
     </>

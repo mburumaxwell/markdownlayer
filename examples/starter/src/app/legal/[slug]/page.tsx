@@ -51,7 +51,7 @@ export default function LegalPage({ params: { slug } }: LegalProps) {
           )}
         </div>
         <div className="mx-auto flex w-full max-w-screen-md flex-col items-center p-10 px-2.5 sm:pt-20 lg:px-20">
-          <Markdownlayer doc={doc} />
+          <Markdownlayer format={doc.format} code={doc.body.code} />
         </div>
       </article>
     </>

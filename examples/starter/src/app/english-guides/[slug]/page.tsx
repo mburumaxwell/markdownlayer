@@ -51,7 +51,7 @@ export default function GuidePage({ params: { slug } }: GuideProps) {
           )}
         </div>
         <div className="mx-auto flex w-full max-w-screen-md flex-col items-center p-10 px-2.5 sm:pt-20 lg:px-20">
-          <Markdownlayer doc={guide} />
+          <Markdownlayer format={guide.format} code={guide.body.code} />
         </div>
       </article>
     </>

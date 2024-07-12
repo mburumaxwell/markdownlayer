@@ -101,7 +101,7 @@ export default function BlogPostPage({ params: { slug } }: BlogPostProps) {
             />
           </div>
         )}
-        <Markdownlayer doc={post} />
+        <Markdownlayer format={post.format} code={post.body.code} />
         <hr className="mt-12" />
         <div className="flex justify-center py-6 lg:py-10">
           {/* <Link href="/blog" className={cn(buttonVariants({ variant: 'ghost' }))}>

@@ -1,5 +1,7 @@
-import type { BaseDoc } from 'markdownlayer/core';
-import { Markdownlayer as MarkdownlayerImpl } from 'markdownlayer/react';
+import {
+  Markdownlayer as MarkdownlayerImpl,
+  type MarkdownlayerProps as MarkdownlayerPropsImpl,
+} from 'markdownlayer/react';
 import type { Route } from 'next';
 import Link from 'next/link';
 import type { TweetProps } from 'react-tweet';
@@ -36,11 +38,9 @@ const components = {
   },
 };
 
-type MarkdownlayerProps = { doc: BaseDoc; className?: string };
+type MarkdownlayerProps = Omit<MarkdownlayerPropsImpl, 'components'> & { className?: string };
 
-export function Markdownlayer({ doc, className }: MarkdownlayerProps) {
-  const format = doc.format;
-  const code = doc.body.code;
+export function Markdownlayer({ format, code, className }: MarkdownlayerProps) {
   return (
     <div className={`prose dark:prose-invert max-w-none ${className}`}>
       <MarkdownlayerImpl format={format} code={code} components={components} />
