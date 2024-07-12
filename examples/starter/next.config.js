@@ -5,4 +5,4 @@ const nextConfig = {
   reactStrictMode: true,
 };
 
-export default withMarkdownlayer(nextConfig);
+export default await withMarkdownlayer(nextConfig);
