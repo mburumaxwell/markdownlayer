@@ -390,7 +390,7 @@ async function generateDocuments(options: GenerateDocsOptions): Promise<Generati
     }
 
     // generate table of contents if requested
-    const toc = frontmatter.toc ?? genToc ? generateToc(contents) : undefined;
+    const toc = (frontmatter.toc ?? genToc) ? generateToc(contents) : undefined;
 
     const document: BaseDoc & { data: Record<string, unknown> } = {
       ...meta,
