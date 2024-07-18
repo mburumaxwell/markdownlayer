@@ -9,6 +9,7 @@ import { version } from '../package.json';
 import { assets } from './assets';
 import { getConfig } from './config';
 import { MarkdownlayerError, MarkdownlayerErrorData, getYamlErrorLine } from './errors';
+import { logger } from './logger';
 import { outputAssets } from './output';
 import { resolveSchema, type ResolveSchemaOptions } from './schemas/resolve';
 import type {
@@ -56,6 +57,8 @@ export async function generate({ mode, configPath: providedConfigPath }: Generat
 
   // watch for changes in the config or content folder (development mode only)
   if (mode === 'development' && configPath) {
+    logger.info(`Watching for changes in '${contentDirPath}'`);
+
     const files = [contentDirPath];
     files.push(...configImports); // watch config file and its dependencies
 
@@ -66,9 +69,6 @@ export async function generate({ mode, configPath: providedConfigPath }: Generat
     });
     watcher.on('all', async (eventName, filename) => {
       if (eventName === 'addDir' || eventName === 'unlinkDir') return; // ignore dir changes
-      if (eventName === 'add') console.log(`${filename} added`);
-      else if (eventName === 'change') console.log(`${filename} changed`);
-      else if (eventName === 'unlink') console.log(`${filename} deleted.`);
       if (filename == null) return;
 
       filename = join(contentDirPath, filename);
@@ -80,12 +80,13 @@ export async function generate({ mode, configPath: providedConfigPath }: Generat
 
       // changes in the config file should restart the whole process
       if (configImports.includes(filename)) {
-        console.log('markdownlayer config changed, restarting...');
+        logger.log('markdownlayer config changed, restarting...');
         watcher?.close();
         return generate({ mode, configPath: providedConfigPath });
       }
 
       // regenerate the content
+      logger.info(`${filename} changed`);
       await generateInner({ mode, outputFolder, configPath, output, contentDirPath, ...config });
     });
   }
@@ -155,7 +156,7 @@ async function generateInner(options: GenerateInnerOptions) {
     acc.total += count.total;
     return acc;
   });
-  console.log(`Generated ${total} documents (${cached} from cache) in .markdownlayer`);
+  logger.info(`Generated ${total} documents (${cached} from cache) in .markdownlayer`);
 }
 
 type GenerateDocsOptions = DocumentDefinition & {
