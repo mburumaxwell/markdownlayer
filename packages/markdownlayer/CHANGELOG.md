@@ -1,5 +1,12 @@
 # markdownlayer
 
+## 0.4.0-beta.5
+
+### Minor Changes
+
+- 237b0b8: Redo sections of the engine to support custom schemas such as images, slug, etc
+  This is inspired in part by velite and astro.
+
 ## 0.4.0-beta.4
 
 ### Minor Changes
