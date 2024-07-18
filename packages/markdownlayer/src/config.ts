@@ -3,32 +3,15 @@ import { access } from 'node:fs/promises';
 import { dirname, join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
-import { name } from '../../../package.json';
+import { name } from '../package.json';
 import {
   ConfigNoDefaultExportError,
   ConfigNoDefinitionsError,
   ConfigReadError,
   MarkdownlayerErrorData,
   NoConfigFoundError,
-} from '../errors';
-import type { MarkdownlayerConfig } from '../types';
-
-/** Represents the result of getting the configuration. */
-export type ResolvedConfig = MarkdownlayerConfig & {
-  /** The path to the configuration file. */
-  readonly configPath: string;
-
-  /**
-   * The hash of the configuration.
-   * This is used to determine if the configuration has changed.
-   */
-  readonly configHash: string;
-
-  /**
-   * Dependencies of the config file
-   */
-  readonly configImports: string[];
-};
+} from './errors';
+import type { MarkdownlayerConfig, ResolvedConfig } from './types';
 
 /**
  * get the config
@@ -56,11 +39,21 @@ export async function getConfig(path?: string): Promise<ResolvedConfig> {
 
   const [loadedConfig, configHash, configImports] = await loadConfig(configPath);
 
+  const cwd = dirname(configPath);
+
   return {
     ...loadedConfig,
     configPath,
     configHash,
     configImports,
+    cache: { uniques: {}, data: { items: {} } }, // data cache is populated later
+    contentDirPath: resolve(cwd, loadedConfig.contentDirPath ?? 'content'),
+    output: {
+      ...loadedConfig.output,
+      assets: resolve(cwd, loadedConfig.output?.assets ?? 'public/static'),
+      base: loadedConfig.output?.base ?? '/static/',
+      format: loadedConfig.output?.format ?? '[name]-[hash:8].[ext]',
+    },
   };
 }
 
@@ -131,16 +124,15 @@ async function loadConfig(path: string): Promise<[MarkdownlayerConfig, string, s
   }
 
   // Will look like `node_modules/compiled-markdownlayer-config-[SOME_HASH].mjs'
-  const outputFile = Object.keys(result.metafile!.outputs).find(
-    (f) => f.match(/compiled-markdownlayer-config-.+.mjs$/) !== null,
-  );
+  const format = /compiled-markdownlayer-config-([a-zA-Z0-9]+).mjs$/;
+  const outputFile = Object.keys(result.metafile!.outputs).find((f) => f.match(format) !== null);
   if (!outputFile) {
     throw new ConfigReadError({
       ...MarkdownlayerErrorData.ConfigReadError,
       message: 'Could not find output file name',
     });
   }
-  const hash = outputFile.match(/compiled-markdownlayer-config-([a-zA-Z0-9]+).mjs$/)![1]!;
+  const hash = outputFile.match(format)![1]!;
 
   const configUrl = pathToFileURL(outputFile);
   configUrl.searchParams.set('t', Date.now().toString()); // prevent import cache

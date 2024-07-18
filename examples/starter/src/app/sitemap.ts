@@ -22,7 +22,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...allLegals.map(
       (doc): Route => ({
         url: `${siteConfig.siteUrl}/legal/${doc.slug}`,
-        lastModified: doc.data.updated,
+        lastModified: doc.updated,
         changeFrequency: 'daily',
         priority: 0.5,
       }),

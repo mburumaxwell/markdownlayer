@@ -11,11 +11,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
   routes.push({ url: `${siteConfig.siteUrl}/blog`, priority: 0.5 });
   routes.push(
     ...allBlogPosts
-      .filter((post) => !post.data.draft)
+      .filter((post) => !post.draft)
       .map(
         (post): Route => ({
           url: `${siteConfig.siteUrl}/blog/posts/${post.slug}`,
-          lastModified: post.data.updated,
+          lastModified: post.updated,
           changeFrequency: 'daily',
           priority: 0.5,
         }),

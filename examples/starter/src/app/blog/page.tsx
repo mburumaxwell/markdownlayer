@@ -28,9 +28,9 @@ export const metadata: Metadata = {
 };
 
 export default function BlogHomePage() {
-  let posts = allBlogPosts.sort((a, b) => b.data.published.localeCompare(a.data.published));
+  let posts = allBlogPosts.sort((a, b) => b.published.localeCompare(a.published));
   if (siteConfig.showDraftPosts) {
-    posts = posts.filter((post) => !post.data.draft);
+    posts = posts.filter((post) => !post.draft);
   }
 
   return (
@@ -46,21 +46,21 @@ export default function BlogHomePage() {
         {posts.length ? (
           <div className="grid gap-10 sm:grid-cols-3">
             {posts.map((post, index) => (
-              <article key={post._id} className="group relative flex flex-col space-y-2">
-                {post.data.image && (
+              <article key={post.id} className="group relative flex flex-col space-y-2">
+                {post.image && (
                   <Image
-                    src={post.data.image}
-                    alt={post.data.title}
+                    src={post.image.src}
+                    alt={post.title}
                     width={804}
                     height={452}
                     className="bg-muted rounded-md border transition-colors"
                     priority={index <= 1}
                   />
                 )}
-                <h2 className="text-2xl font-extrabold">{post.data.title}</h2>
-                {post.data.description && <p className="text-muted-foreground">{post.data.description}</p>}
-                {post.data.published && (
-                  <p className="text-muted-foreground text-sm">{formatDate(post.data.published, FORMATS_DATE_LONG)}</p>
+                <h2 className="text-2xl font-extrabold">{post.title}</h2>
+                {post.description && <p className="text-muted-foreground">{post.description}</p>}
+                {post.published && (
+                  <p className="text-muted-foreground text-sm">{formatDate(post.published, FORMATS_DATE_LONG)}</p>
                 )}
                 <Link href={`blog/posts/${post.slug}`} className="absolute inset-0">
                   <span className="sr-only">View Article</span>

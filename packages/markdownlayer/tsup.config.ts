@@ -6,7 +6,6 @@ export default defineConfig((options: Options) => ({
   splitting: false,
   entry: [
     'src/index.ts',
-    'src/core/index.ts',
     'src/react/index.ts',
 
     // Remark plugins

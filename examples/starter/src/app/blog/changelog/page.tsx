@@ -24,15 +24,15 @@ export const metadata: Metadata = {
 };
 
 export default async function Changelog() {
-  const entries = allChangelogs.sort((a, b) => b.data.published.localeCompare(a.data.published));
+  const entries = allChangelogs.sort((a, b) => b.published.localeCompare(a.published));
 
   return (
     <>
       {entries.map((entry) => (
-        <div key={entry._id}>
-          <h2>{entry.data.title}</h2>
-          <p>{formatDate(entry.data.published)}</p>
-          <Markdownlayer format={entry.format} code={entry.body.code} />
+        <div key={entry.id}>
+          <h2>{entry.title}</h2>
+          <p>{formatDate(entry.published)}</p>
+          <Markdownlayer body={entry.body} />
         </div>
       ))}
     </>

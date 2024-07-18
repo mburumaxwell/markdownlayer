@@ -3,8 +3,6 @@ import { expect, test } from 'vitest';
 import {
   generateTypeName,
   getDataVariableName,
-  getDocumentDefinitionGitOptions,
-  getDocumentIdAndSlug,
   idToFileName,
   leftPadWithUnderscoreIfStartsWithNumber,
   makeVariableName,
@@ -58,55 +56,4 @@ test('toPascalCase', () => {
   expect(toPascalCase('Blog-Posts')).toBe('BlogPosts');
   expect(toPascalCase('post')).toBe('Post');
   expect(toPascalCase('pOST')).toBe('Post');
-});
-
-test('getDocumentIdAndSlug', () => {
-  expect(getDocumentIdAndSlug('my-first-post.md')).toEqual({
-    id: 'my-first-post.md',
-    slug: 'my-first-post',
-  });
-
-  // with index
-  expect(getDocumentIdAndSlug('index.md')).toEqual({
-    id: 'index.md',
-    slug: '',
-  });
-
-  // nested directory
-  expect(getDocumentIdAndSlug('en/posts/my-first-post.md')).toEqual({
-    id: 'en/posts/my-first-post.md',
-    slug: 'en/posts/my-first-post',
-  });
-
-  // nested directory with index
-  expect(getDocumentIdAndSlug('en/docs/index.md')).toEqual({
-    id: 'en/docs/index.md',
-    slug: 'en/docs',
-  });
-});
-
-test('getDocumentDefinitionGitOptions', () => {
-  // Test case 1: git is false
-  expect(getDocumentDefinitionGitOptions(false)).toEqual({ updated: false, authors: false });
-
-  // Test case 2: git is true
-  expect(getDocumentDefinitionGitOptions(true)).toEqual({ updated: true, authors: false });
-
-  // Test case 3: git is an object with updated and authors properties
-  expect(getDocumentDefinitionGitOptions({ updated: true, authors: true })).toEqual({
-    updated: true,
-    authors: true,
-  });
-
-  // Test case 4: git is an object with only updated property
-  expect(getDocumentDefinitionGitOptions({ updated: false })).toEqual({
-    updated: false,
-    authors: false,
-  });
-
-  // Test case 5: git is an object with only authors property
-  expect(getDocumentDefinitionGitOptions({ authors: true })).toEqual({
-    updated: true,
-    authors: true,
-  });
 });

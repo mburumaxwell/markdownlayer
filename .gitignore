@@ -15,6 +15,8 @@ build
 
 # other
 dist/
+apps/**/public/static
+examples/**/public/static
 
 # misc
 .DS_Store
