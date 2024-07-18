@@ -22,14 +22,14 @@ export async function outputAssets({
   await Promise.all(
     Object.entries(assets).map(async ([name, from]) => {
       if (emitted[name] === from) {
-        logger.log(`skipped copy '${name}' with same content`);
+        logger.debug(`skipped copy '${name}' with same content`);
         return;
       }
       await copyFile(from, join(destination, name));
-      // logger.log(`copied '${name}' from '${from}'`)
+      // logger.debug(`copied '${name}' from '${from}'`)
       emitted[name] = from;
       count++;
     }),
   );
-  logger.log(`output ${count} assets`);
+  logger.debug(`output ${count} assets`);
 }

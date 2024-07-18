@@ -81,7 +81,7 @@ export async function generate({ mode, configPath: providedConfigPath }: Generat
 
         // changes in the config file should restart the whole process
         if (configImports.includes(filename)) {
-          logger.log('markdownlayer config changed, restarting...');
+          logger.debug('markdownlayer config changed, restarting...');
           watcher?.close();
           return generate({ mode, configPath: providedConfigPath });
         }

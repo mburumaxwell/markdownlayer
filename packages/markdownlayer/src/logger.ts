@@ -37,4 +37,4 @@ const info = (msg: unknown, begin?: number): void => print('info', msg, begin);
 const warn = (msg: unknown, begin?: number): void => print('warn', msg, begin);
 const error = (msg: unknown, begin?: number): void => print('error', msg, begin);
 
-export const logger = { log: debug, info, warn, error, set };
+export const logger = { debug, info, warn, error, set };
