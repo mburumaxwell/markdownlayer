@@ -10,17 +10,17 @@ export function id({
   type,
   relativePath,
   path,
-  cache: { uniques: cache },
+  cache: { uniques },
 }: { type: string; relativePath: string; path: string } & Pick<ResolvedConfig, 'cache'>) {
   return string()
     .min(1)
     .default(normalize(relativePath))
     .superRefine((value, { addIssue }) => {
-      const key = `schemas:ids:${type}:${value}`;
-      if (cache[key]) {
+      const key = `schemas:id:${type}:${value}`;
+      if (uniques[key]) {
         addIssue({ fatal: true, code: 'custom', message: `duplicate id '${value}' in '${path}` });
       } else {
-        cache[key] = path;
+        uniques[key] = path;
       }
     });
 }

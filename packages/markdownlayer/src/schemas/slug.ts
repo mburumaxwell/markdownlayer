@@ -25,7 +25,7 @@ export function slug({
   type,
   relativePath,
   path,
-  cache: { uniques: cache },
+  cache: { uniques },
 }: SlugParams & { type: string; relativePath: string; path: string } & Pick<ResolvedConfig, 'cache'>) {
   return string()
     .min(3)
@@ -35,10 +35,10 @@ export function slug({
     .refine((value) => !reserved.includes(value), 'Reserved slug')
     .superRefine((value, { addIssue }) => {
       const key = makeKey({ by, type, value });
-      if (cache[key]) {
+      if (uniques[key]) {
         addIssue({ fatal: true, code: 'custom', message: `duplicate slug '${value}' in '${path}` });
       } else {
-        cache[key] = path;
+        uniques[key] = path;
       }
     });
 }
