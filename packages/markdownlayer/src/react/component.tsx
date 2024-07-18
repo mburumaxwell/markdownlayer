@@ -1,26 +1,27 @@
-import type { DocumentFormat } from '@/core/types';
+import type { DocumentBody } from '../types';
 import { useMdocComponent, useMDXComponent } from './hooks';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type MarkdownlayerProps = { format: DocumentFormat; code: string; components: any };
+export type MarkdownlayerProps = { body: DocumentBody; components: any };
 
-export function Markdownlayer({ format, ...remaining }: MarkdownlayerProps) {
+export function Markdownlayer({ body, components }: MarkdownlayerProps) {
+  const { format, code } = body;
   return (
     <>
-      {(format == 'md' || format == 'mdx') && <MdOrMdx {...remaining} />}
-      {format == 'mdoc' && <Mdoc {...remaining} />}
+      {(format == 'md' || format == 'mdx') && <MdOrMdx code={code} components={components} />}
+      {format == 'mdoc' && <Mdoc code={code} components={components} />}
     </>
   );
 }
 
-type MarkdownlayerPropsWithoutFormat = Omit<MarkdownlayerProps, 'format'>;
+type MarkdownlayerPropsInner = { code: string } & Pick<MarkdownlayerProps, 'components'>;
 
-function Mdoc({ code, components }: MarkdownlayerPropsWithoutFormat) {
+function Mdoc({ code, components }: MarkdownlayerPropsInner) {
   const MdocComponent = useMdocComponent(code, components);
   return <>{MdocComponent}</>;
 }
 
-function MdOrMdx({ code, components }: MarkdownlayerPropsWithoutFormat) {
+function MdOrMdx({ code, components }: MarkdownlayerPropsInner) {
   const MdxComponent = useMDXComponent(code);
   return <MdxComponent components={{ ...components }} />;
 }

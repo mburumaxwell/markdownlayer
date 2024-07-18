@@ -6,28 +6,21 @@ pnpm-lock.yaml
 
 # next.js
 **/next-env.d.ts
-.next
-apps/**/out
 
-# other
+# outputs
 packages/**/dist
-.changeset/*.md
-
-# turbo
 .turbo
-
-# vercel
+.next
 .vercel
-
-# markdownlayer
 .markdownlayer
 
 # static files
-apps/**/public
-apps/**/static
+apps/**/{public,static,out}
+examples/**/{public,static,out}
 
 # special files
 .vscode/settings.json
 .github/**
 !.github/dependabot.yml
+.changeset/*.md
 README.md

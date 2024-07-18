@@ -40,10 +40,10 @@ const components = {
 
 type MarkdownlayerProps = Omit<MarkdownlayerPropsImpl, 'components'> & { className?: string };
 
-export function Markdownlayer({ format, code, className }: MarkdownlayerProps) {
+export function Markdownlayer({ body, className }: MarkdownlayerProps) {
   return (
     <div className={`prose dark:prose-invert max-w-none ${className}`}>
-      <MarkdownlayerImpl format={format} code={code} components={components} />
+      <MarkdownlayerImpl body={body} components={components} />
     </div>
   );
 }

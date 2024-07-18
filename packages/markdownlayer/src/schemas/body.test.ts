@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest';
 
-import { getFormat } from './format';
+import { getFormat } from './body';
 
 test('getFormat should return "md" when format is "detect" and file has .md extension', () => {
   const result = getFormat({ file: 'example.md', format: 'detect' });

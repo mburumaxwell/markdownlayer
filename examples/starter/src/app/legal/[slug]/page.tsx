@@ -22,9 +22,9 @@ export async function generateMetadata(
   }
 
   return {
-    title: doc.data.title,
+    title: doc.title,
     openGraph: {
-      title: doc.data.title,
+      title: doc.title,
       url: `/legal/${doc.slug}`,
       images: [siteConfig.socialImage],
     },
@@ -42,16 +42,16 @@ export default function LegalPage({ params: { slug } }: LegalProps) {
       <article className="border-t border-gray-200 bg-gray-50">
         <div className="bg-white py-16 sm:py-32">
           <h1 className="font-display mt-5 text-center text-3xl font-bold leading-[1.15] text-black sm:text-5xl sm:leading-[1.15]">
-            {doc.data.title}
+            {doc.title}
           </h1>
-          {doc.data.updated && (
+          {doc.updated && (
             <div className="mt-5 w-full text-center">
-              <p className="text-gray-500">Last updated on {formatDate(doc.data.updated, FORMATS_DATE_LONG)}</p>
+              <p className="text-gray-500">Last updated on {formatDate(doc.updated, FORMATS_DATE_LONG)}</p>
             </div>
           )}
         </div>
         <div className="mx-auto flex w-full max-w-screen-md flex-col items-center p-10 px-2.5 sm:pt-20 lg:px-20">
-          <Markdownlayer format={doc.format} code={doc.body.code} />
+          <Markdownlayer body={doc.body} />
         </div>
       </article>
     </>

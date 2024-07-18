@@ -25,20 +25,20 @@ export async function generateMetadata(
 
   return {
     title: {
-      absolute: post.data.title,
+      absolute: post.title,
     },
-    description: post.data.description,
-    keywords: post.data.keywords,
+    description: post.description,
+    keywords: post.keywords,
     openGraph: {
       type: 'article',
       title: {
-        absolute: post.data.title,
+        absolute: post.title,
       },
-      description: post.data.description,
-      images: post.data.image && [post.data.image],
+      description: post.description,
+      images: post.image && [post.image.src],
       url: `/blog/posts/${post.slug}`,
-      publishedTime: post.data.published,
-      modifiedTime: post.data.updated,
+      publishedTime: post.published,
+      modifiedTime: post.updated,
     },
   };
 }
@@ -49,7 +49,7 @@ export default function BlogPostPage({ params: { slug } }: BlogPostProps) {
     notFound();
   }
 
-  const mappedAuthors = post.data.authors
+  const mappedAuthors = post.authors
     .map((author) => authors.find((a) => [a.id, a.name].includes(author)))
     .filter(Boolean);
 
@@ -57,12 +57,12 @@ export default function BlogPostPage({ params: { slug } }: BlogPostProps) {
     <>
       <article className="container relative max-w-3xl py-6 lg:py-10">
         <div>
-          {post.data.published && (
-            <time dateTime={post.data.published} className="text-muted-foreground block text-sm">
-              Published on {formatDate(post.data.published, FORMATS_DATE_LONG)}
+          {post.published && (
+            <time dateTime={post.published} className="text-muted-foreground block text-sm">
+              Published on {formatDate(post.published, FORMATS_DATE_LONG)}
             </time>
           )}
-          <h1 className="font-heading mt-2 inline-block text-4xl leading-tight lg:text-5xl">{post.data.title}</h1>
+          <h1 className="font-heading mt-2 inline-block text-4xl leading-tight lg:text-5xl">{post.title}</h1>
           {mappedAuthors.length ? (
             <div className="mt-4 flex space-x-4">
               {mappedAuthors.map((author) =>
@@ -89,11 +89,11 @@ export default function BlogPostPage({ params: { slug } }: BlogPostProps) {
             </div>
           ) : null}
         </div>
-        {post.data.image && (
+        {post.image && (
           <div className="flex w-full justify-center">
             <Image
-              src={post.data.image}
-              alt={post.data.title}
+              src={post.image.src}
+              alt={post.title}
               width={720}
               height={405}
               className="bg-muted my-8 rounded-md border transition-colors"
@@ -101,7 +101,7 @@ export default function BlogPostPage({ params: { slug } }: BlogPostProps) {
             />
           </div>
         )}
-        <Markdownlayer format={post.format} code={post.body.code} />
+        <Markdownlayer body={post.body} />
         <hr className="mt-12" />
         <div className="flex justify-center py-6 lg:py-10">
           {/* <Link href="/blog" className={cn(buttonVariants({ variant: 'ghost' }))}>

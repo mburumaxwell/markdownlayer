@@ -5,9 +5,9 @@ import { authors } from './authors';
 
 const siteUrl = siteConfig.siteUrl;
 
-let posts = allBlogPosts.sort((a, b) => b.data.published.localeCompare(a.data.published));
+let posts = allBlogPosts.sort((a, b) => b.published.localeCompare(a.published));
 if (siteConfig.showDraftPosts) {
-  posts = posts.filter((post) => !post.data.draft);
+  posts = posts.filter((post) => !post.draft);
 }
 
 // limit to the latest 20 posts
@@ -16,7 +16,7 @@ posts = posts.slice(0, 20);
 const updated = new Date(
   Math.max(
     ...posts
-      .map((post) => [new Date(post.data.published), new Date(post.data.updated)])
+      .map((post) => [new Date(post.published), new Date(post.updated)])
       .flat()
       .filter(Boolean)
       .map(Number),
@@ -42,16 +42,16 @@ const feed = new Feed({
 
 posts.forEach((post) => {
   const url = `${siteUrl}/blog/posts/${post.slug}`;
-  const mappedAuthors = post.data.authors
+  const mappedAuthors = post.authors
     .map((author) => authors.find((a) => [a.id, a.name].includes(author)))
     .filter(Boolean);
 
   feed.addItem({
-    title: post.data.title,
+    title: post.title,
     id: url,
     link: url,
-    date: new Date(post.data.updated ?? post.data.published),
-    description: post.data.description,
+    date: new Date(post.updated ?? post.published),
+    description: post.description,
     // for some reason author cannot be an empty array
     author: (mappedAuthors.length ? mappedAuthors : undefined)?.map((author) => {
       return {
@@ -59,8 +59,8 @@ posts.forEach((post) => {
         link: `https://twitter.com/${author!.twitter}`,
       };
     }),
-    image: post.data.image && `${siteUrl}${post.data.image}`,
-    published: new Date(post.data.published),
+    image: post.image && `${siteUrl}${post.image.src}`,
+    published: new Date(post.published),
   });
 });
 
