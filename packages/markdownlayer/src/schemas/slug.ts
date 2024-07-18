@@ -6,7 +6,7 @@ import type { ResolvedConfig } from '../types';
 export type SlugParams = {
   /**
    * Unique by this, used to create a unique set of slugs
-   * @default 'global'
+   * @default 'definition'
    */
   by?: 'global' | 'definition';
 
@@ -20,7 +20,7 @@ export type SlugParams = {
  * @returns A Zod object representing a document's slug.
  */
 export function slug({
-  by = 'global',
+  by = 'definition',
   reserved = [],
   type,
   relativePath,
