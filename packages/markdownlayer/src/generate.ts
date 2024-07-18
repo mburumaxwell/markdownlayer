@@ -73,21 +73,25 @@ export async function generate({ mode, configPath: providedConfigPath }: Generat
 
       filename = join(contentDirPath, filename);
 
-      // remove changed file cache
-      for (const [key, value] of Object.entries(config.cache.uniques)) {
-        if (value === filename) delete config.cache.uniques[key];
-      }
+      try {
+        // remove changed file cache
+        for (const [key, value] of Object.entries(config.cache.uniques)) {
+          if (value === filename) delete config.cache.uniques[key];
+        }
 
-      // changes in the config file should restart the whole process
-      if (configImports.includes(filename)) {
-        logger.log('markdownlayer config changed, restarting...');
-        watcher?.close();
-        return generate({ mode, configPath: providedConfigPath });
-      }
+        // changes in the config file should restart the whole process
+        if (configImports.includes(filename)) {
+          logger.log('markdownlayer config changed, restarting...');
+          watcher?.close();
+          return generate({ mode, configPath: providedConfigPath });
+        }
 
-      // regenerate the content
-      logger.info(`${filename} changed`);
-      await generateInner({ mode, outputFolder, configPath, output, contentDirPath, ...config });
+        // regenerate the content
+        logger.info(`${filename} changed`);
+        await generateInner({ mode, outputFolder, configPath, output, contentDirPath, ...config });
+      } catch (error) {
+        logger.warn(error);
+      }
     });
   }
 }
