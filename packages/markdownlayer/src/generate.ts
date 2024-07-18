@@ -44,7 +44,7 @@ export type GenerateOptions = {
 
 export async function generate({ mode, configPath: providedConfigPath }: GenerateOptions) {
   // get the config
-  const { configPath, configImports, output, ...config } = await getConfig(providedConfigPath);
+  const { configPath, configImports, output, contentDirPath, ...config } = await getConfig(providedConfigPath);
 
   // create output directories if not exists
   await mkdir(output.assets, { recursive: true });
@@ -52,33 +52,41 @@ export async function generate({ mode, configPath: providedConfigPath }: Generat
   // generate the content (initial)
   const cwd = process.cwd();
   const outputFolder = join(cwd, '.markdownlayer');
-  await generateInner({ mode, outputFolder, output, configPath, ...config });
+  await generateInner({ mode, outputFolder, output, configPath, contentDirPath, ...config });
 
   // watch for changes in the config or content folder (development mode only)
   if (mode === 'development' && configPath) {
-    const files = [config.contentDirPath];
+    const files = [contentDirPath];
     files.push(...configImports); // watch config file and its dependencies
 
     const watcher = chokidar.watch(files, {
-      cwd,
+      cwd: contentDirPath,
       ignored: /(^|[/\\])[._]./, // ignore dot & underscore files
       ignoreInitial: true, // ignore initial scan
     });
-    watcher.on('all', async (eventName, fileName) => {
+    watcher.on('all', async (eventName, filename) => {
       if (eventName === 'addDir' || eventName === 'unlinkDir') return; // ignore dir changes
-      if (eventName === 'add') console.log(`${fileName} added`);
-      else if (eventName === 'change') console.log(`${fileName} changed`);
-      else if (eventName === 'unlink') console.log(`${fileName} deleted.`);
+      if (eventName === 'add') console.log(`${filename} added`);
+      else if (eventName === 'change') console.log(`${filename} changed`);
+      else if (eventName === 'unlink') console.log(`${filename} deleted.`);
+      if (filename == null) return;
+
+      filename = join(contentDirPath, filename);
+
+      // remove changed file cache
+      for (const [key, value] of Object.entries(config.cache.uniques)) {
+        if (value === filename) delete config.cache.uniques[key];
+      }
 
       // changes in the config file should restart the whole process
-      if (configImports.includes(fileName)) {
+      if (configImports.includes(filename)) {
         console.log('markdownlayer config changed, restarting...');
         watcher?.close();
         return generate({ mode, configPath: providedConfigPath });
       }
 
       // regenerate the content
-      await generateInner({ mode, outputFolder, configPath, output, ...config });
+      await generateInner({ mode, outputFolder, configPath, output, contentDirPath, ...config });
     });
   }
 }
