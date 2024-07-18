@@ -1,5 +1,6 @@
 import { copyFile } from 'node:fs/promises';
 import { join } from 'node:path';
+import { logger } from './logger';
 
 const emitted: Record<string, string> = {};
 
@@ -21,14 +22,14 @@ export async function outputAssets({
   await Promise.all(
     Object.entries(assets).map(async ([name, from]) => {
       if (emitted[name] === from) {
-        console.log(`skipped copy '${name}' with same content`);
+        logger.log(`skipped copy '${name}' with same content`);
         return;
       }
       await copyFile(from, join(destination, name));
-      // console.log(`copied '${name}' from '${from}'`)
+      // logger.log(`copied '${name}' from '${from}'`)
       emitted[name] = from;
       count++;
     }),
   );
-  console.log(`output ${count} assets`);
+  logger.log(`output ${count} assets`);
 }
