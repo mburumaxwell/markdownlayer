@@ -1,5 +1,14 @@
 # markdownlayer
 
+## 0.4.0-beta.6
+
+### Patch Changes
+
+- 39e7215: Remove entries in uniques cache when a file changes.
+  Without this dev crashes when a file is edited.
+- 88477a0: Added a logger (mostly copied from velite)
+- cb6bccb: Catch errors thrown in watcher, log, and continue gracefully.
+
 ## 0.4.0-beta.5
 
 ### Minor Changes
