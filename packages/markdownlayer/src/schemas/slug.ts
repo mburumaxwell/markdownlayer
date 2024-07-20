@@ -5,6 +5,24 @@ import type { ResolvedConfig } from '../types';
 
 export type SlugParams = {
   /**
+   * Minimum length of the slug.
+   * @default 3
+   */
+  min?: number;
+
+  /**
+   * Maximum length of the slug.
+   * @default 200
+   */
+  max?: number;
+
+  /**
+   * Regular expression to match the slug.
+   * @default /^[a-z0-9]+(?:-[a-z0-9]+)*(?:\/[a-z0-9]+(?:-[a-z0-9]+)*)*$/i
+   */
+  regex?: RegExp;
+
+  /**
    * Whether to use the default value.
    * @default true
    */
@@ -32,6 +50,9 @@ type CompleteOptions = SlugParams & {
  * @returns A Zod object representing a document's slug.
  */
 export function slug({
+  min = 3,
+  max = 200,
+  regex = /^[a-z0-9]+(?:-[a-z0-9]+)*(?:\/[a-z0-9]+(?:-[a-z0-9]+)*)*$/i,
   default: useDefault = true,
   by = 'definition',
   reserved = [],
@@ -43,9 +64,9 @@ export function slug({
   },
 }: CompleteOptions) {
   const common = string()
-    .min(3)
-    .max(200)
-    .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*(?:\/[a-z0-9]+(?:-[a-z0-9]+)*)*$/i, 'Invalid slug')
+    .min(min)
+    .max(max)
+    .regex(regex, 'Invalid slug')
     .refine((value) => !reserved.includes(value), 'Reserved slug');
 
   const base = useDefault ? common.default(generate(relative(join(contentDirPath, type), path))) : common;
