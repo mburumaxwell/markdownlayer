@@ -6,7 +6,7 @@ import { string } from 'zod';
 import { getImageMetadata, processAsset } from '../assets';
 import type { ImageData, ResolvedConfig } from '../types';
 
-export type ImageOptions = {
+export type ImageParams = {
   /**
    * Whether to allow remote URLs such as `https://example.com/image.png`.
    *
@@ -24,6 +24,11 @@ export type ImageOptions = {
   emit?: boolean;
 };
 
+type CompleteOptions = ImageParams & {
+  path: string;
+  config: ResolvedConfig;
+};
+
 /**
  * Schema for an image.
  * @param options - Options for the image schema.
@@ -34,7 +39,7 @@ export function image({
   emit = true,
   path,
   config: { output },
-}: ImageOptions & { path: string; config: ResolvedConfig }) {
+}: CompleteOptions) {
   return string().transform<ImageData>(async (value, { addIssue }) => {
     try {
       // checks if the string starts with http:// or https://

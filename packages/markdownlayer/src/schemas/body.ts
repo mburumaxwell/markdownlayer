@@ -3,7 +3,7 @@ import { custom } from 'zod';
 import { bundle, type BundleProps } from '../bundle';
 import type { DocumentBody, DocumentFormat, DocumentFormatInput, ResolvedConfig } from '../types';
 
-export type BodyOptions = {
+export type BodyParams = {
   /**
    * Format of contents of the files
    * - `detect`: Detects the format based on the file extension
@@ -24,7 +24,7 @@ export type BodyOptions = {
   mdAsMarkdoc?: boolean;
 };
 
-type Options = BodyOptions & {
+type CompleteOptions = BodyParams & {
   path: string;
   contents: string;
   frontmatter: Record<string, unknown>;
@@ -43,7 +43,7 @@ export function body({
   contents,
   frontmatter,
   config,
-}: Options) {
+}: CompleteOptions) {
   return custom().transform<DocumentBody>(async (value, { addIssue }) => {
     // determine the document format
     let format = getFormat({ file: path, format: formatInput });

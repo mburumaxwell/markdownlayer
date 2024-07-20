@@ -1,8 +1,8 @@
 import type { DocumentDefinition, ResolvedConfig } from '../types';
-import { type BodyOptions, body } from './body';
+import { type BodyParams, body } from './body';
 import { type GitParams, git } from './git';
 import { id } from './id';
-import { type ImageOptions, image } from './image';
+import { type ImageParams, image } from './image';
 import { type ReadingTimeParams, readtime } from './read-time';
 import { type SlugParams, slug } from './slug';
 import { toc } from './toc';
@@ -12,7 +12,7 @@ export type SchemaContext = {
    * Schema for a document's body.
    * @returns A Zod object representing a document body.
    */
-  body: (params?: BodyOptions) => ReturnType<typeof body>;
+  body: (params?: BodyParams) => ReturnType<typeof body>;
 
   /**
    * Schema for a file's git file info.
@@ -21,7 +21,7 @@ export type SchemaContext = {
    * It gets the commit date instead of author date so that amended commits
    * can have their dates updated.
    *
-   * @param param - Options for the git file info schema.
+   * @param params - Params for the git schema.
    * @returns A Zod object representing git file info.
    */
   git: (params?: GitParams) => ReturnType<typeof git>;
@@ -34,21 +34,21 @@ export type SchemaContext = {
 
   /**
    * Schema for an image.
-   * @param options - Options for the image schema.
+   * @param params - Params for the image schema.
    * @returns A Zod object representing an image.
    */
-  image: (params?: ImageOptions) => ReturnType<typeof image>;
+  image: (params?: ImageParams) => ReturnType<typeof image>;
 
   /**
    * Schema for a document's reading time.
-   * @param params - Options for the reading time schema.
+   * @param params - Params for the reading time schema.
    * @returns A Zod object representing reading time data.
    */
   readtime: (params?: ReadingTimeParams) => ReturnType<typeof readtime>;
 
   /**
    * Schema for a document's slug.
-   * @param params - Options for the slug schema.
+   * @param params - Params for the slug schema.
    * @returns A Zod object representing a document's slug.
    */
   slug: (params?: SlugParams) => ReturnType<typeof slug>;
@@ -81,10 +81,10 @@ export function resolveSchema({
 }: ResolveSchemaOptions) {
   if (typeof schema === 'function') {
     schema = schema({
-      body: (params: BodyOptions = {}) => body({ ...params, path, contents, frontmatter, config }),
+      body: (params: BodyParams = {}) => body({ ...params, path, contents, frontmatter, config }),
       git: (params: GitParams = {}) => git({ ...params, path }),
       id: () => id({ type, path, config }),
-      image: (params: ImageOptions = {}) => image({ ...params, path, config }),
+      image: (params: ImageParams = {}) => image({ ...params, path, config }),
       readtime: (params: ReadingTimeParams = {}) => readtime({ ...params, contents }),
       slug: (params: SlugParams = {}) => slug({ ...params, type, path, config }),
       toc: () => toc({ contents }),

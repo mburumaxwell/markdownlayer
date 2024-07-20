@@ -8,10 +8,16 @@ export type SlugParams = {
    * Unique by this, used to create a unique set of slugs
    * @default 'definition'
    */
-  by?: 'global' | 'definition';
+  by?: 'definition' | 'global';
 
   /** Reserved slugs, will be rejected */
   reserved?: string[];
+};
+
+type CompleteOptions = SlugParams & {
+  type: string;
+  path: string;
+  config: ResolvedConfig;
 };
 
 /**
@@ -28,7 +34,7 @@ export function slug({
     contentDirPath,
     cache: { uniques },
   },
-}: SlugParams & { type: string; path: string; config: ResolvedConfig }) {
+}: CompleteOptions) {
   return string()
     .min(3)
     .max(200)
@@ -62,10 +68,10 @@ export function generate(path: string): string {
 
 export function makeKey({ by, type, value }: { by: SlugParams['by']; type: string; value: string }) {
   switch (by) {
-    case 'global':
-      return `schemas:slug:global:${value}`;
     case 'definition':
       return `schemas:slug:${type}:${value}`;
+    case 'global':
+      return `schemas:slug:global:${value}`;
     default:
       throw new Error(`Unknown value for 'by': ${by}`);
   }
