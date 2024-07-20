@@ -265,6 +265,9 @@ export type ResolvedConfig = MarkdownlayerConfig & {
   /** Path to root directory that contains all content (relative to config file). */
   readonly contentDirPath: string;
 
+  /** Glob patterns to match documents, relative to `contentDirPath`. */
+  readonly patterns: string | readonly string[];
+
   /** Output configuration */
   readonly output: MarkdownlayerConfigOutput & {
     /** Path to directory that contains all generated files (relative to config file). */

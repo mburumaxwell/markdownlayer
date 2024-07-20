@@ -59,6 +59,7 @@ export async function getConfig(mode: GenerationMode, path?: string): Promise<Re
     configImports,
     cache,
     contentDirPath: resolve(cwd, loadedConfig.contentDirPath ?? 'content'),
+    patterns: loadedConfig.patterns ?? '**/*.{md,mdoc,mdx}',
     caching,
     output: {
       ...loadedConfig.output,
