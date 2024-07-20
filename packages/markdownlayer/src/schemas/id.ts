@@ -1,4 +1,4 @@
-import { normalize } from 'node:path';
+import { normalize, relative } from 'node:path';
 import { string } from 'zod';
 import type { ResolvedConfig } from '../types';
 
@@ -8,20 +8,19 @@ import type { ResolvedConfig } from '../types';
  */
 export function id({
   type,
-  relativePath,
   path,
   config: {
+    contentDirPath,
     cache: { uniques },
   },
 }: {
   type: string;
-  relativePath: string;
   path: string;
   config: ResolvedConfig;
 }) {
   return string()
     .min(1)
-    .default(normalize(relativePath))
+    .default(normalize(relative(contentDirPath, path)))
     .superRefine((value, { addIssue }) => {
       const key = `schemas:id:${type}:${value}`;
       if (uniques[key]) {

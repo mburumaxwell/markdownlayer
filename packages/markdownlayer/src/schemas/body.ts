@@ -4,7 +4,6 @@ import { bundle, type BundleProps } from '../bundle';
 import type { DocumentBody, DocumentDefinition, DocumentFormat, DocumentFormatInput, ResolvedConfig } from '../types';
 
 type Options = Pick<DocumentDefinition, 'format'> & {
-  // relativePath: string;
   path: string;
   contents: string;
   frontmatter: Record<string, unknown>;

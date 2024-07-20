@@ -223,9 +223,9 @@ export const MarkdownlayerErrorData = {
   InvalidDocumentFrontmatterError: {
     name: 'InvalidDocumentFrontmatterError',
     title: 'Document frontmatter does not match schema.',
-    message({ definition, relativePath, error }: { definition: string; relativePath: string; error: ZodError }) {
+    message({ definition, path, error }: { definition: string; path: string; error: ZodError }) {
       return [
-        `**${String(definition)} → ${String(relativePath)}** frontmatter does not match definition schema.`,
+        `**${String(definition)} → ${String(path)}** frontmatter does not match definition schema.`,
         ...error.errors.map((zodError) => zodError.message),
       ].join('\n');
     },
