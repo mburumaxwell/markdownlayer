@@ -36,6 +36,7 @@ Read the [blog](https://maxwellweru.com/blog/2024/03/replacing-contentlayer-with
 - Conversion of image elements from `img` to NextJS's `Image` component.
 - Relative links in markdown content.
 - Backward support for CJS by using dynamic imports.
+- Collecting images and other files from markdown/MDX/Markdoc files.
 
 ## Installation
 
