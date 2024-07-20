@@ -16,7 +16,7 @@ export function toc({ contents }: { contents: string }) {
   return custom().transform<TocItem[]>(() => {
     return Array.from(contents.matchAll(regXHeader)).map(({ groups }) => {
       const { flag, content } = groups!;
-      // Note: using `slug` instead of `new Slugger()` means no slug deduping.
+      // Note: using `slug` instead of `new Slugger()` means no slug deduplication.
       const id = githubSlug(content);
       return {
         level: flag.length,

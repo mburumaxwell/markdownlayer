@@ -43,7 +43,7 @@ export default function remarkHeadings(): Transformer {
       let { id } = properties;
 
       if (id) {
-        // Note: using `slug` instead of `new Slugger()` means no slug deduping.
+        // Note: using `slug` instead of `new Slugger()` means no slug deduplication.
         id = githubSlug(id, /* maintainCase */ true);
       } else {
         const headingTextNodes = headingNode.children.filter(({ type }) => !['html', 'jsx'].includes(type));
@@ -52,7 +52,7 @@ export default function remarkHeadings(): Transformer {
         // Support explicit heading IDs
         const parsedHeading = parseMarkdownHeadingId(heading);
 
-        // Note: using `slug` instead of `new Slugger()` means no slug deduping.
+        // Note: using `slug` instead of `new Slugger()` means no slug deduplication.
         id = parsedHeading.id ?? githubSlug(heading);
 
         if (parsedHeading.id) {

@@ -10,6 +10,7 @@ import { toc } from './toc';
 export type SchemaContext = {
   /**
    * Schema for a document's body.
+   * @param params - Params for the body schema.
    * @returns A Zod object representing a document body.
    */
   body: (params?: BodyParams) => ReturnType<typeof body>;
