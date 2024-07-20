@@ -86,6 +86,8 @@ export type TocItem = {
   readonly url: string;
 };
 
+export type { SchemaContext };
+
 /** Represents the definition of a document collection. */
 export type DocumentDefinition = {
   /**
