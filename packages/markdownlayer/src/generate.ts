@@ -46,7 +46,7 @@ export async function generate({ mode, configPath: providedConfigPath }: Generat
   if (mode === 'development') {
     logger.info(`Watching for changes in '${contentDirPath}'`);
 
-    const files = [contentDirPath];
+    const files = Array.isArray(config.patterns) ? config.patterns : [config.patterns];
     files.push(...configImports); // watch config file and its dependencies
 
     const watcher = chokidar.watch(files, {
@@ -111,7 +111,7 @@ async function generateInner(config: ResolvedConfig) {
 type GenerateDocsOptions = DocumentDefinition & { type: string; config: ResolvedConfig };
 async function generateDocuments(options: GenerateDocsOptions): Promise<GeneratedCount> {
   const { type, config } = options;
-  const { configPath, contentDirPath, patterns = '**/*.{md,mdoc,mdx}', cache, output } = config;
+  const { configPath, contentDirPath, patterns, cache, output } = config;
 
   // ensure that all definitions have at least one pattern
   if (patterns.length === 0) {
