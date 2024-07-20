@@ -38,9 +38,15 @@ export async function outputEntryFiles({
     'type ReturnTypeOrOriginal<T> = T extends (...args: any[]) => infer R ? R : T;',
     `type InferSchema<D extends keyof Definitions> = z.infer<ReturnTypeOrOriginal<Definitions[D]['schema']>>;`,
     '',
-    ...types.map((type) => `export type ${generateTypeName(type)} = InferSchema<'${type}'>`),
-    '',
-    ...types.map((type) => `export declare const ${getDataVariableName(type)}: ${generateTypeName(type)}[];`),
+    ...types.map((type) => {
+      const typeName = generateTypeName(type);
+      const dataVariableName = getDataVariableName(type);
+      return [
+        `export type ${typeName} = InferSchema<'${type}'>`,
+        `export declare const ${dataVariableName}: ${typeName}[];`,
+        '',
+      ].join('\n');
+    }),
     '',
   ];
   let filePath = join(destination, 'index.d.ts');
@@ -56,13 +62,9 @@ export async function outputEntryFiles({
     ...types.map((type) => {
       const dataVariableName = getDataVariableName(type);
       return mode == 'development'
-        ? `import { default as ${dataVariableName} } from './${type}/index.mjs';`
-        : `import { default as ${dataVariableName} } from './${type}/index.json'${assertStatement};`;
+        ? `export { default as ${dataVariableName} } from './${type}/index.mjs';`
+        : `export { default as ${dataVariableName} } from './${type}/index.json'${assertStatement};`;
     }),
-    '',
-    'export {',
-    `  ${types.map((type) => getDataVariableName(type)).join(',\n  ')},`,
-    '};',
     '',
   ];
   filePath = join(destination, 'index.mjs');
