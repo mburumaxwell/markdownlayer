@@ -25,8 +25,10 @@ export function slug({
   type,
   relativePath,
   path,
-  cache: { uniques },
-}: SlugParams & { type: string; relativePath: string; path: string } & Pick<ResolvedConfig, 'cache'>) {
+  config: {
+    cache: { uniques },
+  },
+}: SlugParams & { type: string; relativePath: string; path: string; config: ResolvedConfig }) {
   return string()
     .min(3)
     .max(200)

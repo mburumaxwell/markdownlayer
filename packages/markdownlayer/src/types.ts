@@ -5,6 +5,7 @@ import type { Options as RemarkRehypeOptions } from 'remark-rehype';
 import type { PluggableList } from 'unified';
 import type { AnyZodObject, ZodDiscriminatedUnion, ZodEffects, ZodIntersection, ZodUnion } from 'zod';
 
+import type { MarkdownlayerCache } from './cache';
 import type { AdmonitionPluginOptions } from './remark';
 import type { SchemaContext } from './schemas/resolve';
 
@@ -260,35 +261,11 @@ export function defineConfig<T extends DocumentDefinitions>(config: Markdownlaye
   return config;
 }
 
-export type DataCacheEntry = {
-  /**
-   * Hash of the document (for simplicity, this is the last modified time of the file).
-   * Used to invalidate the cache when the document changes.
-   */
-  hash: string;
-
-  /** Type of definition */
-  type: string;
-
-  /** Actual document (in cache) */
-  document: unknown;
-};
-
-export type DataCache = {
-  /** Cache of all documents. Key is the full document path. */
-  items: Record<string, DataCacheEntry>;
-};
-
-export type MarkdownlayerCache = {
-  /** Cache for unique values. (refreshed on rebuild) */
-  uniques: Record<string, string>;
-
-  /** Cache of all documents that is persisted between builds in the cache directory. */
-  data: DataCache;
-};
-
 /** Represents the result of getting the configuration. */
 export type ResolvedConfig = MarkdownlayerConfig & {
+  /** The mode of the generation. */
+  readonly mode: GenerationMode;
+
   /** The path to the configuration file. */
   readonly configPath: string;
 
@@ -301,12 +278,15 @@ export type ResolvedConfig = MarkdownlayerConfig & {
   /** Dependencies of the config file. */
   readonly configImports: string[];
 
-  /** Cache for unique values. (refreshed on rebuild) */
+  /** Global cache */
   readonly cache: MarkdownlayerCache;
 
   /** Path to root directory that contains all content (relative to config file). */
   readonly contentDirPath: string;
 
   /** Output configuration */
-  readonly output: MarkdownlayerConfigOutput;
+  readonly output: MarkdownlayerConfigOutput & {
+    /** Path to directory that contains all generated files (relative to config file). */
+    readonly generated: string;
+  };
 };

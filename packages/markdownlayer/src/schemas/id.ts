@@ -10,8 +10,15 @@ export function id({
   type,
   relativePath,
   path,
-  cache: { uniques },
-}: { type: string; relativePath: string; path: string } & Pick<ResolvedConfig, 'cache'>) {
+  config: {
+    cache: { uniques },
+  },
+}: {
+  type: string;
+  relativePath: string;
+  path: string;
+  config: ResolvedConfig;
+}) {
   return string()
     .min(1)
     .default(normalize(relativePath))

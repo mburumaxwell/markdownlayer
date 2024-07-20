@@ -4,7 +4,7 @@ import { resolve } from 'node:path';
 import { string } from 'zod';
 
 import { getImageMetadata, processAsset } from '../assets';
-import type { ImageData, MarkdownlayerConfigOutput } from '../types';
+import type { ImageData, ResolvedConfig } from '../types';
 
 export type ImageOptions = {
   /**
@@ -33,8 +33,8 @@ export function image({
   remote = false,
   emit = true,
   path,
-  output,
-}: ImageOptions & { path: string; output: MarkdownlayerConfigOutput }) {
+  config: { output },
+}: ImageOptions & { path: string; config: ResolvedConfig }) {
   return string().transform<ImageData>(async (value, { addIssue }) => {
     try {
       // checks if the string starts with http:// or https://
