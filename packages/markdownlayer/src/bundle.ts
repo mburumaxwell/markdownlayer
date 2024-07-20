@@ -89,7 +89,7 @@ async function mdx({ entryPath, contents, format, plugins }: BundleMdxProps): Pr
     bundle: true,
     format: 'iife',
     globalName: 'Component',
-    minify: false, // let next.js handle minification
+    minify: false, // let the bundling framework handle the minification
     splitting: false,
     treeShaking: false,
     target: 'es2020',
@@ -134,10 +134,10 @@ function getCompileOptions({ format, plugins }: GetCompileOptionsProps): Compile
 
   if (!cacheEntry) {
     const options: CompileOptions = {
-      format: format,
-
-      // configure recma plugins
-      recmaPlugins: recmaPlugins ?? [],
+      format,
+      recmaPlugins,
+      rehypePlugins,
+      remarkRehypeOptions,
 
       // configure remark plugins
       remarkPlugins: [
@@ -155,11 +155,6 @@ function getCompileOptions({ format, plugins }: GetCompileOptionsProps): Compile
         // user-provided plugins
         ...(remarkPlugins ?? []),
       ],
-
-      // configure rehype plugins
-      rehypePlugins: rehypePlugins ?? [],
-
-      remarkRehypeOptions: remarkRehypeOptions,
     };
 
     if (format === 'md') {
@@ -182,7 +177,7 @@ function getCompileOptions({ format, plugins }: GetCompileOptionsProps): Compile
       options.rehypePlugins!.unshift(rehypeRawPlugin);
     }
 
-    cacheEntry = { format, options: options };
+    cacheEntry = { format, options };
     ProcessorsCache.set(format, cacheEntry);
   }
 
