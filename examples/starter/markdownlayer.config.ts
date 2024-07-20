@@ -8,7 +8,7 @@ export default defineConfig({
     authors: {
       schema: ({ id, image }) =>
         z.object({
-          id: id(),
+          id: id({ default: false }),
           name: z.string(),
           twitter: z.string(),
           url: z.string().url(),
