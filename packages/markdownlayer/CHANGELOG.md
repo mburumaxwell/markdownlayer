@@ -1,5 +1,24 @@
 # markdownlayer
 
+## 0.4.0-beta.7
+
+### Minor Changes
+
+- cf47c01: Move `format` from `DocumentDefinition` and `mdAsMarkdoc` from the config to the body schema.
+  This allows setting `mdAdMarkdoc` per definition.
+
+### Patch Changes
+
+- 379c0c8: Quality of life improvements and fix caching bug.
+
+  - Updated caching mechanism to store unique identifiers, addressing a bug introduced in version `0.4.0-beta.6`. If build fails, try deleting the `.markdownlayer` directory in your project root.
+  - Enhanced output file generation for entry files (`index.d.ts` and `index.mjs`), ensuring they are generated once unless the config file changes.
+  - Refactored custom schemas to accept a config object instead of selective properties, providing more flexibility and improving code maintainability.
+
+- 112326f: Only watch for file changes based on provided patterns (or the default)
+- c0b6f5f: Allow opt out of default values for slug and id schemas
+- 097e776: Wait for files to be written when watching while being responsive
+
 ## 0.4.0-beta.6
 
 ### Patch Changes
