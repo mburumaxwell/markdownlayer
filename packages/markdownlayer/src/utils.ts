@@ -1,9 +1,4 @@
-import { camelCase } from 'change-case';
 import { pluralize, singularize } from 'inflection';
-
-export function makeVariableName(id: string) {
-  return leftPadWithUnderscoreIfStartsWithNumber(camelCase(idToFileName(id).replace(/[^A-Z0-9_]/gi, '/0')));
-}
 
 export function getDataVariableName(type: string): string {
   return 'all' + pluralize(toPascalCase(type));
@@ -11,14 +6,6 @@ export function getDataVariableName(type: string): string {
 
 export function generateTypeName(type: string): string {
   return singularize(toPascalCase(type));
-}
-
-export function idToFileName(id: string): string {
-  return leftPadWithUnderscoreIfStartsWithNumber(id).replace(/\//g, '__');
-}
-
-function leftPadWithUnderscoreIfStartsWithNumber(str: string): string {
-  return /^[0-9]/.test(str) ? '_' + str : str;
 }
 
 function toPascalCase(str: string) {

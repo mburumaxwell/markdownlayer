@@ -56,15 +56,13 @@ export async function outputEntryFiles({
     ...types.map((type) => {
       const dataVariableName = getDataVariableName(type);
       return mode == 'development'
-        ? `import { ${dataVariableName} } from './${type}/index.mjs';`
-        : `import ${dataVariableName} from './${type}/index.json'${assertStatement};`;
+        ? `import { default as ${dataVariableName} } from './${type}/index.mjs';`
+        : `import { default as ${dataVariableName} } from './${type}/index.json'${assertStatement};`;
     }),
     '',
     'export {',
     `  ${types.map((type) => getDataVariableName(type)).join(',\n  ')},`,
     '};',
-    '',
-    `export const allDocuments = [...${types.map((type) => getDataVariableName(type)).join(', ...')}];`,
     '',
   ];
   filePath = join(destination, 'index.mjs');

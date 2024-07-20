@@ -1,5 +1,5 @@
 import { slug as githubSlug } from 'github-slugger';
-import { extname, relative, sep as separator } from 'node:path';
+import { extname, join, relative, sep as separator } from 'node:path';
 import { string } from 'zod';
 import type { ResolvedConfig } from '../types';
 
@@ -33,7 +33,7 @@ export function slug({
     .min(3)
     .max(200)
     .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*(?:\/[a-z0-9]+(?:-[a-z0-9]+)*)*$/i, 'Invalid slug')
-    .default(generate(relative(contentDirPath, path)))
+    .default(generate(relative(join(contentDirPath, type), path)))
     .refine((value) => !reserved.includes(value), 'Reserved slug')
     .superRefine((value, { addIssue }) => {
       const key = makeKey({ by, type, value });
