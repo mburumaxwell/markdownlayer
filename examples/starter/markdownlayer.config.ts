@@ -5,6 +5,16 @@ import { rehypeAutolinkHeadings, rehypePrettyCode } from './src/markdownlayer';
 export default defineConfig({
   contentDirPath: './src/content',
   definitions: {
+    authors: {
+      schema: ({ id, image }) =>
+        z.object({
+          id: id(),
+          name: z.string(),
+          twitter: z.string(),
+          url: z.string().url(),
+          avatar: image({ remote: true }),
+        }),
+    },
     legal: {
       schema: ({ body, slug }) =>
         z.object({

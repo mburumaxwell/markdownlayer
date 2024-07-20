@@ -1,7 +1,6 @@
 import siteConfig from '@/site-config';
 import { Feed } from 'feed';
-import { allBlogPosts } from 'markdownlayer/generated';
-import { authors } from './authors';
+import { allAuthors, allBlogPosts } from 'markdownlayer/generated';
 
 const siteUrl = siteConfig.siteUrl;
 
@@ -43,7 +42,7 @@ const feed = new Feed({
 posts.forEach((post) => {
   const url = `${siteUrl}/blog/posts/${post.slug}`;
   const mappedAuthors = post.authors
-    .map((author) => authors.find((a) => [a.id, a.name].includes(author)))
+    .map((author) => allAuthors.find((a) => [a.id, a.name].includes(author)))
     .filter(Boolean);
 
   feed.addItem({
@@ -56,7 +55,7 @@ posts.forEach((post) => {
     author: (mappedAuthors.length ? mappedAuthors : undefined)?.map((author) => {
       return {
         name: author!.name,
-        link: `https://twitter.com/${author!.twitter}`,
+        link: author!.url,
       };
     }),
     image: post.image && `${siteUrl}${post.image.src}`,

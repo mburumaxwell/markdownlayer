@@ -1,10 +1,9 @@
-import { allBlogPosts } from 'markdownlayer/generated';
+import { allAuthors, allBlogPosts } from 'markdownlayer/generated';
 import type { Metadata, ResolvingMetadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
-import { authors } from '@/lib/authors';
 import { FORMATS_DATE_LONG, formatDate } from '@/lib/formatting';
 
 import { Markdownlayer } from '@/components/markdownlayer';
@@ -50,7 +49,7 @@ export default function BlogPostPage({ params: { slug } }: BlogPostProps) {
   }
 
   const mappedAuthors = post.authors
-    .map((author) => authors.find((a) => [a.id, a.name].includes(author)))
+    .map((author) => allAuthors.find((a) => [a.id, a.name].includes(author)))
     .filter(Boolean);
 
   return (
@@ -67,17 +66,14 @@ export default function BlogPostPage({ params: { slug } }: BlogPostProps) {
             <div className="mt-4 flex space-x-4">
               {mappedAuthors.map((author) =>
                 author ? (
-                  <Link
-                    key={author.id}
-                    href={`https://twitter.com/${author.twitter}`}
-                    className="flex items-center space-x-2 text-sm"
-                  >
+                  <Link key={author.id} href={author.url} className="flex items-center space-x-2 text-sm">
                     <Image
-                      src={author.avatar}
+                      src={author.avatar.src}
                       alt={author.name}
                       width={42}
                       height={42}
                       className="rounded-full bg-white"
+                      unoptimized={author.avatar.src?.endsWith('.svg') ?? true}
                     />
                     <div className="flex-1 text-left leading-tight">
                       <p className="font-medium">{author.name}</p>
