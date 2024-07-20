@@ -4,6 +4,12 @@ import type { ResolvedConfig } from '../types';
 
 export type IdOptions = {
   /**
+   * Minimum length of the id.
+   * @default 1
+   */
+  min?: number;
+
+  /**
    * Whether to use the default value.
    * @default true
    */
@@ -21,6 +27,7 @@ type CompleteOptions = IdOptions & {
  * @returns A Zod object representing a document's id.
  */
 export function id({
+  min = 1,
   default: useDefault = true,
   type,
   path,
@@ -29,7 +36,7 @@ export function id({
     cache: { uniques },
   },
 }: CompleteOptions) {
-  const common = string().min(1);
+  const common = string().min(min);
   const base = useDefault ? common.default(normalize(relative(contentDirPath, path))) : common;
 
   return base.superRefine((value, { addIssue }) => {

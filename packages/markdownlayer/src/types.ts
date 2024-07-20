@@ -238,10 +238,11 @@ export type MarkdownlayerConfig<T extends DocumentDefinitions = DocumentDefiniti
 } & MarkdownlayerConfigPlugins;
 
 /** Define a schema (identity function for type inference and convenience) */
-export const defineSchema = <T extends () => Schema>(fn: T): T => fn
+export const defineSchema = <T extends () => Schema>(fn: T): T => fn;
 
 /** Define config (identity function for type inference and convenience) */
-export const defineConfig = <T extends DocumentDefinitions>(config: MarkdownlayerConfig<T>): MarkdownlayerConfig<T> => config
+export const defineConfig = <T extends DocumentDefinitions>(config: MarkdownlayerConfig<T>): MarkdownlayerConfig<T> =>
+  config;
 
 /** Represents the result of getting the configuration. */
 export type ResolvedConfig = MarkdownlayerConfig & {
