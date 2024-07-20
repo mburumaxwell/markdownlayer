@@ -3,7 +3,7 @@ import type { RemarkEmojiOptions } from 'remark-emoji';
 import type { Options as RemarkGfmOptions } from 'remark-gfm';
 import type { Options as RemarkRehypeOptions } from 'remark-rehype';
 import type { PluggableList } from 'unified';
-import type { AnyZodObject, ZodDiscriminatedUnion, ZodEffects, ZodIntersection, ZodUnion } from 'zod';
+import type { AnyZodObject, Schema, ZodDiscriminatedUnion, ZodEffects, ZodIntersection, ZodUnion } from 'zod';
 
 import type { MarkdownlayerCache } from './cache';
 import type { AdmonitionPluginOptions } from './remark';
@@ -237,12 +237,11 @@ export type MarkdownlayerConfig<T extends DocumentDefinitions = DocumentDefiniti
   output?: MarkdownlayerConfigOutput;
 } & MarkdownlayerConfigPlugins;
 
-/**
- * Define config (identity function for type inference)
- */
-export function defineConfig<T extends DocumentDefinitions>(config: MarkdownlayerConfig<T>): MarkdownlayerConfig<T> {
-  return config;
-}
+/** Define a schema (identity function for type inference and convenience) */
+export const defineSchema = <T extends () => Schema>(fn: T): T => fn
+
+/** Define config (identity function for type inference and convenience) */
+export const defineConfig = <T extends DocumentDefinitions>(config: MarkdownlayerConfig<T>): MarkdownlayerConfig<T> => config
 
 /** Represents the result of getting the configuration. */
 export type ResolvedConfig = MarkdownlayerConfig & {
