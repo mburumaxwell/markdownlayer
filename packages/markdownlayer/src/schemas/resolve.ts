@@ -64,7 +64,6 @@ export type ResolveSchemaOptions = Pick<DocumentDefinition, 'format' | 'schema'>
   config: ResolvedConfig;
   /** Type of definition */
   type: string;
-  relativePath: string;
   path: string;
   contents: string;
   frontmatter: Record<string, unknown>;
@@ -75,7 +74,6 @@ export function resolveSchema({
   format,
   schema,
 
-  relativePath,
   path,
   contents,
 
@@ -86,10 +84,10 @@ export function resolveSchema({
     schema = schema({
       body: () => body({ contents, path, frontmatter, format, config }),
       git: (params: GitParams = {}) => git({ ...params, path }),
-      id: () => id({ type, relativePath, path, config }),
+      id: () => id({ type, path, config }),
       image: (params: ImageOptions = {}) => image({ ...params, path, config }),
       readtime: (params: ReadingTimeParams = {}) => readtime({ ...params, contents }),
-      slug: (params: SlugParams = {}) => slug({ ...params, type, relativePath, path, config }),
+      slug: (params: SlugParams = {}) => slug({ ...params, type, path, config }),
       toc: () => toc({ contents }),
     });
   }

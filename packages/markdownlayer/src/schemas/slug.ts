@@ -1,5 +1,5 @@
 import { slug as githubSlug } from 'github-slugger';
-import { extname, sep as separator } from 'node:path';
+import { extname, relative, sep as separator } from 'node:path';
 import { string } from 'zod';
 import type { ResolvedConfig } from '../types';
 
@@ -23,17 +23,17 @@ export function slug({
   by = 'definition',
   reserved = [],
   type,
-  relativePath,
   path,
   config: {
+    contentDirPath,
     cache: { uniques },
   },
-}: SlugParams & { type: string; relativePath: string; path: string; config: ResolvedConfig }) {
+}: SlugParams & { type: string; path: string; config: ResolvedConfig }) {
   return string()
     .min(3)
     .max(200)
     .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*(?:\/[a-z0-9]+(?:-[a-z0-9]+)*)*$/i, 'Invalid slug')
-    .default(generate(relativePath))
+    .default(generate(relative(contentDirPath, path)))
     .refine((value) => !reserved.includes(value), 'Reserved slug')
     .superRefine((value, { addIssue }) => {
       const key = makeKey({ by, type, value });
@@ -45,8 +45,8 @@ export function slug({
     });
 }
 
-export function generate(relativePath: string): string {
-  const withoutFileExt = relativePath.replace(new RegExp(extname(relativePath) + '$'), '');
+export function generate(path: string): string {
+  const withoutFileExt = path.replace(new RegExp(extname(path) + '$'), '');
   const rawSlugSegments = withoutFileExt.split(separator);
 
   const slug = rawSlugSegments

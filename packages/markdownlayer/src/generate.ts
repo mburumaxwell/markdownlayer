@@ -2,7 +2,7 @@ import chokidar from 'chokidar';
 import { globby } from 'globby';
 import matter from 'gray-matter';
 import { mkdir, readFile, stat, writeFile } from 'node:fs/promises';
-import { join, normalize } from 'node:path';
+import { join, relative } from 'node:path';
 
 import { assets } from './assets';
 import { getConfig } from './config';
@@ -127,6 +127,7 @@ async function generateDocuments(options: GenerateDocsOptions): Promise<Generate
     ignore: ['**/_*'], // ignore files starting with underscore
     dot: false, // ignore dot files
     onlyFiles: true, // only files, skip directories
+    absolute: true,
   });
 
   let cached = 0;
@@ -137,23 +138,17 @@ async function generateDocuments(options: GenerateDocsOptions): Promise<Generate
 
   // parse the files and "compile" in a loop
   for (const file of files) {
-    const sourceFilePath = normalize(join(definitionDir, file));
-    const id = normalize(file);
-
-    // using the sourceFilePath as the key ensure no collisions for files named the same but in different directories;
-    const cacheEntryKey = sourceFilePath;
-
     // if the file has not been modified, use the cached version
-    const hash = (await stat(sourceFilePath)).mtimeMs.toString();
-    const cacheEntry = cache.items[cacheEntryKey];
+    const hash = (await stat(file)).mtimeMs.toString();
+    const cacheEntry = cache.items[file];
     const changed = !cacheEntry || cacheEntry.hash !== hash;
     if (!changed) {
-      docs[id] = cacheEntry.document;
+      docs[file] = cacheEntry.document;
       cached++;
       continue;
     }
 
-    const contents = await readFile(sourceFilePath, 'utf8');
+    const contents = await readFile(file, 'utf8');
     const parsedMatter = matter(contents);
     const frontmatter = parsedMatter.data as Record<string, unknown>;
 
@@ -163,8 +158,7 @@ async function generateDocuments(options: GenerateDocsOptions): Promise<Generate
       format,
       schema: options.schema,
 
-      relativePath: file,
-      path: sourceFilePath,
+      path: file,
       contents,
 
       frontmatter,
@@ -180,11 +174,11 @@ async function generateDocuments(options: GenerateDocsOptions): Promise<Generate
           ...MarkdownlayerErrorData.InvalidDocumentFrontmatterError,
           message: MarkdownlayerErrorData.InvalidDocumentFrontmatterError.message({
             definition: type,
-            relativePath: file,
+            path: relative(contentDirPath, file),
             error: parsed.error,
           }),
           location: {
-            file: sourceFilePath,
+            file,
             line: getYamlErrorLine(parsedMatter.matter, String(parsed.error.errors[0].path[0])),
             column: 0,
           },
@@ -197,8 +191,8 @@ async function generateDocuments(options: GenerateDocsOptions): Promise<Generate
     await writeFile(outputFilePath, JSON.stringify(data, null, 2), { encoding: 'utf8' });
 
     // update the cache
-    docs[id] = data;
-    cache.items[cacheEntryKey] = { hash, type, document: data };
+    docs[file] = data;
+    cache.items[file] = { hash, type, document: data };
     generated++;
   }
 
