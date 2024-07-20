@@ -54,6 +54,7 @@ export async function generate({ mode, configPath: providedConfigPath }: Generat
       cwd: contentDirPath,
       ignored: /(^|[/\\])[._]./, // ignore dot & underscore files
       ignoreInitial: true, // ignore initial scan
+      awaitWriteFinish: { stabilityThreshold: 200, pollInterval: 50 }, // wait for file to be written
     });
     watcher.on('all', async (eventName, filename) => {
       if (eventName === 'addDir' || eventName === 'unlinkDir') return; // ignore dir changes
