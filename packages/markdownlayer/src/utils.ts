@@ -17,11 +17,11 @@ export function idToFileName(id: string): string {
   return leftPadWithUnderscoreIfStartsWithNumber(id).replace(/\//g, '__');
 }
 
-export function leftPadWithUnderscoreIfStartsWithNumber(str: string): string {
+function leftPadWithUnderscoreIfStartsWithNumber(str: string): string {
   return /^[0-9]/.test(str) ? '_' + str : str;
 }
 
-export function toPascalCase(str: string) {
+function toPascalCase(str: string) {
   return str
     .replace(/[^a-zA-Z0-9]+/g, ' ') // Replace non-alphanumeric characters with spaces
     .split(' ') // Split the string by spaces

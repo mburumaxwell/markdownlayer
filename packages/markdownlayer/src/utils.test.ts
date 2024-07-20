@@ -1,13 +1,6 @@
 import { expect, test } from 'vitest';
 
-import {
-  generateTypeName,
-  getDataVariableName,
-  idToFileName,
-  leftPadWithUnderscoreIfStartsWithNumber,
-  makeVariableName,
-  toPascalCase,
-} from './utils';
+import { generateTypeName, getDataVariableName, idToFileName, makeVariableName } from './utils';
 
 test('makeVariableName', () => {
   expect(makeVariableName('en/post-1.md')).toBe('enPost_01_0md');
@@ -37,23 +30,4 @@ test('generateTypeName', () => {
 
 test('idToFileName', () => {
   expect(idToFileName('en/post-1.md')).toBe('en__post-1.md');
-});
-
-test('leftPadWithUnderscoreIfStartsWithNumber', () => {
-  expect(leftPadWithUnderscoreIfStartsWithNumber('en')).toBe('en');
-  expect(leftPadWithUnderscoreIfStartsWithNumber('1en')).toBe('_1en');
-  expect(leftPadWithUnderscoreIfStartsWithNumber('en1')).toBe('en1');
-  expect(leftPadWithUnderscoreIfStartsWithNumber('1en1')).toBe('_1en1');
-});
-
-test('toPascalCase', () => {
-  expect(toPascalCase('blog')).toBe('Blog');
-  expect(toPascalCase('blog-post')).toBe('BlogPost');
-  expect(toPascalCase('blog-posts')).toBe('BlogPosts');
-  expect(toPascalCase('blog_post')).toBe('BlogPost');
-  expect(toPascalCase('Blog')).toBe('Blog');
-  expect(toPascalCase('Blog-Post')).toBe('BlogPost');
-  expect(toPascalCase('Blog-Posts')).toBe('BlogPosts');
-  expect(toPascalCase('post')).toBe('Post');
-  expect(toPascalCase('pOST')).toBe('Post');
 });
