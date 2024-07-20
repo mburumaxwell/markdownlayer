@@ -73,7 +73,7 @@ export default function BlogPostPage({ params: { slug } }: BlogPostProps) {
                       width={42}
                       height={42}
                       className="rounded-full bg-white"
-                      unoptimized={author.avatar.src?.endsWith('.svg') ?? true}
+                      unoptimized={author.avatar.src.endsWith('.svg') || author.avatar.src.includes('api.dicebear.com')}
                     />
                     <div className="flex-1 text-left leading-tight">
                       <p className="font-medium">{author.name}</p>
