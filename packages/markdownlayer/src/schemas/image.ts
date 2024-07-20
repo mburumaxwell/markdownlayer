@@ -34,12 +34,7 @@ type CompleteOptions = ImageParams & {
  * @param options - Options for the image schema.
  * @returns A Zod object representing an image.
  */
-export function image({
-  remote = false,
-  emit = true,
-  path,
-  config: { output },
-}: CompleteOptions) {
+export function image({ remote = false, emit = true, path, config: { output } }: CompleteOptions) {
   return string().transform<ImageData>(async (value, { addIssue }) => {
     try {
       // checks if the string starts with http:// or https://
