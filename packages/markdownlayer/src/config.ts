@@ -3,7 +3,8 @@ import { access } from 'node:fs/promises';
 import { dirname, join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
-import { name } from '../package.json';
+import { name, version } from '../package.json';
+import { MarkdownlayerCache } from './cache';
 import {
   ConfigNoDefaultExportError,
   ConfigNoDefinitionsError,
@@ -11,14 +12,15 @@ import {
   MarkdownlayerErrorData,
   NoConfigFoundError,
 } from './errors';
-import type { MarkdownlayerConfig, ResolvedConfig } from './types';
+import { type GenerationMode, type MarkdownlayerConfig, type ResolvedConfig } from './types';
 
 /**
  * get the config
+ * @param mode the generation mode
  * @param path specific config file path (relative or absolute)
  * @returns the config object with default values
  */
-export async function getConfig(path?: string): Promise<ResolvedConfig> {
+export async function getConfig(mode: GenerationMode, path?: string): Promise<ResolvedConfig> {
   // prettier-ignore
   const files = path != null ? [path] : [
     name + '.config.js',
@@ -41,18 +43,29 @@ export async function getConfig(path?: string): Promise<ResolvedConfig> {
 
   const cwd = dirname(configPath);
 
+  // load cache from file if it exists, otherwise create a new cache
+  // changes in mode, version, configuration options, plugins will invalidate the cache
+  const { caching = true } = loadedConfig;
+  const outputFolder = join(cwd, `.${name}`);
+  const cacheFilePath = caching ? join(outputFolder, `cache/${mode}/v${version}/data-${configHash}.json`) : null;
+  const cache = new MarkdownlayerCache(cacheFilePath);
+  await cache.load();
+
   return {
     ...loadedConfig,
+    mode,
     configPath,
     configHash,
     configImports,
-    cache: { uniques: {}, data: { items: {} } }, // data cache is populated later
+    cache,
     contentDirPath: resolve(cwd, loadedConfig.contentDirPath ?? 'content'),
+    caching,
     output: {
       ...loadedConfig.output,
       assets: resolve(cwd, loadedConfig.output?.assets ?? 'public/static'),
       base: loadedConfig.output?.base ?? '/static/',
       format: loadedConfig.output?.format ?? '[name]-[hash:8].[ext]',
+      generated: join(outputFolder, 'generated'),
     },
   };
 }

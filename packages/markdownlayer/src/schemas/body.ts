@@ -1,24 +1,15 @@
 import { extname } from 'node:path';
 import { custom } from 'zod';
 import { bundle, type BundleProps } from '../bundle';
-import type {
-  DocumentBody,
-  DocumentDefinition,
-  DocumentFormat,
-  DocumentFormatInput,
-  MarkdownlayerConfigPlugins,
-  ResolvedConfig,
-} from '../types';
+import type { DocumentBody, DocumentDefinition, DocumentFormat, DocumentFormatInput, ResolvedConfig } from '../types';
 
-type Options = Pick<ResolvedConfig, 'mdAsMarkdoc' | 'output'> &
-  Pick<DocumentDefinition, 'format'> & {
-    plugins: MarkdownlayerConfigPlugins;
-
-    // relativePath: string;
-    path: string;
-    contents: string;
-    frontmatter: Record<string, unknown>;
-  };
+type Options = Pick<DocumentDefinition, 'format'> & {
+  // relativePath: string;
+  path: string;
+  contents: string;
+  frontmatter: Record<string, unknown>;
+  config: ResolvedConfig;
+};
 
 /**
  * Schema for a document's body.
@@ -28,13 +19,13 @@ export function body({
   // output,
   path,
   format: formatInput = 'detect',
-  plugins,
-  mdAsMarkdoc = false,
   contents,
   frontmatter,
+  config,
 }: Options) {
   return custom().transform<DocumentBody>(async (value, { addIssue }) => {
     // determine the document format
+    const { mdAsMarkdoc = false } = config;
     let format = getFormat({ file: path, format: formatInput });
     if (format === 'md' && mdAsMarkdoc) format = 'mdoc';
 
@@ -43,7 +34,7 @@ export function body({
       contents,
       entryPath: path,
       format,
-      plugins,
+      plugins: { ...config },
       frontmatter,
     };
     const { code, errors } = await bundle(options);

@@ -1,4 +1,4 @@
-import type { DocumentDefinition, MarkdownlayerConfigPlugins, ResolvedConfig } from '../types';
+import type { DocumentDefinition, ResolvedConfig } from '../types';
 import { body } from './body';
 import { type GitParams, git } from './git';
 import { id } from './id';
@@ -60,39 +60,36 @@ export type SchemaContext = {
   toc: () => ReturnType<typeof toc>;
 };
 
-export type ResolveSchemaOptions = Pick<ResolvedConfig, 'mdAsMarkdoc' | 'cache' | 'output'> &
-  Pick<DocumentDefinition, 'format' | 'schema'> & {
-    /** Type of definition */
-    type: string;
-    relativePath: string;
-    path: string;
-    contents: string;
-
-    frontmatter: Record<string, unknown>;
-    plugins: MarkdownlayerConfigPlugins;
-  };
+export type ResolveSchemaOptions = Pick<DocumentDefinition, 'format' | 'schema'> & {
+  config: ResolvedConfig;
+  /** Type of definition */
+  type: string;
+  relativePath: string;
+  path: string;
+  contents: string;
+  frontmatter: Record<string, unknown>;
+};
 
 export function resolveSchema({
   type,
+  format,
+  schema,
+
   relativePath,
   path,
   contents,
-  schema,
-  output,
-  cache,
-  format,
-  mdAsMarkdoc,
+
   frontmatter,
-  plugins,
+  config,
 }: ResolveSchemaOptions) {
   if (typeof schema === 'function') {
     schema = schema({
-      body: () => body({ contents, path, output, format, mdAsMarkdoc, frontmatter, plugins }),
+      body: () => body({ contents, path, frontmatter, format, config }),
       git: (params: GitParams = {}) => git({ ...params, path }),
-      id: () => id({ type, relativePath, path, cache }),
-      image: (params: ImageOptions = {}) => image({ ...params, path, output }),
+      id: () => id({ type, relativePath, path, config }),
+      image: (params: ImageOptions = {}) => image({ ...params, path, config }),
       readtime: (params: ReadingTimeParams = {}) => readtime({ ...params, contents }),
-      slug: (params: SlugParams = {}) => slug({ ...params, type, relativePath, path, cache }),
+      slug: (params: SlugParams = {}) => slug({ ...params, type, relativePath, path, config }),
       toc: () => toc({ contents }),
     });
   }
