@@ -89,17 +89,6 @@ export type TocItem = {
 /** Represents the definition of a document collection. */
 export type DocumentDefinition = {
   /**
-   * Format of contents of the files
-   * - `detect`: Detects the format based on the file extension
-   * - `md`: Markdown
-   * - `mdx`: Markdown with JSX
-   * - `mdoc`: Markdoc
-   *
-   * @default 'detect'
-   */
-  format?: DocumentFormatInput;
-
-  /**
    * Schema for each document in the collection.
    */
   schema: DocumentDefinitionSchema | ((context: SchemaContext) => DocumentDefinitionSchema);
@@ -244,14 +233,6 @@ export type MarkdownlayerConfig<T extends DocumentDefinitions = DocumentDefiniti
 
   /** Output configuration */
   output?: MarkdownlayerConfigOutput;
-
-  /**
-   * Whether to use mdoc for `.md` files instead of mdx.
-   * This is useful for when you want to use mdx for `.mdx` files but not for `.md` files.
-   *
-   * @default false
-   */
-  mdAsMarkdoc?: boolean;
 } & MarkdownlayerConfigPlugins;
 
 /**

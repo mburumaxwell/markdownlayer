@@ -1,9 +1,30 @@
 import { extname } from 'node:path';
 import { custom } from 'zod';
 import { bundle, type BundleProps } from '../bundle';
-import type { DocumentBody, DocumentDefinition, DocumentFormat, DocumentFormatInput, ResolvedConfig } from '../types';
+import type { DocumentBody, DocumentFormat, DocumentFormatInput, ResolvedConfig } from '../types';
 
-type Options = Pick<DocumentDefinition, 'format'> & {
+export type BodyOptions = {
+  /**
+   * Format of contents of the files
+   * - `detect`: Detects the format based on the file extension
+   * - `md`: Markdown
+   * - `mdx`: Markdown with JSX
+   * - `mdoc`: Markdoc
+   *
+   * @default 'detect'
+   */
+  format?: DocumentFormatInput;
+
+  /**
+   * Whether to use mdoc for `.md` files instead of mdx.
+   * This is useful for when you want to use mdx for `.mdx` files but not for `.md` files.
+   *
+   * @default false
+   */
+  mdAsMarkdoc?: boolean;
+};
+
+type Options = BodyOptions & {
   path: string;
   contents: string;
   frontmatter: Record<string, unknown>;
@@ -18,13 +39,13 @@ export function body({
   // output,
   path,
   format: formatInput = 'detect',
+  mdAsMarkdoc = false,
   contents,
   frontmatter,
   config,
 }: Options) {
   return custom().transform<DocumentBody>(async (value, { addIssue }) => {
     // determine the document format
-    const { mdAsMarkdoc = false } = config;
     let format = getFormat({ file: path, format: formatInput });
     if (format === 'md' && mdAsMarkdoc) format = 'mdoc';
 

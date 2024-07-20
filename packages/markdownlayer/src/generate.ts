@@ -111,7 +111,7 @@ async function generateInner(config: ResolvedConfig) {
 
 type GenerateDocsOptions = DocumentDefinition & { type: string; config: ResolvedConfig };
 async function generateDocuments(options: GenerateDocsOptions): Promise<GeneratedCount> {
-  const { type, format, config } = options;
+  const { type, config } = options;
   const { contentDirPath, patterns = '**/*.{md,mdoc,mdx}', cache, output } = config;
 
   // ensure that all definitions have at least one pattern
@@ -155,7 +155,6 @@ async function generateDocuments(options: GenerateDocsOptions): Promise<Generate
     let data: Record<string, unknown> = frontmatter;
     const resolveSchemaOptions: ResolveSchemaOptions = {
       type,
-      format,
       schema: options.schema,
 
       path: file,

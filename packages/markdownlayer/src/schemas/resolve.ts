@@ -1,5 +1,5 @@
 import type { DocumentDefinition, ResolvedConfig } from '../types';
-import { body } from './body';
+import { type BodyOptions, body } from './body';
 import { type GitParams, git } from './git';
 import { id } from './id';
 import { type ImageOptions, image } from './image';
@@ -12,7 +12,7 @@ export type SchemaContext = {
    * Schema for a document's body.
    * @returns A Zod object representing a document body.
    */
-  body: () => ReturnType<typeof body>;
+  body: (params?: BodyOptions) => ReturnType<typeof body>;
 
   /**
    * Schema for a file's git file info.
@@ -60,7 +60,7 @@ export type SchemaContext = {
   toc: () => ReturnType<typeof toc>;
 };
 
-export type ResolveSchemaOptions = Pick<DocumentDefinition, 'format' | 'schema'> & {
+export type ResolveSchemaOptions = Pick<DocumentDefinition, 'schema'> & {
   config: ResolvedConfig;
   /** Type of definition */
   type: string;
@@ -71,7 +71,6 @@ export type ResolveSchemaOptions = Pick<DocumentDefinition, 'format' | 'schema'>
 
 export function resolveSchema({
   type,
-  format,
   schema,
 
   path,
@@ -82,7 +81,7 @@ export function resolveSchema({
 }: ResolveSchemaOptions) {
   if (typeof schema === 'function') {
     schema = schema({
-      body: () => body({ contents, path, frontmatter, format, config }),
+      body: (params: BodyOptions = {}) => body({ ...params, path, contents, frontmatter, config }),
       git: (params: GitParams = {}) => git({ ...params, path }),
       id: () => id({ type, path, config }),
       image: (params: ImageOptions = {}) => image({ ...params, path, config }),
