@@ -1,7 +1,7 @@
 import type { DocumentDefinition, ResolvedConfig } from '../types';
 import { type BodyParams, body } from './body';
 import { type GitParams, git } from './git';
-import { id } from './id';
+import { type IdOptions, id } from './id';
 import { type ImageParams, image } from './image';
 import { type ReadingTimeParams, readtime } from './read-time';
 import { type SlugParams, slug } from './slug';
@@ -29,9 +29,10 @@ export type SchemaContext = {
 
   /**
    * Schema for a document's id.
+   * @param params - Params for the id schema.
    * @returns A Zod object representing a document's id.
    */
-  id: () => ReturnType<typeof id>;
+  id: (params?: IdOptions) => ReturnType<typeof id>;
 
   /**
    * Schema for an image.
@@ -84,7 +85,7 @@ export function resolveSchema({
     schema = schema({
       body: (params: BodyParams = {}) => body({ ...params, path, contents, frontmatter, config }),
       git: (params: GitParams = {}) => git({ ...params, path }),
-      id: () => id({ type, path, config }),
+      id: (params: IdOptions = {}) => id({ ...params, type, path, config }),
       image: (params: ImageParams = {}) => image({ ...params, path, config }),
       readtime: (params: ReadingTimeParams = {}) => readtime({ ...params, contents }),
       slug: (params: SlugParams = {}) => slug({ ...params, type, path, config }),

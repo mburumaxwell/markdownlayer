@@ -5,6 +5,12 @@ import type { ResolvedConfig } from '../types';
 
 export type SlugParams = {
   /**
+   * Whether to use the default value.
+   * @default true
+   */
+  default?: boolean;
+
+  /**
    * Unique by this, used to create a unique set of slugs
    * @default 'definition'
    */
@@ -26,6 +32,7 @@ type CompleteOptions = SlugParams & {
  * @returns A Zod object representing a document's slug.
  */
 export function slug({
+  default: useDefault = true,
   by = 'definition',
   reserved = [],
   type,
@@ -35,20 +42,21 @@ export function slug({
     cache: { uniques },
   },
 }: CompleteOptions) {
-  return string()
+  const common = string()
     .min(3)
     .max(200)
     .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*(?:\/[a-z0-9]+(?:-[a-z0-9]+)*)*$/i, 'Invalid slug')
-    .default(generate(relative(join(contentDirPath, type), path)))
-    .refine((value) => !reserved.includes(value), 'Reserved slug')
-    .superRefine((value, { addIssue }) => {
-      const key = makeKey({ by, type, value });
-      if (uniques[key]) {
-        addIssue({ fatal: true, code: 'custom', message: `duplicate slug '${value}' in '${path}` });
-      } else {
-        uniques[key] = path;
-      }
-    });
+    .refine((value) => !reserved.includes(value), 'Reserved slug');
+
+  const base = useDefault ? common.default(generate(relative(join(contentDirPath, type), path))) : common;
+  return base.superRefine((value, { addIssue }) => {
+    const key = makeKey({ by, type, value });
+    if (uniques[key]) {
+      addIssue({ fatal: true, code: 'custom', message: `duplicate slug '${value}' in '${path}` });
+    } else {
+      uniques[key] = path;
+    }
+  });
 }
 
 export function generate(path: string): string {
