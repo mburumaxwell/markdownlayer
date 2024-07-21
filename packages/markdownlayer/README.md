@@ -18,7 +18,7 @@ Read the [blog](https://maxwellweru.com/blog/2024/03/replacing-contentlayer-with
 - **Markdoc Support**: Integrates with Markdoc for advanced content processing.
 - **Git Integration**: Tracks last update time and author based on Git, with the option to override via frontmatter.
 - **Turbopack Support**: Compatible with Turbopack for faster builds.
-- **Image Support**: Image references in frontmatter using custom image schema.
+- **Image Support**: Image references in frontmatter using custom image schema with support for `alt`.
 
 ## Differences from Contentlayer
 
