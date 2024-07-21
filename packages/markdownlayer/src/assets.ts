@@ -1,6 +1,7 @@
 import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import { basename, extname, resolve } from 'node:path';
+import type { FormatEnum } from 'sharp';
 import { type ImageData, type ImageFormat, ImageFormats } from './types';
 
 /** Assets to be copied to the output directory. */
@@ -67,6 +68,6 @@ export async function processAsset({
   return { src, ...metadata };
 }
 
-function isValidImageFormat(format: string): format is ImageFormat {
+export function isValidImageFormat(format: keyof FormatEnum): format is ImageFormat {
   return (ImageFormats as readonly string[]).includes(format);
 }

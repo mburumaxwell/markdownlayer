@@ -1,4 +1,4 @@
-import { execSync } from 'node:child_process';
+import { execSync, type ExecException } from 'node:child_process';
 import { existsSync } from 'node:fs';
 import { describe, expect, it, vi } from 'vitest';
 import type { GitFileInfo } from '../types';
@@ -14,23 +14,41 @@ describe('git', () => {
     author: 'unknown',
   };
 
-  it('should return default value if git is not installed', async () => {
+  it('should throw an error if git is not installed', async () => {
     vi.mocked(execSync).mockImplementation(() => {
       throw new Error('git not found');
     });
 
-    const result = await git({ path: 'test/file.txt' }).safeParseAsync({});
-    expect(result.success).toBe(false);
-    expect(result.error!.issues[0].message).toBe('Failed to retrieve git history because git is not installed.');
+    await expect(git({ path: 'test/file.txt' }).parseAsync({})).rejects.toThrow(
+      'Failed to retrieve git history because git is not installed.',
+    );
   });
 
-  it('should return default value if file does not exist', async () => {
+  it('should throw an error if file does not exist', async () => {
     vi.mocked(execSync).mockReturnValue(Buffer.from('git version 2.30.0'));
     vi.mocked(existsSync).mockReturnValue(false);
 
-    const result = await git({ path: 'test/file.txt' }).safeParseAsync({});
-    expect(result.success).toBe(false);
-    expect(result.error!.issues[0].message).toBe('Failed to retrieve git history because the file does not exist.');
+    await expect(git({ path: 'test/file.txt' }).parseAsync({})).rejects.toThrow(
+      'Failed to retrieve git history because the file does not exist.',
+    );
+  });
+
+  it('should throw an error if git command fails', async () => {
+    // @ts-expect-error -- mock implementation
+    vi.mocked(execSync).mockImplementation((command) => {
+      if (command.includes('--version')) {
+        return Buffer.from('git version 2.30.0');
+      }
+      const error = new Error('git log failed') as ExecException;
+      error.code = 1;
+      error.stderr = 'fatal: bad revision';
+      throw error;
+    });
+    vi.mocked(existsSync).mockReturnValue(true);
+
+    await expect(git({ path: 'test/file.txt' }).parseAsync({})).rejects.toThrow(
+      'Failed to retrieve the git history with exit code 1: fatal: bad revision',
+    );
   });
 
   it('should return default value if file is not tracked by git', async () => {
@@ -38,8 +56,33 @@ describe('git', () => {
     vi.mocked(existsSync).mockReturnValue(true);
     vi.mocked(execSync).mockReturnValue(Buffer.from(''));
 
-    const result = await git({ path: 'test/file.txt', default: defaultGitFileInfo }).safeParseAsync({});
-    expect(result.success).toBe(true);
-    expect(result.data).toEqual(defaultGitFileInfo);
+    const result = await git({ path: 'test/file.txt', default: defaultGitFileInfo }).parseAsync({});
+    expect(result).toEqual(defaultGitFileInfo);
+  });
+
+  it('should return git file info for newest commit', async () => {
+    const timestamp = Math.floor(Date.now() / 1000);
+    vi.mocked(execSync).mockReturnValue(Buffer.from(`${timestamp},John Doe`));
+    vi.mocked(existsSync).mockReturnValue(true);
+
+    const result = await git({ path: 'test/file.txt', author: true }).parseAsync({});
+    expect(result).toEqual({
+      date: new Date(timestamp * 1000).toISOString(),
+      timestamp,
+      author: 'John Doe',
+    });
+  });
+
+  it('should return git file info for oldest commit', async () => {
+    const timestamp = Math.floor(Date.now() / 1000);
+    vi.mocked(execSync).mockReturnValue(Buffer.from(`${timestamp}`));
+    vi.mocked(existsSync).mockReturnValue(true);
+
+    const result = await git({ path: 'test/file.txt', age: 'oldest' }).parseAsync({});
+    expect(result).toEqual({
+      date: new Date(timestamp * 1000).toISOString(),
+      timestamp,
+      author: undefined,
+    });
   });
 });

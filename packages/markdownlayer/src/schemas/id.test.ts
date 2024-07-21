@@ -20,7 +20,7 @@ const mockConfig: ResolvedConfig = {
   cache: new MarkdownlayerCache(null),
 };
 
-describe('id schema', () => {
+describe('id', () => {
   it('should use default value when useDefault is true', () => {
     const schema = id({
       type: 'test',
