@@ -24,20 +24,20 @@ describe('id', () => {
   it('should use default value when useDefault is true', () => {
     const schema = id({
       type: 'test',
-      path: '/Users/mike/Documents/markdownlayer/examples/starter/src/content/test.md',
+      path: '/Users/mike/Documents/markdownlayer/examples/starter/src/content/test/test.md',
       config: mockConfig,
       default: true,
     });
 
     const result = schema.parse(undefined);
-    expect(result).toBe('test.md');
+    expect(result).toBe('test/test.md');
   });
 
   it('should not use default value when useDefault is false', () => {
     const schema = id({
       default: false,
       type: 'test',
-      path: '/Users/mike/Documents/markdownlayer/examples/starter/src/content/test.md',
+      path: '/Users/mike/Documents/markdownlayer/examples/starter/src/content/test/test.md',
       config: mockConfig,
     });
 
@@ -48,7 +48,7 @@ describe('id', () => {
     const schema = id({
       min: 5,
       type: 'test',
-      path: '/Users/mike/Documents/markdownlayer/examples/starter/src/content/test.md',
+      path: '/Users/mike/Documents/markdownlayer/examples/starter/src/content/test/test.md',
       config: mockConfig,
     });
 
@@ -56,7 +56,7 @@ describe('id', () => {
     expect(() => schema.parse('12345')).not.toThrow();
   });
 
-  it('should add issue for duplicate id', () => {
+  it('should throw error for duplicate id', () => {
     const schema = id({
       type: 'test',
       path: '/Users/mike/Documents/markdownlayer/examples/starter/src/content/test/test.md',
@@ -65,5 +65,19 @@ describe('id', () => {
 
     schema.parse('unique-id');
     expect(() => schema.parse('unique-id')).toThrow(/duplicate id 'unique-id' in 'test\/test.md'/);
+  });
+
+  it('should add id to cache when schema works', () => {
+    const schema = id({
+      type: 'test',
+      path: '/Users/mike/Documents/markdownlayer/examples/starter/src/content/test/test.md',
+      config: mockConfig,
+    });
+
+    const result = schema.parse('new-unique-id');
+    expect(result).toBe('new-unique-id');
+    expect(mockConfig.cache.uniques['schemas:id:test:new-unique-id']).toBe(
+      '/Users/mike/Documents/markdownlayer/examples/starter/src/content/test/test.md',
+    );
   });
 });
