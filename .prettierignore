@@ -8,15 +8,16 @@ pnpm-lock.yaml
 **/next-env.d.ts
 
 # outputs
-packages/**/dist
+dist
+out
 .turbo
 .next
 .vercel
 .markdownlayer
 
 # static files
-apps/**/{public,static,out}
-examples/**/{public,static,out}
+apps/**/{public,static}
+examples/**/{public,static}
 
 # special files
 .vscode/settings.json
