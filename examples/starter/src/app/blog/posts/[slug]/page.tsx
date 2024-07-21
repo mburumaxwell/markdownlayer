@@ -69,7 +69,7 @@ export default function BlogPostPage({ params: { slug } }: BlogPostProps) {
                   <Link key={author.id} href={author.url} className="flex items-center space-x-2 text-sm">
                     <Image
                       src={author.avatar.src}
-                      alt={author.name}
+                      alt={author.avatar.alt ?? author.name}
                       width={42}
                       height={42}
                       className="rounded-full bg-white"

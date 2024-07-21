@@ -44,20 +44,20 @@ export const ImageFormats = ['png', 'jpg', 'jpeg', 'webp', 'avif', 'tiff', 'gif'
 export type ImageFormat = (typeof ImageFormats)[number];
 export type ImageData = {
   src: string;
-  // /**
-  //  * Alt text for the image.
-  //  *
-  //  * Can be provided via ...
-  //  *   - JSON: `"myImageField": { "alt": "My alt text", "src": "my-image.jpg" }`
-  //  *   - YAML / Frontmatter:
-  //  *     ```yaml
-  //  *     # ...
-  //  *     myImageField:
-  //  *       alt: My alt text
-  //  *       src: my-image.jpg
-  //  *     ```
-  //  */
-  // alt?: string;
+  /**
+   * Alt text for the image.
+   *
+   * Can be provided via ...
+   *   - JSON: `"myImageField": { "alt": "My alt text", "src": "my-image.jpg" }`
+   *   - YAML / Frontmatter:
+   *     ```yaml
+   *     # ...
+   *     myImageField:
+   *       alt: My alt text
+   *       src: my-image.jpg
+   *     ```
+   */
+  alt?: string;
   format: ImageFormat;
   height: number;
   width: number;
