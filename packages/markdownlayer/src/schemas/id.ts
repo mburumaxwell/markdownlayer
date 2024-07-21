@@ -1,4 +1,4 @@
-import { normalize, relative } from 'node:path';
+import { join, normalize, relative } from 'node:path';
 import { string } from 'zod';
 import type { ResolvedConfig } from '../types';
 
@@ -37,7 +37,7 @@ export function id({
   },
 }: CompleteOptions) {
   const common = string().min(min);
-  const base = useDefault ? common.default(normalize(relative(contentDirPath, path))) : common;
+  const base = useDefault ? common.default(normalize(relative(join(contentDirPath, type), path))) : common;
 
   return base.superRefine((value, { addIssue }) => {
     const key = `schemas:id:${type}:${value}`;

@@ -30,7 +30,7 @@ describe('id', () => {
     });
 
     const result = schema.parse(undefined);
-    expect(result).toBe('test/test.md');
+    expect(result).toBe('test.md');
   });
 
   it('should not use default value when default is false', () => {
