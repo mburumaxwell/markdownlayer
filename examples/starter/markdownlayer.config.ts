@@ -1,6 +1,19 @@
-import { defineConfig, z } from 'markdownlayer';
+import { defineConfig, defineSchema, z } from 'markdownlayer';
 import rehypeSlug from 'rehype-slug';
 import { rehypeAutolinkHeadings, rehypePrettyCode } from './src/markdownlayer';
+
+const projectSchema = defineSchema(({ body, image }) =>
+  z.object({
+    title: z.string(),
+    description: z.string(),
+    logo: image().refine((img) => img.width >= 128, { message: 'The logo must be at least 128 pixels wide!' }),
+    start: z.coerce.isodate(),
+    end: z.coerce.isodate().optional(),
+    website: z.string().url().optional(),
+    industry: z.enum(['agriculture', 'banking', 'hospitality', 'medicine']),
+    body: body(),
+  }),
+);
 
 export default defineConfig({
   contentDirPath: './src/content',
@@ -60,17 +73,7 @@ export default defineConfig({
         }),
     },
     project: {
-      schema: ({ body, image }) =>
-        z.object({
-          title: z.string(),
-          description: z.string(),
-          logo: image().refine((img) => img.width >= 128, { message: 'The logo must be at least 128 pixels wide!' }),
-          start: z.coerce.isodate(),
-          end: z.coerce.isodate().optional(),
-          website: z.string().url().optional(),
-          industry: z.enum(['agriculture', 'banking', 'hospitality', 'medicine']),
-          body: body(),
-        }),
+      schema: projectSchema,
     },
     guide: {
       schema: ({ body, git, readtime, slug, toc }) =>

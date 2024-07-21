@@ -3,7 +3,7 @@ import type { RemarkEmojiOptions } from 'remark-emoji';
 import type { Options as RemarkGfmOptions } from 'remark-gfm';
 import type { Options as RemarkRehypeOptions } from 'remark-rehype';
 import type { PluggableList } from 'unified';
-import type { AnyZodObject, Schema, ZodDiscriminatedUnion, ZodEffects, ZodIntersection, ZodUnion } from 'zod';
+import type { AnyZodObject, ZodDiscriminatedUnion, ZodEffects, ZodIntersection, ZodUnion } from 'zod';
 
 import type { MarkdownlayerCache } from './cache';
 import type { AdmonitionPluginOptions } from './remark';
@@ -238,7 +238,7 @@ export type MarkdownlayerConfig<T extends DocumentDefinitions = DocumentDefiniti
 } & MarkdownlayerConfigPlugins;
 
 /** Define a schema (identity function for type inference and convenience) */
-export const defineSchema = <T extends () => Schema>(fn: T): T => fn;
+export const defineSchema = <T extends (context: SchemaContext) => DocumentDefinitionSchema>(fn: T): T => fn;
 
 /** Define config (identity function for type inference and convenience) */
 export const defineConfig = <T extends DocumentDefinitions>(config: MarkdownlayerConfig<T>): MarkdownlayerConfig<T> =>
