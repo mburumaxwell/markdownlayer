@@ -21,19 +21,19 @@ const mockConfig: ResolvedConfig = {
 };
 
 describe('slug', () => {
-  it('should use default value when useDefault is true', () => {
+  it('should use default value when default is true', () => {
     const schema = slug({
+      default: true,
       type: 'test',
       path: '/Users/mike/Documents/markdownlayer/examples/starter/src/content/test/test.md',
       config: mockConfig,
-      default: true,
     });
 
     const result = schema.parse(undefined);
     expect(result).toBe('test');
   });
 
-  it('should not use default value when useDefault is false', () => {
+  it('should not use default value when default is false', () => {
     const schema = slug({
       default: false,
       type: 'test',
@@ -42,6 +42,7 @@ describe('slug', () => {
     });
 
     expect(() => schema.parse(undefined)).toThrow();
+    expect(schema.parse('some-value')).toBe('some-value');
   });
 
   it('should enforce minimum length', () => {
