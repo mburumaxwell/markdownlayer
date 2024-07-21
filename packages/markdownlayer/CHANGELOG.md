@@ -1,5 +1,11 @@
 # markdownlayer
 
+## 0.4.0-beta.9
+
+### Patch Changes
+
+- 96d03a0: Allow empty strings for slugs such as when dealing with `index.md` or `index/index.md` files
+
 ## 0.4.0-beta.8
 
 ### Minor Changes
