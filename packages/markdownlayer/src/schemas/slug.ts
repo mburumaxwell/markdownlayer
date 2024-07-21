@@ -18,7 +18,12 @@ export type SlugParams = {
 
   /**
    * Regular expression to match the slug.
-   * @default /^[a-z0-9]+(?:-[a-z0-9]+)*(?:\/[a-z0-9]+(?:-[a-z0-9]+)*)*$/i
+   * @default /^$|^[a-z0-9]+(?:-[a-z0-9]+)*(?:\/[a-z0-9]+(?:-[a-z0-9]+)*)*$/i
+   *
+   * @remark
+   * The default regex allows for slugs with or without a leading directory,
+   * and to allow for slugs with or without a trailing directory.
+   * It also allows for empty strings such as when dealing with `index.md` or `index/index.md`.
    */
   regex?: RegExp;
 
@@ -52,7 +57,7 @@ type CompleteOptions = SlugParams & {
 export function slug({
   min = 3,
   max = 200,
-  regex = /^[a-z0-9]+(?:-[a-z0-9]+)*(?:\/[a-z0-9]+(?:-[a-z0-9]+)*)*$/i,
+  regex = /^$|^[a-z0-9]+(?:-[a-z0-9]+)*(?:\/[a-z0-9]+(?:-[a-z0-9]+)*)*$/i,
   default: useDefault = true,
   by = 'definition',
   reserved = [],
@@ -76,7 +81,7 @@ export function slug({
       addIssue({
         fatal: true,
         code: 'custom',
-        message: `duplicate slug '${value}' in '${relative(contentDirPath, path)}`,
+        message: `duplicate slug '${value}' in '${relative(contentDirPath, path)}'`,
       });
     } else {
       uniques[key] = path;
