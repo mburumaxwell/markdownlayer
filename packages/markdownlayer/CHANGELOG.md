@@ -1,5 +1,12 @@
 # markdownlayer
 
+## 0.4.0-beta.8
+
+### Minor Changes
+
+- e4b284e: Allow configuration of min, max, and regex fields in the slug and id schemas
+- 2609fab: Support for `alt` in image schema specified in frontmatter
+
 ## 0.4.0-beta.7
 
 ### Minor Changes
