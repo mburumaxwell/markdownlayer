@@ -73,7 +73,11 @@ export function slug({
   return base.superRefine((value, { addIssue }) => {
     const key = makeKey({ by, type, value });
     if (uniques[key]) {
-      addIssue({ fatal: true, code: 'custom', message: `duplicate slug '${value}' in '${path}` });
+      addIssue({
+        fatal: true,
+        code: 'custom',
+        message: `duplicate slug '${value}' in '${relative(contentDirPath, path)}`,
+      });
     } else {
       uniques[key] = path;
     }

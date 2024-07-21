@@ -42,7 +42,11 @@ export function id({
   return base.superRefine((value, { addIssue }) => {
     const key = `schemas:id:${type}:${value}`;
     if (uniques[key]) {
-      addIssue({ fatal: true, code: 'custom', message: `duplicate id '${value}' in '${path}` });
+      addIssue({
+        fatal: true,
+        code: 'custom',
+        message: `duplicate id '${value}' in '${relative(contentDirPath, path)}'`,
+      });
     } else {
       uniques[key] = path;
     }
