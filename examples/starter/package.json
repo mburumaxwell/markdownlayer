@@ -22,7 +22,7 @@
     "react-highlight-words": "0.20.0",
     "react-tweet": "3.2.1",
     "rehype-pretty-code": "0.13.2",
-    "shiki": "1.10.3",
+    "shiki": "1.11.0",
     "zod": "3.23.8"
   },
   "devDependencies": {
