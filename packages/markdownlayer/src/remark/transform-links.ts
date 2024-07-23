@@ -30,7 +30,8 @@ export default function remarkTransformLinks({
     visit(root, ['link', 'definition'], (n: Node) => {
       const node = n as Link | Definition;
       const { url: src } = node;
-      if (excludeExtensions.includes(extname(src))) return;
+      const ext = extname(src);
+      if (!ext || excludeExtensions.includes(ext)) return;
       if (isRelativePath(src)) {
         const nodes = links[src] || [];
         nodes.push(node);
