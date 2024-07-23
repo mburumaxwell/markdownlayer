@@ -6,7 +6,7 @@ import type { PluggableList } from 'unified';
 import type { AnyZodObject, ZodDiscriminatedUnion, ZodEffects, ZodIntersection, ZodUnion } from 'zod';
 
 import type { MarkdownlayerCache } from './cache';
-import type { AdmonitionPluginOptions } from './remark';
+import type { AdmonitionPluginOptions, RemarkTransformLinksOptions } from './remark';
 import type { SchemaContext } from './schemas/resolve';
 
 type DocumentDefinitionSchemaWithoutEffects =
@@ -130,6 +130,16 @@ export type MarkdownlayerConfigPlugins = {
    * @default true
    */
   gfm?: boolean | RemarkGfmOptions;
+
+  /**
+   * Whether to transform linked files (e.g. images and files) in a document's content to the output directory.
+   * - `true`: Use default options
+   * - `false`: Disable the plugin
+   * - `RemarkTransformLinksOptions`: Use custom options
+   *
+   * @default true
+   */
+  transformLinks?: boolean | RemarkTransformLinksOptions;
 
   /** List of recma (esast, JavaScript) plugins. */
   recmaPlugins?: PluggableList | null | undefined;

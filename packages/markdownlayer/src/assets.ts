@@ -27,17 +27,20 @@ export async function getImageMetadata(buffer: Buffer): Promise<Omit<ImageData, 
   return { format, height, width, blurDataURL, blurWidth, blurHeight, aspectRatio };
 }
 
-export async function processAsset({
-  input,
-  from,
-  format,
-  baseUrl,
-}: {
-  input: string;
-  from: string;
-  format: string;
-  baseUrl: string;
-}): Promise<ImageData> {
+export async function processAsset<T extends true | undefined = undefined>(
+  {
+    input,
+    from,
+    format,
+    baseUrl,
+  }: {
+    input: string;
+    from: string;
+    format: string;
+    baseUrl: string;
+  },
+  isImage?: T,
+): Promise<T extends true ? ImageData : string> {
   // e.g. input = '../assets/image.png?foo=bar#hash'
   const queryIdx = input.indexOf('?');
   const hashIdx = input.indexOf('#');
@@ -63,9 +66,11 @@ export async function processAsset({
   const src = baseUrl + name + suffix;
   assets[name] = path; // track asset for copying later
 
+  if (!isImage) return src as T extends true ? ImageData : string;
+
   const metadata = await getImageMetadata(buffer);
   if (metadata == null) throw new Error(`invalid image: ${from}`);
-  return { src, ...metadata };
+  return { src, ...metadata } as T extends true ? ImageData : string;
 }
 
 export function isValidImageFormat(format: keyof FormatEnum): format is ImageFormat {

@@ -57,7 +57,7 @@ describe('processAsset', () => {
 
     vi.mocked(readFile).mockResolvedValue(buffer);
 
-    const metadata = await processAsset({ input, from, format, baseUrl: '/static/' });
+    const metadata = await processAsset({ input, from, format, baseUrl: '/static/' }, true);
     expect(metadata).toEqual({
       src: '/static/image.e23151fe.png',
       format: 'png',
@@ -72,7 +72,23 @@ describe('processAsset', () => {
     // Check that the asset is added to the assets map
     expect(assets['image.e23151fe.png']).toBe(join(from, '..') + '/' + input);
   });
+
+  it('should handle non-image assets gracefully', async () => {
+    const buffer = Buffer.from('some non-image data');
+    const input = 'document.txt';
+    const from = __dirname;
+    const format = '[name].[hash:8].[ext]';
+
+    vi.mocked(readFile).mockResolvedValue(buffer);
+
+    const url = await processAsset({ input, from, format, baseUrl: '/static/' });
+    expect(url).toBe('/static/document.ed975c52.txt');
+
+    // Check that the asset is not added to the assets map
+    expect(assets['document.ed975c52.txt']).toBe(join(from, '..') + '/' + input);
+  });
 });
+
 describe('isValidImageFormat', () => {
   it('should return true for valid image formats', () => {
     expect(isValidImageFormat('jpeg')).toBe(true);

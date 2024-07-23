@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { generateTypeName, getDataVariableName } from './utils';
+import { generateTypeName, getDataVariableName, isRelativePath } from './utils';
 
 describe('getDataVariableName', () => {
   it('should return correct variable name for blog', () => {
@@ -30,5 +30,36 @@ describe('generateTypeName', () => {
 
   it('should generate correct type name for comments', () => {
     expect(generateTypeName('comments')).toBe('Comment');
+  });
+});
+
+describe('isRelativePath', () => {
+  it('should return true for relative paths', () => {
+    expect(isRelativePath('relative/path')).toBe(true);
+    expect(isRelativePath('./relative/path')).toBe(true);
+    expect(isRelativePath('../relative/path')).toBe(true);
+  });
+
+  it('should return false for absolute URLs', () => {
+    expect(isRelativePath('http://example.com')).toBe(false);
+    expect(isRelativePath('https://example.com')).toBe(false);
+    expect(isRelativePath('ftp://example.com')).toBe(false);
+  });
+
+  it('should return false for absolute paths', () => {
+    expect(isRelativePath('/absolute/path')).toBe(false);
+    expect(isRelativePath('C:\\absolute\\path')).toBe(false);
+  });
+
+  it('should return false for protocol-relative URLs', () => {
+    expect(isRelativePath('//example.com')).toBe(false);
+  });
+
+  it('should return false for hash anchors', () => {
+    expect(isRelativePath('#anchor')).toBe(false);
+  });
+
+  it('should return false for query strings', () => {
+    expect(isRelativePath('?query=string')).toBe(false);
   });
 });
