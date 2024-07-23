@@ -57,15 +57,21 @@ export function body({
       config,
       frontmatter,
     };
-    const { code, errors } = await bundle(options);
-    if (errors && errors.length) {
-      for (const error of errors) {
-        addIssue({ fatal: true, code: 'custom', message: error.text });
+    try {
+      const { code, errors } = await bundle(options);
+      if (errors && errors.length) {
+        for (const error of errors) {
+          addIssue({ fatal: true, code: 'custom', message: error.text });
+        }
+        return null as never;
       }
+
+      return { format, raw: contents, code };
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      addIssue({ fatal: true, code: 'custom', message });
       return null as never;
     }
-
-    return { format, raw: contents, code };
   });
 }
 
