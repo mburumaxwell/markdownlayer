@@ -1,5 +1,11 @@
 # markdownlayer
 
+## 0.4.0-beta.11
+
+### Minor Changes
+
+- c4af058: Support transforming links and images with exclusion of document files
+
 ## 0.4.0-beta.10
 
 ### Patch Changes
