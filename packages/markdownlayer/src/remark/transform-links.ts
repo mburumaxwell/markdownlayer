@@ -3,6 +3,7 @@ import { extname } from 'path';
 import type { Transformer } from 'unified';
 import { visit } from 'unist-util-visit';
 import { processAsset } from '../assets';
+import { logger } from '../logger';
 import type { ResolvedMarkdownlayerConfig } from '../types';
 import { isRelativePath } from '../utils';
 
@@ -39,13 +40,17 @@ export default function remarkTransformLinks({
 
     await Promise.all(
       Object.entries(links).map(async ([src, nodes]) => {
-        const url = await processAsset({ input: src, from: file.path, format: output.format, baseUrl: output.base });
-        if (!url || url === src) return;
-        for (const node of nodes) {
-          if (node.url === src) {
-            node.url = url;
-            continue;
+        try {
+          const url = await processAsset({ input: src, from: file.path, format: output.format, baseUrl: output.base });
+          if (!url || url === src) return;
+          for (const node of nodes) {
+            if (node.url === src) {
+              node.url = url;
+              continue;
+            }
           }
+        } catch (error) {
+          logger.warn(`Failed to process link reference '${src}' in '${file.path}'. ${error}`);
         }
       }),
     );
