@@ -52,9 +52,9 @@ export function body({
     // bundle the document
     const options: BundleProps = {
       contents,
-      entryPath: path,
+      path,
       format,
-      plugins: { ...config },
+      config,
       frontmatter,
     };
     const { code, errors } = await bundle(options);

@@ -68,7 +68,7 @@ export function image({ remote = false, emit = true, path, config: { output } }:
         }
 
         return {
-          ...(await processAsset({ input: src, from: path, format: output.format, baseUrl: output.base })),
+          ...(await processAsset({ input: src, from: path, format: output.format, baseUrl: output.base }, true)),
           alt,
         };
       } catch (error) {
