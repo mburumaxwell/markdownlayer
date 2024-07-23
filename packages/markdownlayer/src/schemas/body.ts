@@ -59,7 +59,9 @@ export function body({
     };
     const { code, errors } = await bundle(options);
     if (errors && errors.length) {
-      addIssue({ fatal: true, code: 'custom', message: errors[0].text });
+      for (const error of errors) {
+        addIssue({ fatal: true, code: 'custom', message: error.text });
+      }
       return null as never;
     }
 
