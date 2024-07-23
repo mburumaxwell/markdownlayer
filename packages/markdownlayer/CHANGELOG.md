@@ -1,5 +1,17 @@
 # markdownlayer
 
+## 0.4.0-beta.12
+
+### Minor Changes
+
+- 2cfb6c0: Split images logic away from remark-transform-links
+
+### Patch Changes
+
+- c03e1ce: Add issue for each esbuild error from mdx compilation
+- 72a2404: Skip links without extension in remark-transform-links
+- 6c507d8: Continue gracefully if transform link or image fails in remark plugins
+
 ## 0.4.0-beta.11
 
 ### Minor Changes
