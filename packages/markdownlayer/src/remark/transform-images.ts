@@ -2,6 +2,7 @@ import type { Image, Node } from 'mdast';
 import type { Transformer } from 'unified';
 import { visit } from 'unist-util-visit';
 import { processAsset } from '../assets';
+import { logger } from '../logger';
 import type { ResolvedMarkdownlayerConfig } from '../types';
 import { isRelativePath } from '../utils';
 
@@ -28,16 +29,20 @@ export default function remarkTransformImages({ config }: Options): Transformer 
 
     await Promise.all(
       Object.entries(images).map(async ([src, nodes]) => {
-        const { src: url } = await processAsset(
-          { input: src, from: file.path, format: output.format, baseUrl: output.base },
-          true,
-        );
-        if (!url || url === src) return;
-        for (const node of nodes) {
-          if (node.url === src) {
-            node.url = url;
-            continue;
+        try {
+          const { src: url } = await processAsset(
+            { input: src, from: file.path, format: output.format, baseUrl: output.base },
+            true,
+          );
+          if (!url || url === src) return;
+          for (const node of nodes) {
+            if (node.url === src) {
+              node.url = url;
+              continue;
+            }
           }
+        } catch (error) {
+          logger.warn(`Failed to process image reference '${src}' in '${file.path}'. ${error}`);
         }
       }),
     );
