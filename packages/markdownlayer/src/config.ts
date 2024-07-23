@@ -12,7 +12,7 @@ import {
   MarkdownlayerErrorData,
   NoConfigFoundError,
 } from './errors';
-import { type GenerationMode, type MarkdownlayerConfig, type ResolvedConfig } from './types';
+import { type GenerationMode, type MarkdownlayerConfig, type ResolvedMarkdownlayerConfig } from './types';
 
 /**
  * get the config
@@ -20,7 +20,7 @@ import { type GenerationMode, type MarkdownlayerConfig, type ResolvedConfig } fr
  * @param path specific config file path (relative or absolute)
  * @returns the config object with default values
  */
-export async function getConfig(mode: GenerationMode, path?: string): Promise<ResolvedConfig> {
+export async function getConfig(mode: GenerationMode, path?: string): Promise<ResolvedMarkdownlayerConfig> {
   // prettier-ignore
   const files = path != null ? [path] : [
     name + '.config.js',

@@ -1,7 +1,7 @@
 import { slug as githubSlug } from 'github-slugger';
 import { extname, join, relative, sep as separator } from 'node:path';
 import { string } from 'zod';
-import type { ResolvedConfig } from '../types';
+import type { ResolvedMarkdownlayerConfig } from '../types';
 
 export type SlugParams = {
   /**
@@ -46,7 +46,7 @@ export type SlugParams = {
 type CompleteOptions = SlugParams & {
   type: string;
   path: string;
-  config: ResolvedConfig;
+  config: ResolvedMarkdownlayerConfig;
 };
 
 /**

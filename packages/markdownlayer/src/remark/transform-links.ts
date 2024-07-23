@@ -3,7 +3,7 @@ import { extname } from 'path';
 import type { Transformer } from 'unified';
 import { visit } from 'unist-util-visit';
 import { processAsset } from '../assets';
-import type { ResolvedConfig } from '../types';
+import type { ResolvedMarkdownlayerConfig } from '../types';
 import { isRelativePath } from '../utils';
 
 // Default extensions to be excluded
@@ -32,7 +32,7 @@ export type RemarkTransformLinksOptions = {
   excludeExtensions?: readonly string[];
 };
 
-type Options = RemarkTransformLinksOptions & { config: ResolvedConfig };
+type Options = RemarkTransformLinksOptions & { config: ResolvedMarkdownlayerConfig };
 export default function remarkTransformLinks({
   excludeExtensions = DefaultExcludedExtensions,
   config,

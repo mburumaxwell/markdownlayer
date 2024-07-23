@@ -1,6 +1,6 @@
 import { join, normalize, relative } from 'node:path';
 import { string } from 'zod';
-import type { ResolvedConfig } from '../types';
+import type { ResolvedMarkdownlayerConfig } from '../types';
 
 export type IdOptions = {
   /**
@@ -19,7 +19,7 @@ export type IdOptions = {
 type CompleteOptions = IdOptions & {
   type: string;
   path: string;
-  config: ResolvedConfig;
+  config: ResolvedMarkdownlayerConfig;
 };
 
 /**

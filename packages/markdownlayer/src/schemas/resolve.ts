@@ -1,4 +1,4 @@
-import type { DocumentDefinition, ResolvedConfig } from '../types';
+import type { DocumentDefinition, ResolvedMarkdownlayerConfig } from '../types';
 import { type BodyParams, body } from './body';
 import { type GitParams, git } from './git';
 import { type IdOptions, id } from './id';
@@ -63,7 +63,7 @@ export type SchemaContext = {
 };
 
 export type ResolveSchemaOptions = Pick<DocumentDefinition, 'schema'> & {
-  config: ResolvedConfig;
+  config: ResolvedMarkdownlayerConfig;
   /** Type of definition */
   type: string;
   path: string;

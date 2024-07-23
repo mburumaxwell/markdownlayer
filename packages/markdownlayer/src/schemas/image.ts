@@ -4,7 +4,7 @@ import { resolve } from 'node:path';
 import { object, string, union } from 'zod';
 
 import { getImageMetadata, processAsset } from '../assets';
-import type { ImageData, ResolvedConfig } from '../types';
+import type { ImageData, ResolvedMarkdownlayerConfig } from '../types';
 
 export type ImageParams = {
   /**
@@ -26,7 +26,7 @@ export type ImageParams = {
 
 type CompleteOptions = ImageParams & {
   path: string;
-  config: ResolvedConfig;
+  config: ResolvedMarkdownlayerConfig;
 };
 
 /**

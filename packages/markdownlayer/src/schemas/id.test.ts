@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import { MarkdownlayerCache } from '../cache';
-import type { ResolvedConfig } from '../types';
+import type { ResolvedMarkdownlayerConfig } from '../types';
 import { id } from './id';
 
-const mockConfig: ResolvedConfig = {
+const mockConfig: ResolvedMarkdownlayerConfig = {
   mode: 'development',
   configPath: '/Users/mike/Documents/markdownlayer/examples/starter/markdownlayer.config.ts',
   configHash: '1234567890',

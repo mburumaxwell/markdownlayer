@@ -12,10 +12,10 @@ import remarkGfm from 'remark-gfm';
 import type { Pluggable, PluggableList } from 'unified';
 
 import { remarkAdmonitions, remarkHeadings, remarkTransformLinks } from './remark';
-import type { DocumentFormat, ResolvedConfig } from './types';
+import type { DocumentFormat, ResolvedMarkdownlayerConfig } from './types';
 
 export type BundleProps = {
-  config: ResolvedConfig;
+  config: ResolvedMarkdownlayerConfig;
   path: string;
   contents: string;
   format: DocumentFormat;

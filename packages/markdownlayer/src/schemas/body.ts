@@ -1,7 +1,7 @@
 import { extname } from 'node:path';
 import { custom } from 'zod';
 import { bundle, type BundleProps } from '../bundle';
-import type { DocumentBody, DocumentFormat, DocumentFormatInput, ResolvedConfig } from '../types';
+import type { DocumentBody, DocumentFormat, DocumentFormatInput, ResolvedMarkdownlayerConfig } from '../types';
 
 export type BodyParams = {
   /**
@@ -28,7 +28,7 @@ type CompleteOptions = BodyParams & {
   path: string;
   contents: string;
   frontmatter: Record<string, unknown>;
-  config: ResolvedConfig;
+  config: ResolvedMarkdownlayerConfig;
 };
 
 /**

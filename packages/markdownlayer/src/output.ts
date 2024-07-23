@@ -2,7 +2,7 @@ import { copyFile, writeFile } from 'node:fs/promises';
 import { join, relative } from 'node:path';
 
 import { logger } from './logger';
-import type { ResolvedConfig } from './types';
+import type { ResolvedMarkdownlayerConfig } from './types';
 import { generateTypeName, getDataVariableName } from './utils';
 
 const emitted: Record<string, string> = {};
@@ -19,7 +19,7 @@ export async function outputEntryFiles({
   mode,
   configPath,
   output: { generated: destination },
-}: Pick<ResolvedConfig, 'definitions' | 'mode' | 'configPath' | 'output'>) {
+}: Pick<ResolvedMarkdownlayerConfig, 'definitions' | 'mode' | 'configPath' | 'output'>) {
   const types = Object.keys(definitions);
 
   // generate entry according to `config.collections`
@@ -81,7 +81,7 @@ export async function outputAssets({
 }: {
   /** All collected assets */
   assets: Record<string, string>;
-} & Pick<ResolvedConfig, 'output'>) {
+} & Pick<ResolvedMarkdownlayerConfig, 'output'>) {
   let count = 0;
   await Promise.all(
     Object.entries(assets).map(async ([name, from]) => {

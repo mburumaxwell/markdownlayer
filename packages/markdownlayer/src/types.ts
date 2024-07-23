@@ -255,7 +255,7 @@ export const defineConfig = <T extends DocumentDefinitions>(config: Markdownlaye
   config;
 
 /** Represents the result of getting the configuration. */
-export type ResolvedConfig = MarkdownlayerConfig & {
+export type ResolvedMarkdownlayerConfig = MarkdownlayerConfig & {
   /** The mode of the generation. */
   readonly mode: GenerationMode;
 
