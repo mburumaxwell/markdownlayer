@@ -27,6 +27,15 @@ export async function getImageMetadata(buffer: Buffer): Promise<Omit<ImageData, 
   return { format, height, width, blurDataURL, blurWidth, blurHeight, aspectRatio };
 }
 
+/**
+ * Processes a referenced asset of a file.
+ * @param input - The relative path of the asset.
+ * @param from - The source file path.
+ * @param format - The output filename template.
+ * @param baseUrl - The output public base URL.
+ * @param isImage - If true, processes the asset as an image and returns an image object with blurDataURL.
+ * @returns The reference public URL or an image object.
+ */
 export async function processAsset<T extends true | undefined = undefined>(
   {
     input,

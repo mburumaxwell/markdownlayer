@@ -16,7 +16,7 @@ const projectSchema = defineSchema(({ body, image }) =>
 );
 
 export default defineConfig({
-  contentDirPath: './src/content',
+  contentDirPath: 'src/content',
   definitions: {
     authors: {
       schema: ({ id, image }) =>

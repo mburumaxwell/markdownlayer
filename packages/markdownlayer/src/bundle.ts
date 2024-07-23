@@ -11,7 +11,7 @@ import remarkFrontmatter from 'remark-frontmatter';
 import remarkGfm from 'remark-gfm';
 import type { Pluggable, PluggableList } from 'unified';
 
-import { remarkAdmonitions, remarkHeadings, remarkTransformLinks } from './remark';
+import { remarkAdmonitions, remarkHeadings, remarkTransformImages, remarkTransformLinks } from './remark';
 import type { DocumentFormat, ResolvedMarkdownlayerConfig } from './types';
 
 export type BundleProps = {
@@ -80,6 +80,7 @@ async function mdx({ config, path, contents, format }: BundleMdxProps): Promise<
     admonitions = true,
     emoji = true,
     gfm = true,
+    transformImages = true,
     transformLinks = true,
     recmaPlugins,
     remarkPlugins,
@@ -104,6 +105,9 @@ async function mdx({ config, path, contents, format }: BundleMdxProps): Promise<
       remarkHeadings, // must be added before handling of ToC and links
       ...((emoji ? [emoji === true ? remarkEmoji : [remarkEmoji, emoji]] : []) as PluggableList),
       ...((gfm ? [gfm === true ? remarkGfm : [remarkGfm, gfm]] : []) as PluggableList),
+      ...((transformImages
+        ? [[remarkTransformImages, transformImages === true ? { config } : { config, ...transformImages }]]
+        : []) as PluggableList),
       ...((transformLinks
         ? [[remarkTransformLinks, transformLinks === true ? { config } : { config, ...transformLinks }]]
         : []) as PluggableList),
