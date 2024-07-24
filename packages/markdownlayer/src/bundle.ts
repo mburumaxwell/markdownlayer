@@ -23,13 +23,13 @@ export type BundleProps = {
 };
 
 export type BundleResult = { code: string; errors: Message[] };
-export async function bundle({ format, config, ...options }: BundleProps): Promise<BundleResult> {
+export function bundle({ format, config, ...options }: BundleProps): Promise<BundleResult> {
   switch (format) {
     case 'md':
     case 'mdx':
-      return await mdx({ config, format, ...options });
+      return mdx({ config, format, ...options });
     case 'mdoc':
-      return await mdoc({ config, ...options });
+      return mdoc({ config, ...options });
 
     default:
       throw new Error(`Unsupported format: ${format}`);
@@ -66,7 +66,7 @@ async function mdx({ config, path, contents, format }: BundleMdxProps): Promise<
         if (filePath === path) {
           return {
             path: filePath,
-            pluginData: { inMemory: true, contents: contents },
+            pluginData: { inMemory: true, contents },
           };
         }
 
