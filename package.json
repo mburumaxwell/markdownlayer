@@ -32,7 +32,7 @@
     "eslint-config-next": "14.2.5",
     "eslint-config-prettier": "9.1.0",
     "eslint-config-turbo": "2.0.9",
-    "eslint-plugin-react": "7.34.4",
+    "eslint-plugin-react": "7.35.0",
     "jsdom": "24.1.1",
     "prettier": "3.3.3",
     "prettier-plugin-organize-imports": "4.0.0",
