@@ -40,11 +40,6 @@ updates:
         patterns:
           - 'eslint-config-turbo'
           - 'turbo'
-    ignore:
-      - dependency-name: 'eslint'
-        update-types: ['version-update:semver-major'] # new eslint has breaking changes and the ecosystem has not caught up
-      - dependency-name: '@typescript-eslint/eslint-plugin'
-        update-types: ['version-update:semver-major'] # new eslint has breaking changes and the ecosystem has not caught up
   - package-ecosystem: 'github-actions' # See documentation for possible values
     directory: '/' # Location of package manifests
     schedule:
