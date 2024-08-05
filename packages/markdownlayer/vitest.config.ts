@@ -1,7 +1,7 @@
 import { fileURLToPath } from 'url';
-import { configDefaults, defineProject } from 'vitest/config';
+import { configDefaults, defineConfig } from 'vitest/config';
 
-export default defineProject({
+export default defineConfig({
   test: {
     globals: true,
     watch: false,
