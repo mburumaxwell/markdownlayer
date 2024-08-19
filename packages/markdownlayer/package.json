@@ -65,7 +65,7 @@
     "@types/inflection": "1.13.2",
     "@types/mdast": "4.0.4",
     "@types/mdx": "2.0.13",
-    "@types/unist": "3.0.2",
+    "@types/unist": "3.0.3",
     "mdast-util-directive": "3.0.0",
     "remark-rehype": "11.1.0",
     "unified": "11.0.5",
