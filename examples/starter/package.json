@@ -11,7 +11,7 @@
     "clean": "rimraf .markdownlayer .next .turbo out"
   },
   "dependencies": {
-    "@headlessui/react": "2.1.2",
+    "@headlessui/react": "2.1.3",
     "date-fns": "3.6.0",
     "feed": "4.2.2",
     "lodash": "4.17.21",
