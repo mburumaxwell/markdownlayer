@@ -1,5 +1,14 @@
 # markdownlayer
 
+## 0.4.0-beta.13
+
+### Minor Changes
+
+- 0bf3162: Restore support for CJS.
+  This solves some issues in NextJS config files.
+  Setting `"type": "module"` in applications is no longer required.
+- 0f7bc8e: Support NextJS 15 and React 19
+
 ## 0.4.0-beta.12
 
 ### Minor Changes
