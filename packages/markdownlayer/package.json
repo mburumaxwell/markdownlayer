@@ -73,9 +73,9 @@
   },
   "peerDependencies": {
     "esbuild": "0",
-    "next": "13 || 14",
-    "react": "18",
-    "react-dom": "18"
+    "next": "13 || 14 || 15",
+    "react": "18 || 19",
+    "react-dom": "18 || 19"
   },
   "author": "mburumaxwell",
   "homepage": "https://github.com/mburumaxwell/markdownlayer",

@@ -1,4 +1,3 @@
-import type { NextConfig } from 'next';
 import { generate } from './generate';
 import type { GenerationMode } from './types';
 
@@ -41,6 +40,11 @@ const defaultOptions: MarkdownlayerPluginOptions = {
  * ```
  */
 export const withMarkdownlayer = createMarkdownlayerPlugin(defaultOptions);
+
+// a custom type instead of importing from next we are
+// targeting multiple versions with major differences
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type NextConfig = Record<string, any>;
 
 export function createMarkdownlayerPlugin(pluginOptions: MarkdownlayerPluginOptions) {
   return async function (nextConfig: MayBePromise<Partial<NextConfig>> = {}): Promise<Partial<NextConfig>> {

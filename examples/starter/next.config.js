@@ -8,4 +8,4 @@ const nextConfig = {
   },
 };
 
-export default await withMarkdownlayer(nextConfig);
+export default withMarkdownlayer(nextConfig);
