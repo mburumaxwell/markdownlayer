@@ -21,7 +21,4 @@ examples/**/{public,static}
 
 # special files
 .vscode/settings.json
-.github/**
-!.github/dependabot.yml
 .changeset/*.md
-README.md
