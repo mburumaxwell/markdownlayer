@@ -1,9 +1,7 @@
 // inspired by Docusaurus
 // https://github.com/facebook/docusaurus/blob/5baa68bea013c30e5b2ad2e166b0252344c0baab/packages/docusaurus-mdx-loader/src/remark/headings/index.ts
 
-import { slug as githubSlug } from 'github-slugger';
 import type { Heading, Text } from 'mdast';
-import { toString } from 'mdast-util-to-string';
 import type { Transformer } from 'unified';
 import { visit } from 'unist-util-visit';
 
@@ -34,7 +32,10 @@ export function parseMarkdownHeadingId(heading: string): {
 }
 
 export default function remarkHeadings(): Transformer {
-  return (root) => {
+  return async (root) => {
+    const { slug: githubSlug } = await import('github-slugger');
+    const { toString } = await import('mdast-util-to-string');
+
     visit(root, 'heading', (headingNode: Heading) => {
       const data = headingNode.data ?? (headingNode.data = {});
       const properties = (data.hProperties || (data.hProperties = {})) as {

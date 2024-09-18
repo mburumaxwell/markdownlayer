@@ -26,6 +26,7 @@ describe('slug', () => {
       default: true,
       type: 'test',
       path: '/Users/mike/Documents/markdownlayer/examples/starter/src/content/test/test.md',
+      defaultValue: 'test',
       config: mockConfig,
     });
 
@@ -38,6 +39,7 @@ describe('slug', () => {
       default: false,
       type: 'test',
       path: '/Users/mike/Documents/markdownlayer/examples/starter/src/content/test/test.md',
+      defaultValue: 'test',
       config: mockConfig,
     });
 
@@ -50,6 +52,7 @@ describe('slug', () => {
       min: 3,
       type: 'test',
       path: '/Users/mike/Documents/markdownlayer/examples/starter/src/content/test/test.md',
+      defaultValue: 'test',
       config: mockConfig,
     });
 
@@ -62,6 +65,7 @@ describe('slug', () => {
       min: 0,
       type: 'test',
       path: '/Users/mike/Documents/markdownlayer/examples/starter/src/content/test/test.md',
+      defaultValue: 'test',
       config: mockConfig,
     });
 
@@ -73,6 +77,7 @@ describe('slug', () => {
       reserved: ['reserved-slug'],
       type: 'test',
       path: '/Users/mike/Documents/markdownlayer/examples/starter/src/content/test/test.md',
+      defaultValue: 'test',
       config: mockConfig,
     });
     expect(() => schema.parse('Invalid Slug!')).toThrow('Invalid slug');
@@ -83,6 +88,7 @@ describe('slug', () => {
       reserved: ['reserved-slug'],
       type: 'test',
       path: '/Users/mike/Documents/markdownlayer/examples/starter/src/content/test/test.md',
+      defaultValue: 'test',
       config: mockConfig,
     });
 
@@ -93,6 +99,7 @@ describe('slug', () => {
     const schema = slug({
       type: 'test',
       path: '/Users/mike/Documents/markdownlayer/examples/starter/src/content/test/test.md',
+      defaultValue: 'test',
       config: mockConfig,
     });
 
@@ -104,6 +111,7 @@ describe('slug', () => {
     const schema = slug({
       type: 'test',
       path: '/Users/mike/Documents/markdownlayer/examples/starter/src/content/test/test.md',
+      defaultValue: 'test',
       config: mockConfig,
     });
 
@@ -116,20 +124,20 @@ describe('slug', () => {
 });
 
 describe('generate', () => {
-  it('should generate slug from filename', () => {
-    expect(generate('my-first-post.md')).toBe('my-first-post');
+  it('should generate slug from filename', async () => {
+    expect(await generate('my-first-post.md')).toBe('my-first-post');
   });
 
-  it('should handle index file', () => {
-    expect(generate('index.md')).toBe('');
+  it('should handle index file', async () => {
+    expect(await generate('index.md')).toBe('');
   });
 
-  it('should handle nested directory', () => {
-    expect(generate('en/posts/my-first-post.md')).toEqual('en/posts/my-first-post');
+  it('should handle nested directory', async () => {
+    expect(await generate('en/posts/my-first-post.md')).toEqual('en/posts/my-first-post');
   });
 
-  it('should handle nested directory with index file', () => {
-    expect(generate('en/docs/index.md')).toBe('en/docs');
+  it('should handle nested directory with index file', async () => {
+    expect(await generate('en/docs/index.md')).toBe('en/docs');
   });
 });
 

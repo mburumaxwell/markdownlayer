@@ -11,7 +11,7 @@ export default defineConfig((options: Options) => ({
     // Remark plugins
     'src/remark/index.ts',
   ],
-  format: ['esm'],
+  format: ['esm', 'cjs'],
   dts: true,
   minify: false,
   clean: true,

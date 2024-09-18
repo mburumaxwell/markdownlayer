@@ -1,14 +1,9 @@
 import { globalExternals } from '@fal-works/esbuild-plugin-global-externals';
 import Markdoc, { type Config as MarkdocConfig } from '@markdoc/markdoc';
 import type { Options as CompileOptions } from '@mdx-js/esbuild';
-import mdxESBuild from '@mdx-js/esbuild';
 import type { BuildOptions, Plugin } from 'esbuild';
 import esbuild, { type Message } from 'esbuild';
-import rehypeRaw, { type Options as RehypeRawOptions } from 'rehype-raw';
-import remarkDirective from 'remark-directive';
-import remarkEmoji from 'remark-emoji';
-import remarkFrontmatter from 'remark-frontmatter';
-import remarkGfm from 'remark-gfm';
+import type { Options as RehypeRawOptions } from 'rehype-raw';
 import type { Pluggable, PluggableList } from 'unified';
 
 import { remarkAdmonitions, remarkHeadings, remarkTransformImages, remarkTransformLinks } from './remark';
@@ -88,6 +83,12 @@ async function mdx({ config, path, contents, format }: BundleMdxProps): Promise<
     remarkRehypeOptions,
   } = config;
 
+  const { default: mdxESBuild } = await import('@mdx-js/esbuild');
+  const { default: remarkEmoji } = await import('remark-emoji');
+  const { default: remarkDirective } = await import('remark-directive');
+  const { default: remarkFrontmatter } = await import('remark-frontmatter');
+  const { default: remarkGfm } = await import('remark-gfm');
+
   const compileOptions: CompileOptions = {
     format,
     recmaPlugins,
@@ -118,6 +119,8 @@ async function mdx({ config, path, contents, format }: BundleMdxProps): Promise<
   };
 
   if (format === 'md') {
+    const { default: rehypeRaw } = await import('rehype-raw');
+
     // This is what permits to embed HTML elements with format 'md'
     // See https://github.com/facebook/docusaurus/pull/8960
     // See https://github.com/mdx-js/mdx/pull/2295#issuecomment-1540085960

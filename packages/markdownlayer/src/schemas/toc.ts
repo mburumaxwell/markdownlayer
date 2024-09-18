@@ -1,4 +1,3 @@
-import { slug as githubSlug } from 'github-slugger';
 import { custom } from 'zod';
 import type { TocItem } from '../types';
 
@@ -13,7 +12,9 @@ const regXHeader = /\n(?<flag>#{1,6})\s+(?<content>.+)/g;
  * @returns A Zod object representing table of contents data.
  */
 export function toc({ contents }: { contents: string }) {
-  return custom().transform<TocItem[]>(() => {
+  return custom().transform<TocItem[]>(async () => {
+    const { slug: githubSlug } = await import('github-slugger');
+
     return Array.from(contents.matchAll(regXHeader)).map(({ groups }) => {
       const { flag, content } = groups!;
       // Note: using `slug` instead of `new Slugger()` means no slug deduplication.
