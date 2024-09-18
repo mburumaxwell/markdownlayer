@@ -1,4 +1,3 @@
-import { slug as githubSlug } from 'github-slugger';
 import { extname, join, relative, sep as separator } from 'node:path';
 import { string } from 'zod';
 import type { ResolvedMarkdownlayerConfig } from '../types';
@@ -46,6 +45,7 @@ export type SlugParams = {
 type CompleteOptions = SlugParams & {
   type: string;
   path: string;
+  defaultValue: string;
   config: ResolvedMarkdownlayerConfig;
 };
 
@@ -63,6 +63,7 @@ export function slug({
   reserved = [],
   type,
   path,
+  defaultValue,
   config: {
     contentDirPath,
     cache: { uniques },
@@ -74,7 +75,7 @@ export function slug({
     .regex(regex, 'Invalid slug')
     .refine((value) => !reserved.includes(value), 'Reserved slug');
 
-  const base = useDefault ? common.default(generate(relative(join(contentDirPath, type), path))) : common;
+  const base = useDefault ? common.default(defaultValue) : common;
   return base.superRefine((value, { addIssue }) => {
     const key = makeKey({ by, type, value });
     if (uniques[key]) {
@@ -89,7 +90,14 @@ export function slug({
   });
 }
 
-export function generate(path: string): string {
+type GenerateDefaultOptions = Pick<CompleteOptions, 'type' | 'path' | 'config'>;
+export function generateDefault({ type, path, config }: GenerateDefaultOptions): Promise<string> {
+  return generate(relative(join(config.contentDirPath, type), path));
+}
+
+export async function generate(path: string): Promise<string> {
+  const { slug: githubSlug } = await import('github-slugger');
+
   const withoutFileExt = path.replace(new RegExp(extname(path) + '$'), '');
   const rawSlugSegments = withoutFileExt.split(separator);
 

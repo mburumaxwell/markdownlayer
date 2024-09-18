@@ -1,5 +1,4 @@
 import chokidar from 'chokidar';
-import { globby } from 'globby';
 import matter from 'gray-matter';
 import { mkdir, readFile, stat, writeFile } from 'node:fs/promises';
 import { join, relative } from 'node:path';
@@ -120,6 +119,7 @@ async function generateDocuments(options: GenerateDocsOptions): Promise<Generate
 
   // find the files
   const definitionDir = join(contentDirPath, type);
+  const { globby } = await import('globby');
   const files = await globby(patterns, {
     cwd: definitionDir,
     gitignore: true, // use .gitignore
@@ -162,7 +162,7 @@ async function generateDocuments(options: GenerateDocsOptions): Promise<Generate
       frontmatter,
       config,
     };
-    const schema = resolveSchema(resolveSchemaOptions);
+    const schema = await resolveSchema(resolveSchemaOptions);
     if (schema) {
       const parsed = await schema.safeParseAsync(frontmatter); // Use `safeParseAsync` to allow async transforms
       if (parsed.success) {

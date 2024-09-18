@@ -4,7 +4,7 @@ import { type GitParams, git } from './git';
 import { type IdOptions, id } from './id';
 import { type ImageParams, image } from './image';
 import { type ReadingTimeParams, readtime } from './read-time';
-import { type SlugParams, slug } from './slug';
+import { type SlugParams, generateDefault as generateDefaultSlug, slug } from './slug';
 import { toc } from './toc';
 
 export type SchemaContext = {
@@ -71,7 +71,7 @@ export type ResolveSchemaOptions = Pick<DocumentDefinition, 'schema'> & {
   frontmatter: Record<string, unknown>;
 };
 
-export function resolveSchema({
+export async function resolveSchema({
   type,
   schema,
 
@@ -82,13 +82,15 @@ export function resolveSchema({
   config,
 }: ResolveSchemaOptions) {
   if (typeof schema === 'function') {
+    const defaultSlugValue = await generateDefaultSlug({ type, path, config });
+
     schema = schema({
       body: (params: BodyParams = {}) => body({ ...params, path, contents, frontmatter, config }),
       git: (params: GitParams = {}) => git({ ...params, path }),
       id: (params: IdOptions = {}) => id({ ...params, type, path, config }),
       image: (params: ImageParams = {}) => image({ ...params, path, config }),
       readtime: (params: ReadingTimeParams = {}) => readtime({ ...params, contents }),
-      slug: (params: SlugParams = {}) => slug({ ...params, type, path, config }),
+      slug: (params: SlugParams = {}) => slug({ ...params, type, path, defaultValue: defaultSlugValue, config }),
       toc: () => toc({ contents }),
     });
   }

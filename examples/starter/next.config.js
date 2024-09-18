@@ -1,4 +1,4 @@
-import { withMarkdownlayer } from 'markdownlayer';
+const { withMarkdownlayer } = require('markdownlayer');
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -8,4 +8,4 @@ const nextConfig = {
   },
 };
 
-export default withMarkdownlayer(nextConfig);
+module.defaults = withMarkdownlayer(nextConfig);
