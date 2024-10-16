@@ -6,7 +6,7 @@
     "dev": "next dev --turbo",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "ESLINT_USE_FLAT_CONFIG=false next lint",
     "clean": "rimraf .markdownlayer .next .turbo out"
   },
   "dependencies": {

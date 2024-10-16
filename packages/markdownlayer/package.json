@@ -42,7 +42,7 @@
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
-    "lint": "eslint \"src/**/*.{js,jsx,ts,tsx}\"",
+    "lint": "ESLINT_USE_FLAT_CONFIG=false eslint \"src/**/**\"",
     "test": "vitest",
     "clean": "rimraf .turbo dist"
   },
