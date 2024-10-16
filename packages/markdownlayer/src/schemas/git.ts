@@ -56,7 +56,7 @@ export function git({
       // check if git is installed
       try {
         execSync('git --version', { stdio: 'ignore' });
-      } catch (error) {
+      } catch {
         throw new Error('Failed to retrieve git history because git is not installed.');
       }
 
