@@ -6,9 +6,8 @@ import { logger } from '../logger';
 import type { ResolvedMarkdownlayerConfig } from '../types';
 import { isRelativePath } from '../utils';
 
-export type RemarkTransformImagesOptions = {
-  // this is a placeholder for future options
-};
+// this is a placeholder for future options
+export type RemarkTransformImagesOptions = {}; // eslint-disable-line @typescript-eslint/no-empty-object-type
 
 type Options = RemarkTransformImagesOptions & { config: ResolvedMarkdownlayerConfig };
 export default function remarkTransformImages({ config }: Options): Transformer {
