@@ -9,14 +9,16 @@ import { FORMATS_DATE_LONG, formatDate } from '@/lib/formatting';
 import { Markdownlayer } from '@/components/markdownlayer';
 
 type BlogPostProps = {
-  params: { slug: string };
-  searchParams: { [key: string]: string | string[] | undefined };
+  params: Promise<{ slug: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
-export async function generateMetadata(
-  { params: { slug }, searchParams }: BlogPostProps,
-  parent: ResolvingMetadata,
-): Promise<Metadata> {
+export async function generateMetadata(props: BlogPostProps, parent: ResolvingMetadata): Promise<Metadata> {
+  const searchParams = await props.searchParams;
+  const params = await props.params;
+
+  const { slug } = params;
+
   const post = allBlogPosts.find((post) => post.slug === slug);
   if (!post) {
     notFound();
@@ -42,7 +44,12 @@ export async function generateMetadata(
   };
 }
 
-export default function BlogPostPage({ params: { slug } }: BlogPostProps) {
+export default async function BlogPostPage(props: BlogPostProps) {
+  const searchParams = await props.searchParams;
+  const params = await props.params;
+
+  const { slug } = params;
+
   const post = allBlogPosts.find((post) => post.slug === slug);
   if (!post) {
     notFound();
