@@ -49,7 +49,7 @@
   "dependencies": {
     "@fal-works/esbuild-plugin-global-externals": "2.1.2",
     "@markdoc/markdoc": "0.4.0",
-    "@mdx-js/esbuild": "3.0.1",
+    "@mdx-js/esbuild": "3.1.0",
     "chokidar": "4.0.1",
     "github-slugger": "2.0.0",
     "globby": "14.0.2",
