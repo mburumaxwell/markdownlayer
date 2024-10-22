@@ -8,14 +8,16 @@ import { Markdownlayer } from '@/components/markdownlayer';
 import siteConfig from '@/site-config';
 
 type LegalProps = {
-  params: { slug: string };
-  searchParams: { [key: string]: string | string[] | undefined };
+  params: Promise<{ slug: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
-export async function generateMetadata(
-  { params: { slug }, searchParams }: LegalProps,
-  parent: ResolvingMetadata,
-): Promise<Metadata> {
+export async function generateMetadata(props: LegalProps, parent: ResolvingMetadata): Promise<Metadata> {
+  const searchParams = await props.searchParams;
+  const params = await props.params;
+
+  const { slug } = params;
+
   const doc = allLegals.find((doc) => doc.slug === slug);
   if (!doc) {
     notFound();
@@ -31,7 +33,12 @@ export async function generateMetadata(
   };
 }
 
-export default function LegalPage({ params: { slug } }: LegalProps) {
+export default async function LegalPage(props: LegalProps) {
+  const searchParams = await props.searchParams;
+  const params = await props.params;
+
+  const { slug } = params;
+
   const doc = allLegals.find((doc) => doc.slug === slug);
   if (!doc) {
     notFound();

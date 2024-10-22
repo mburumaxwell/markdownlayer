@@ -8,14 +8,16 @@ import { Markdownlayer } from '@/components/markdownlayer';
 import siteConfig from '@/site-config';
 
 type GuideProps = {
-  params: { locale: string; name: string };
-  searchParams: { [key: string]: string | string[] | undefined };
+  params: Promise<{ locale: string; name: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
-export async function generateMetadata(
-  { params: { locale, name }, searchParams }: GuideProps,
-  parent: ResolvingMetadata,
-): Promise<Metadata> {
+export async function generateMetadata(props: GuideProps, parent: ResolvingMetadata): Promise<Metadata> {
+  const searchParams = await props.searchParams;
+  const params = await props.params;
+
+  const { locale, name } = params;
+
   const guide = allGuides.find((guide) => guide.slug === `${locale}/${name}`);
   if (!guide) {
     notFound();
@@ -31,7 +33,12 @@ export async function generateMetadata(
   };
 }
 
-export default function GuidePage({ params: { locale, name } }: GuideProps) {
+export default async function GuidePage(props: GuideProps) {
+  const searchParams = await props.searchParams;
+  const params = await props.params;
+
+  const { locale, name } = params;
+
   const guide = allGuides.find((guide) => guide.slug === `${locale}/${name}`);
   if (!guide) {
     notFound();
