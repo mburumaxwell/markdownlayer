@@ -151,8 +151,8 @@ importers:
         specifier: 4.0.3
         version: 4.0.3
       inflection:
-        specifier: 3.0.0
-        version: 3.0.0
+        specifier: 3.0.2
+        version: 3.0.2
       mdast-util-to-string:
         specifier: 4.0.0
         version: 4.0.0
@@ -2188,8 +2188,8 @@ packages:
     resolution: {integrity: sha512-JmXMZ6wuvDmLiHEml9ykzqO6lwFbof0GG4IkcGaENdCRDDmMVnny7s5HsIgHCbaq0w2MyPhDqkhTUgS2LU2PHA==}
     engines: {node: '>=0.8.19'}
 
-  inflection@3.0.0:
-    resolution: {integrity: sha512-1zEJU1l19SgJlmwqsEyFTbScw/tkMHFenUo//Y0i+XEP83gDFdMvPizAD/WGcE+l1ku12PcTVHQhO6g5E0UCMw==}
+  inflection@3.0.2:
+    resolution: {integrity: sha512-+Bg3+kg+J6JUWn8J6bzFmOWkTQ6L/NHfDRSYU+EVvuKHDxUDHAXgqixHfVlzuBQaPOTac8hn43aPhMNk6rMe3g==}
     engines: {node: '>=18.0.0'}
 
   inline-style-parser@0.1.1:
@@ -6025,7 +6025,7 @@ snapshots:
 
   imurmurhash@0.1.4: {}
 
-  inflection@3.0.0: {}
+  inflection@3.0.2: {}
 
   inline-style-parser@0.1.1: {}
 
