@@ -15,7 +15,7 @@
     "feed": "4.2.2",
     "lodash": "4.17.21",
     "markdownlayer": "workspace:*",
-    "next": "15.0.3",
+    "next": "15.1.6",
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "react-highlight-words": "0.21.0",
