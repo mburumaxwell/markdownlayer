@@ -61,7 +61,7 @@
     "remark-directive": "3.0.1",
     "remark-emoji": "5.0.1",
     "remark-frontmatter": "5.0.0",
-    "remark-gfm": "4.0.0",
+    "remark-gfm": "4.0.1",
     "sharp": "0.33.5",
     "zod": "3.24.1"
   },
