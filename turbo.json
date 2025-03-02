@@ -1,6 +1,6 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "globalDependencies": ["**/.env", "**/.env.*", "**/.eslintrc.yml"],
+  "globalDependencies": ["**/.env", "**/.env.*", "**/eslint.config.*"],
   "globalEnv": ["NODE_ENV", "NEXT_PUBLIC_SHOW_DRAFTS", "CL_DEBUG"],
   "tasks": {
     "build": {
