@@ -30,12 +30,6 @@ updates:
           - 'next'
       prettier:
         patterns: ['prettier*']
-        exclude-patterns: ['prettier-plugin-tailwindcss']
-      tailwind:
-        patterns:
-          - 'tailwindcss'
-          - '@tailwindcss/*'
-          - 'prettier-plugin-tailwindcss'
       turbo:
         patterns:
           - 'eslint-config-turbo'

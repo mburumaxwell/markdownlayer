@@ -1,6 +1,5 @@
 dependabot
 Vercel
-TailwindCSS
 NextJS
 markdoc
 Markdoc

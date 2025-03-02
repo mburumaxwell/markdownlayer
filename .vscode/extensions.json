@@ -4,7 +4,6 @@
 
   // List of extensions which should be recommended for users of this workspace.
   "recommendations": [
-    "bradlc.vscode-tailwindcss",
     "davidanson.vscode-markdownlint",
     "gruntfuggly.todo-tree",
     "shardulm94.trailing-spaces",

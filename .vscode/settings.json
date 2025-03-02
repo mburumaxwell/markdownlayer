@@ -13,7 +13,6 @@
         "Pluggable",
         "recma",
         "rehype",
-        "tailwindcss",
         "tsup"
     ]
 }
