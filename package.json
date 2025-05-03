@@ -31,7 +31,7 @@
     "@typescript-eslint/eslint-plugin": "8.29.1",
     "eslint": "9.24.0",
     "eslint-config-next": "15.2.4",
-    "eslint-config-prettier": "10.1.1",
+    "eslint-config-prettier": "10.1.2",
     "eslint-config-turbo": "2.5.0",
     "eslint-plugin-react": "7.37.5",
     "jsdom": "26.0.0",
