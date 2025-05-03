@@ -1,5 +1,8 @@
 # Markdownlayer [![](https://badgen.net/npm/v/markdownlayer)](https://www.npmjs.com/package/markdownlayer)
 
+> [!NOTE]
+> I learnt a lot from making this library. Enough to make contributions. However, maintaining this is no longer a priority for me so instead on 03-May-2025 I chose to migrate this blog and other sites I had using this library to instead use [`fumadocs`](https://fumadocs.dev). Why? There is a lot more development happening there and I really respect what the maintainer is doing. Further, it makes it easier to manage docs which was one thing I was aiming at doing with `markdownlayer`. A couple of things are not as easy but it does not compare to what works (the list is too long to even write).
+
 Markdownlayer is a content SDK that validates and transforms your content into type-safe JSON data you can easily `import` into your application's pages. If you have used [Contentlayer](https://github.com/contentlayerdev/contentlayer), this is built to replace it.
 
 ## Getting Started
