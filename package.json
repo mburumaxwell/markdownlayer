@@ -34,7 +34,7 @@
     "eslint-config-prettier": "10.1.2",
     "eslint-config-turbo": "2.5.0",
     "eslint-plugin-react": "7.37.5",
-    "jsdom": "26.0.0",
+    "jsdom": "26.1.0",
     "prettier": "3.5.3",
     "prettier-plugin-organize-imports": "4.1.0",
     "rimraf": "6.0.1",
