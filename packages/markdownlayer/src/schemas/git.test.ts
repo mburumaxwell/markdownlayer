@@ -34,7 +34,6 @@ describe('git', () => {
   });
 
   it('should throw an error if git command fails', async () => {
-    // @ts-expect-error -- mock implementation
     vi.mocked(execSync).mockImplementation((command) => {
       if (command.includes('--version')) {
         return Buffer.from('git version 2.30.0');
